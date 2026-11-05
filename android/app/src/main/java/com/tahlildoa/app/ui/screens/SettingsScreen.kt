@@ -135,6 +135,12 @@ private fun LazyListScope.togglesSection(
                 checked = toggles.colorizeArabic,
                 onCheckedChange = { v -> onChange(toggles.copy(colorizeArabic = v)) },
             )
+            ToggleRow(
+                title = "Layar Tetap Hidup",
+                subtitle = "Cegah layar dari mode tidur selama aplikasi terbuka",
+                checked = toggles.keepScreenOn,
+                onCheckedChange = { v -> onChange(toggles.copy(keepScreenOn = v)) },
+            )
         }
     }
 }

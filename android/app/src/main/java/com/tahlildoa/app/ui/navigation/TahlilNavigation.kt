@@ -1,5 +1,11 @@
 package com.tahlildoa.app.ui.navigation
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,12 +13,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -20,8 +29,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -30,9 +41,12 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,6 +93,17 @@ object Routes {
  *  - [Routes.SETTINGS]   — display & typography settings
  *
  * The drawer is mounted at this level so it's available from any screen.
+ *
+ * Behavior:
+ *  - On first composition, if [lastReadSectionId] is set (and we haven't
+ *    already auto-navigated this session), navigate directly to that
+ *    section so the user resumes their reading. The flag is
+ *    `rememberSaveable` so config changes don't double-navigate.
+ *  - Whenever the user opens a section, [onSetLastReadSection] is called
+ *    so the repository can persist the new pointer.
+ *  - When [isFullscreen] is true, a floating "exit fullscreen" FAB is
+ *    overlaid at the top-right corner so the user can exit immersive mode
+ *    without the system bars (since they're hidden).
  */
 @Composable
 fun TahlilNavigation(
@@ -86,10 +111,15 @@ fun TahlilNavigation(
     style: ArabicStyleSettings,
     themeMode: ThemeMode,
     isDark: Boolean,
+    isFullscreen: Boolean,
+    lastReadSectionId: String?,
     onTogglesChange: (DisplayToggles) -> Unit,
     onStyleChange: (ArabicStyleSettings) -> Unit,
     onThemeModeChange: (ThemeMode) -> Unit,
     onToggleThemeClick: () -> Unit,
+    onToggleFullscreen: () -> Unit,
+    onSetLastReadSection: (String) -> Unit,
+    onClearLastReadSection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -97,13 +127,31 @@ fun TahlilNavigation(
     val drawerState = androidx.compose.material3.rememberDrawerState(
         initialValue = androidx.compose.material3.DrawerValue.Closed
     )
-    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     val openDrawer: () -> Unit = {
         scope.launch { drawerState.open() }
     }
     val closeDrawer: () -> Unit = {
         scope.launch { drawerState.close() }
+    }
+
+    // --- Auto-navigate to the last-read section on first launch ----------
+    // We use rememberSaveable so the flag survives config changes (rotations)
+    // — but it resets on process death, which is fine: "first launch of
+    // session" only means within a single foreground session.
+    var hasAutoNavigated by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(lastReadSectionId) {
+        if (!hasAutoNavigated && !lastReadSectionId.isNullOrEmpty()) {
+            // Verify the stored id still maps to a real section (in case the
+            // content was updated between sessions).
+            if (TahlilContent.byId(lastReadSectionId) != null) {
+                hasAutoNavigated = true
+                navController.navigate(Routes.section(lastReadSectionId)) {
+                    launchSingleTop = true
+                }
+            }
+        }
     }
 
     ModalNavigationDrawer(
@@ -116,6 +164,7 @@ fun TahlilNavigation(
                     navController.navigate(Routes.section(id)) {
                         launchSingleTop = true
                     }
+                    onSetLastReadSection(id)
                 },
                 onHomeClick = {
                     closeDrawer()
@@ -135,54 +184,106 @@ fun TahlilNavigation(
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
         val canNavigateBack = currentRoute != null && currentRoute != Routes.HOME
 
-        androidx.compose.foundation.layout.Column(modifier = Modifier.fillMaxHeight()) {
-            Header(
-                title = "Tahlil & Doa",
-                isDark = isDark,
-                onMenuClick = openDrawer,
-                onThemeToggleClick = onToggleThemeClick,
-                onSettingsClick = { navController.navigate(Routes.SETTINGS) { launchSingleTop = true } },
-                canNavigateBack = canNavigateBack,
-                onBackClick = { navController.popBackStack() },
-            )
+        Box(modifier = Modifier.fillMaxHeight()) {
+            // Top-level BackHandler: when the app is in fullscreen mode,
+            // the first back press exits fullscreen (regardless of which
+            // screen the user is on). The HomeScreen also has its own
+            // BackHandler that takes priority on the home route — but on
+            // other routes (section / settings), this top-level handler is
+            // the only one active, so back-exits-fullscreen works there too.
+            BackHandler(enabled = isFullscreen) {
+                onToggleFullscreen()
+            }
 
-            NavHost(
-                navController = navController,
-                startDestination = Routes.HOME,
-                modifier = Modifier.weight(1f),
+            Column(modifier = Modifier.fillMaxHeight()) {
+                Header(
+                    title = "Tahlil & Doa",
+                    isDark = isDark,
+                    themeMode = themeMode,
+                    isFullscreen = isFullscreen,
+                    onMenuClick = openDrawer,
+                    onThemeToggleClick = onToggleThemeClick,
+                    onToggleFullscreen = onToggleFullscreen,
+                    onSettingsClick = { navController.navigate(Routes.SETTINGS) { launchSingleTop = true } },
+                    canNavigateBack = canNavigateBack,
+                    onBackClick = { navController.popBackStack() },
+                )
+
+                NavHost(
+                    navController = navController,
+                    startDestination = Routes.HOME,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    composable(Routes.HOME) {
+                        HomeScreen(
+                            toggles = toggles,
+                            style = style,
+                            isDark = isDark,
+                            onSectionClick = { id ->
+                                navController.navigate(Routes.section(id)) { launchSingleTop = true }
+                                onSetLastReadSection(id)
+                            },
+                            onActiveSectionChange = { id -> activeSectionId = id },
+                            isFullscreen = isFullscreen,
+                            onExitFullscreen = { onToggleFullscreen() },
+                            lastReadSectionId = lastReadSectionId,
+                            onContinueReading = { id ->
+                                navController.navigate(Routes.section(id)) { launchSingleTop = true }
+                                onSetLastReadSection(id)
+                            },
+                            onClearLastRead = onClearLastReadSection,
+                        )
+                    }
+                    composable(
+                        route = Routes.SECTION,
+                        arguments = listOf(navArgument("sectionId") { type = NavType.StringType }),
+                    ) { backStackEntry ->
+                        val id = backStackEntry.arguments?.getString("sectionId").orEmpty()
+                        SectionDetailScreen(
+                            sectionId = id,
+                            toggles = toggles,
+                            style = style,
+                            isDark = isDark,
+                        )
+                        activeSectionId = id
+                        // Persist the last-read pointer whenever a section opens.
+                        onSetLastReadSection(id)
+                    }
+                    composable(Routes.SETTINGS) {
+                        SettingsScreen(
+                            toggles = toggles,
+                            style = style,
+                            themeMode = themeMode,
+                            onTogglesChange = onTogglesChange,
+                            onStyleChange = onStyleChange,
+                            onThemeModeChange = onThemeModeChange,
+                        )
+                    }
+                }
+            }
+
+            // Floating "exit fullscreen" button — only visible in fullscreen.
+            // Pinned to the top-right corner with status-bar inset padding so
+            // it doesn't sit under the (hidden) status bar.
+            AnimatedVisibility(
+                visible = isFullscreen,
+                enter = scaleIn() + fadeIn(),
+                exit = scaleOut() + fadeOut(),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(end = 16.dp)
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .padding(top = 8.dp),
             ) {
-                composable(Routes.HOME) {
-                    HomeScreen(
-                        toggles = toggles,
-                        style = style,
-                        isDark = isDark,
-                        onSectionClick = { id ->
-                            navController.navigate(Routes.section(id)) { launchSingleTop = true }
-                        },
-                        onActiveSectionChange = { id -> activeSectionId = id },
-                    )
-                }
-                composable(
-                    route = Routes.SECTION,
-                    arguments = listOf(navArgument("sectionId") { type = NavType.StringType }),
-                ) { backStackEntry ->
-                    val id = backStackEntry.arguments?.getString("sectionId").orEmpty()
-                    SectionDetailScreen(
-                        sectionId = id,
-                        toggles = toggles,
-                        style = style,
-                        isDark = isDark,
-                    )
-                    activeSectionId = id
-                }
-                composable(Routes.SETTINGS) {
-                    SettingsScreen(
-                        toggles = toggles,
-                        style = style,
-                        themeMode = themeMode,
-                        onTogglesChange = onTogglesChange,
-                        onStyleChange = onStyleChange,
-                        onThemeModeChange = onThemeModeChange,
+                FloatingActionButton(
+                    onClick = onToggleFullscreen,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.FullscreenExit,
+                        contentDescription = "Keluar dari mode layar penuh",
                     )
                 }
             }

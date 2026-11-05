@@ -1,5 +1,12 @@
 package com.tahlildoa.app.ui.screens
 
+import androidx.activity.compose.BackHandler
+import android.app.Activity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,14 +25,29 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +55,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +64,7 @@ import com.tahlildoa.app.data.HeroInfo
 import com.tahlildoa.app.data.TahlilContent
 import com.tahlildoa.app.ui.components.SectionCard
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 /** CTA button definition for the hero. */
 private data class CtaButton(
@@ -65,9 +89,30 @@ private val CtaButtons = listOf(
  * The hero is the first item in the LazyColumn (so it scrolls with the
  * list, matching the web app's behavior).
  *
+ * Features:
+ *  - **BackHandler**: pressing the back button on the home screen shows a
+ *    confirmation dialog ("Keluar dari aplikasi?") with Batal / Keluar
+ *    buttons. If the app is currently in fullscreen mode, the first back
+ *    press exits fullscreen instead of showing the dialog.
+ *  - **Reading progress bar**: a thin emerald `LinearProgressIndicator`
+ *    rendered on top of the screen tracks the scroll position of the
+ *    LazyColumn.
+ *  - **Back-to-top FAB**: appears once the user scrolls past ~2 viewports
+ *    and animates the LazyColumn back to the top on tap.
+ *  - **Continue reading card**: when [lastReadSectionId] is set, a small
+ *    card is inserted above the hero offering to jump straight back to
+ *    the last section the user opened. A "Mulai dari awal" affordance
+ *    clears the pointer.
+ *
  * @param onSectionClick Called when a CTA button or "more" link is tapped.
  * @param onActiveSectionChange Called when the first visible section changes
  *        (used by the drawer to highlight the active entry).
+ * @param isFullscreen The current immersive-mode flag — when true, the back
+ *        button exits fullscreen first instead of showing the exit dialog.
+ * @param onExitFullscreen Called to leave fullscreen mode.
+ * @param lastReadSectionId The id of the section the user last opened (or null).
+ * @param onContinueReading Called when the user taps the continue-reading card.
+ * @param onClearLastRead Called when the user taps "Mulai dari awal".
  */
 @Composable
 fun HomeScreen(
@@ -78,11 +123,17 @@ fun HomeScreen(
     onActiveSectionChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    isFullscreen: Boolean = false,
+    onExitFullscreen: () -> Unit = {},
+    lastReadSectionId: String? = null,
+    onContinueReading: (String) -> Unit = {},
+    onClearLastRead: () -> Unit = {},
 ) {
     val state = rememberLazyListState()
     val sections = remember { TahlilContent.sections }
+    val scope = rememberCoroutineScope()
 
-    // Track the first visible section's id.
+    // Track the first visible section's id (for drawer highlighting).
     LaunchedEffect(state) {
         snapshotFlow {
             val firstVisible = state.firstVisibleItemIndex
@@ -94,28 +145,203 @@ fun HomeScreen(
         }
     }
 
-    LazyColumn(
-        state = state,
-        modifier = modifier.fillMaxSize(),
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    // --- Exit dialog state ------------------------------------------------
+    var showExitDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    BackHandler(enabled = true) {
+        if (isFullscreen) {
+            // First back press exits fullscreen; subsequent press shows dialog.
+            onExitFullscreen()
+        } else {
+            showExitDialog = true
+        }
+    }
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Keluar dari aplikasi?") },
+            text = { Text("Apakah Anda yakin ingin keluar dari Tahlil & Doa?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showExitDialog = false
+                    // Finish the host activity — closes the app to the home
+                    // screen (matches the system "back" gesture).
+                    (context as? Activity)?.finish()
+                }) { Text("Keluar", color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) { Text("Batal") }
+            },
+        )
+    }
+
+    // --- Reading progress (scroll-based) ----------------------------------
+    val progress by remember {
+        derivedStateOf {
+            val total = state.layoutInfo.totalItemsCount
+            if (total == 0) 0f
+            else {
+                val first = state.firstVisibleItemIndex.toFloat()
+                // Cap at 1f — once the user reaches the last item, the bar
+                // is full even if the offset scrolls past it.
+                (first / (total - 1).coerceAtLeast(1)).coerceIn(0f, 1f)
+            }
+        }
+    }
+
+    // --- Show back-to-top FAB once the user scrolls past ~2 viewports ------
+    val showBackToTop by remember {
+        derivedStateOf {
+            // Show when firstVisibleItemIndex >= 2 OR when scrolled far
+            // enough on the first item.
+            state.firstVisibleItemIndex >= 2 ||
+                (state.firstVisibleItemIndex == 1 &&
+                    state.firstVisibleItemScrollOffset > 400)
+        }
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            state = state,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = contentPadding,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            // Continue reading card (only if a last-read section exists).
+            val lastSection = lastReadSectionId?.let { id ->
+                sections.firstOrNull { it.id == id }
+            }
+            if (lastSection != null) {
+                item(key = "continue_reading") {
+                    ContinueReadingCard(
+                        sectionTitle = lastSection.title,
+                        sectionNumber = lastSection.number,
+                        onContinue = { onContinueReading(lastSection.id) },
+                        onClear = onClearLastRead,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                }
+            }
+
+            item(key = "hero") {
+                Hero(
+                    onCtaClick = onSectionClick,
+                )
+            }
+            items(items = sections, key = { it.id }) { section ->
+                SectionCard(
+                    section = section,
+                    toggles = toggles,
+                    style = style,
+                    isDark = isDark,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+            item(key = "footer") {
+                Footer()
+            }
+        }
+
+        // Thin reading progress bar pinned to the top of the screen.
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .align(Alignment.TopCenter),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+        )
+
+        // Back-to-top FAB
+        AnimatedVisibility(
+            visible = showBackToTop,
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 24.dp),
+        ) {
+            FloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        state.scrollToItem(0)
+                    }
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = CircleShape,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowUp,
+                    contentDescription = "Kembali ke atas",
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Continue-reading card — appears above the hero when the user has a
+ * last-read section saved. Tapping it navigates straight to that section;
+ * the "Mulai dari awal" affordance clears the pointer.
+ */
+@Composable
+private fun ContinueReadingCard(
+    sectionTitle: String,
+    sectionNumber: Int,
+    onContinue: () -> Unit,
+    onClear: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+        ),
+        onClick = onContinue,
     ) {
-        item(key = "hero") {
-            Hero(
-                onCtaClick = onSectionClick,
-            )
-        }
-        items(items = sections, key = { it.id }) { section ->
-            SectionCard(
-                section = section,
-                toggles = toggles,
-                style = style,
-                isDark = isDark,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-        }
-        item(key = "footer") {
-            Footer()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.MenuBook,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                )
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Lanjutkan membaca",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = "$sectionNumber. $sectionTitle",
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+            TextButton(onClick = onClear) {
+                Text(
+                    text = "Mulai dari awal",
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
         }
     }
 }

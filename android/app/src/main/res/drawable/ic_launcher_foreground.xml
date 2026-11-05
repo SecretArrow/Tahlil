@@ -1,71 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Fullscreen launcher icon (foreground) — mosque dome silhouette with
-    crescent moon above. Vector path drawn in white on a transparent
-    background; the adaptive-icon background provides the emerald gradient.
-    Designed for adaptive-icon sizing (108dp viewport with 72dp safe area).
+    Launcher icon foreground — Rub el Hizb (۞) eight-pointed star formed by
+    two overlapping squares (one axis-aligned, one rotated 45°), topped by a
+    cream crescent moon (opening up-right) and a small gold 5-point star.
+
+    The 8-pointed star is centered slightly below middle (at y=60) so the
+    crescent + star motif has room above it without crowding the top edge.
+
+    Color palette (matches the launcher PNGs and the app's brand colors):
+      - Star + crescent: cream #FEF3C7
+      - Small 5-point star: gold #F59E0B
+
+    Drawn within a 108×108 viewport (adaptive-icon standard). The two
+    Rub-el-Hizb squares both have side = R·√2 ≈ 39.6 (R=28), so all 8
+    star points sit at radius 28 from the center — a true 8-point star.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Mosque dome silhouette -->
-    <group
-        android:scaleX="0.95"
-        android:scaleY="0.95"
-        android:pivotX="54"
-        android:pivotY="54">
-        <!-- Crescent moon (above dome) -->
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M60,18
-                              a16,16 0 1,0 0,28
-                              a12,12 0 1,1 0,-28 z" />
-        <!-- Main dome body -->
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M54,30
-                              C40,30 32,42 32,56
-                              L32,76
-                              L76,76
-                              L76,56
-                              C76,42 68,30 54,30 z" />
-        <!-- Dome finial -->
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M52,22 L56,22 L56,32 L52,32 z" />
-        <!-- Doorway (negative space carved out) -->
-        <path
-            android:fillColor="#FF0D9488"
-            android:pathData="M50,62
-                              a4,4 0 0,1 8,0
-                              L58,76
-                              L50,76 z" />
-        <!-- Side windows -->
-        <path
-            android:fillColor="#FF0D9488"
-            android:pathData="M38,58 L44,58 L44,68 L38,68 z" />
-        <path
-            android:fillColor="#FF0D9488"
-            android:pathData="M64,58 L70,58 L70,68 L64,68 z" />
-        <!-- Minaret left -->
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M24,44 L28,44 L28,76 L24,76 z" />
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M24,40 L28,40 L28,46 L24,46 z" />
-        <!-- Minaret right -->
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M80,44 L84,44 L84,76 L80,76 z" />
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M80,40 L84,40 L84,46 L80,46 z" />
-        <!-- Ground line -->
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M20,76 L88,76 L88,80 L20,80 z" />
-    </group>
+
+    <!-- ── Rub el Hizb (8-point star) ─────────────────────────────────
+         Two overlapping squares, both centered at (54, 60) with side
+         28·√2 ≈ 39.6. The union forms the 8-point star. -->
+    <path
+        android:fillColor="#FFFEF3C7"
+        android:pathData="M34.20,40.20 L73.80,40.20 L73.80,79.80 L34.20,79.80 Z" />
+    <path
+        android:fillColor="#FFFEF3C7"
+        android:pathData="M54.00,32.00 L82.00,60.00 L54.00,88.00 L26.00,60.00 Z" />
+
+    <!-- ── Crescent moon (cream) ───────────────────────────────────────
+         Two circles with even-odd fill: outer at (54, 22) r=8, inner cutout
+         at (58, 19) r=7 (shifted up-right). The crescent opens up-right. -->
+    <path
+        android:fillColor="#FFFEF3C7"
+        android:fillType="evenOdd"
+        android:pathData="M46,22 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0 Z M51,19 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 Z" />
+
+    <!-- ── Small 5-point star (gold) ───────────────────────────────────
+         Centered at (54, 10), outer radius 3.5, inner radius 1.4. Sits
+         above the crescent moon. -->
+    <path
+        android:fillColor="#FFF59E0B"
+        android:pathData="M54.00,6.50 L54.82,8.87 L57.33,8.92 L55.33,10.43 L56.06,12.83 L54.00,11.40 L51.94,12.83 L52.67,10.43 L50.67,8.92 L53.18,8.87 Z" />
+
 </vector>

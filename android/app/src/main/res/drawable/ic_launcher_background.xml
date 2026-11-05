@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Adaptive-icon background — emerald → teal linear gradient.
+
+    The gradient runs diagonally from the top-left corner (deep emerald
+    #065F46) to the bottom-right corner (teal #0D9488), matching the web
+    app's brand palette. A subtle mid-point emerald-500 (#10B981) keeps
+    the transition smooth.
+
     Used together with ic_launcher_foreground.xml to form the adaptive icon.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,17 +23,17 @@
                 android:endX="108" android:endY="108">
                 <item
                     android:offset="0.0"
-                    android:color="#FF10B981" />
+                    android:color="#FF065F46" />
                 <item
                     android:offset="0.5"
-                    android:color="#FF14B8A6" />
+                    android:color="#FF10B981" />
                 <item
                     android:offset="1.0"
                     android:color="#FF0D9488" />
             </gradient>
         </aapt:attr>
     </path>
-    <!-- Subtle decorative pattern: small dots -->
+    <!-- Subtle decorative dot pattern at the four corners -->
     <path
         android:fillColor="#33FFFFFF"
         android:pathData="M16,16 L20,16 L20,20 L16,20 z" />

@@ -8,73 +8,72 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.tahlildoa.app.data.ThemeMode
 
 /**
- * App theme — Material 3 (Material You) with custom emerald/gold palette
- * matching the web app.
+ * App theme — Material 3 with a custom emerald/gold palette derived from the
+ * web app's OKLCH design tokens (see [Color.kt] for the conversion math).
  *
  * - When [dynamicColor] is true and the device supports it (Android 12+),
  *   the system palette is used so the app matches the user's wallpaper.
- * - Otherwise the custom emerald/gold palette is used.
+ * - Otherwise the custom OKLCH-derived palette is used.
  * - Dark mode follows [themeMode] with a System fallback.
  */
 private val LightColors = lightColorScheme(
-    primary = Emerald40,
-    onPrimary = Color.White,
-    primaryContainer = Emerald90,
-    onPrimaryContainer = Emerald10,
-    secondary = Amber50,
-    onSecondary = Color.White,
-    secondaryContainer = Amber90,
-    onSecondaryContainer = Amber10,
-    tertiary = Teal40,
-    onTertiary = Color.White,
-    tertiaryContainer = Teal90,
-    onTertiaryContainer = Teal10,
-    error = Rose40,
-    onError = Color.White,
-    errorContainer = Rose90,
-    onErrorContainer = Rose10,
-    background = CreamBackground,
-    onBackground = Color(0xFF1A1C19),
-    surface = CreamSurface,
-    onSurface = Color(0xFF1A1C19),
-    surfaceVariant = CreamSurfaceVariant,
-    onSurfaceVariant = Color(0xFF4A4639),
-    outline = CreamOutline,
-    outlineVariant = Color(0xFFD9CFB9),
-    scrim = Color.Black,
+    primary = LightPrimary,
+    onPrimary = LightOnPrimary,
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = LightOnPrimaryContainer,
+    secondary = LightSecondary,
+    onSecondary = LightOnSecondary,
+    secondaryContainer = LightSecondaryContainer,
+    onSecondaryContainer = LightOnSecondaryContainer,
+    tertiary = LightTertiary,
+    onTertiary = LightOnTertiary,
+    tertiaryContainer = LightTertiaryContainer,
+    onTertiaryContainer = LightOnTertiaryContainer,
+    error = LightError,
+    onError = LightOnError,
+    errorContainer = LightErrorContainer,
+    onErrorContainer = LightOnErrorContainer,
+    background = LightBackground,
+    onBackground = LightOnBackground,
+    surface = LightSurface,
+    onSurface = LightOnBackground,
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightOnSurfaceVariant,
+    outline = LightOutline,
+    outlineVariant = LightOutlineVariant,
+    scrim = LightScrim,
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Emerald80,
-    onPrimary = OnEmeraldDark,
-    primaryContainer = Emerald30,
-    onPrimaryContainer = Emerald90,
-    secondary = Amber80,
-    onSecondary = OnAmberDark,
-    secondaryContainer = Amber30,
-    onSecondaryContainer = Amber90,
-    tertiary = Teal80,
-    onTertiary = OnTealDark,
-    tertiaryContainer = Teal30,
-    onTertiaryContainer = Teal90,
-    error = Rose80,
-    onError = Rose20,
-    errorContainer = Rose30,
-    onErrorContainer = Rose90,
+    primary = DarkPrimary,
+    onPrimary = DarkOnPrimary,
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = DarkOnPrimaryContainer,
+    secondary = DarkSecondary,
+    onSecondary = DarkOnSecondary,
+    secondaryContainer = DarkSecondaryContainer,
+    onSecondaryContainer = DarkOnSecondaryContainer,
+    tertiary = DarkTertiary,
+    onTertiary = DarkOnTertiary,
+    tertiaryContainer = DarkTertiaryContainer,
+    onTertiaryContainer = DarkOnTertiaryContainer,
+    error = DarkError,
+    onError = DarkOnError,
+    errorContainer = DarkErrorContainer,
+    onErrorContainer = DarkOnErrorContainer,
     background = DarkBackground,
-    onBackground = Color(0xFFE8E3D6),
+    onBackground = DarkOnBackground,
     surface = DarkSurface,
-    onSurface = Color(0xFFE8E3D6),
+    onSurface = DarkOnBackground,
     surfaceVariant = DarkSurfaceVariant,
-    onSurfaceVariant = Color(0xFFB3CABE),
+    onSurfaceVariant = DarkOnSurfaceVariant,
     outline = DarkOutline,
-    outlineVariant = Color(0xFF2D4439),
-    scrim = Color.Black,
+    outlineVariant = DarkOutlineVariant,
+    scrim = DarkScrim,
 )
 
 @Composable

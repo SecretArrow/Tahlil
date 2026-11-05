@@ -7,6 +7,7 @@ import com.tahlildoa.app.data.ArabicStyleSettings
 import com.tahlildoa.app.data.DisplayToggles
 import com.tahlildoa.app.data.SettingsRepository
 import com.tahlildoa.app.data.ThemeMode
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,12 +19,30 @@ import kotlinx.coroutines.launch
 /**
  * Top-level UI state — bundles all reactive settings into one StateFlow so
  * the screens can observe a single source of truth.
+ *
+ * - [lastReadSectionId]: persisted pointer to the last section the user opened
+ *   (used by HomeScreen to show a "Continue reading" card + auto-navigate on
+ *   app launch).
+ * - [isFullscreen]: session-only fullscreen toggle (NOT persisted — resets to
+ *   false each launch). When true, MainActivity hides the system bars via
+ *   WindowInsetsControllerCompat.
  */
 data class TahlilUiState(
     val toggles: DisplayToggles = DisplayToggles(),
     val style: ArabicStyleSettings = ArabicStyleSettings.Default,
     val themeMode: ThemeMode = ThemeMode.System,
     val isDark: Boolean = false,
+    val isFullscreen: Boolean = false,
+    val lastReadSectionId: String? = null,
+)
+
+/** Internal helper so we can combine >5 flows via a nested combine(). */
+private data class PersistedSettings(
+    val toggles: DisplayToggles,
+    val style: ArabicStyleSettings,
+    val themeMode: ThemeMode,
+    val lastRead: String?,
+    val isDark: Boolean,
 )
 
 /**
@@ -40,13 +59,33 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
     private val _isDark = MutableStateFlow(false)
     val isDark: StateFlow<Boolean> = _isDark.asStateFlow()
 
-    val uiState: StateFlow<TahlilUiState> = combine(
+    // Session-only fullscreen flag (not persisted) — MainActivity observes
+    // this and toggles the system-bars visibility via WindowInsetsControllerCompat.
+    private val _isFullscreen = MutableStateFlow(false)
+    val isFullscreen: StateFlow<Boolean> = _isFullscreen.asStateFlow()
+
+    private val persisted: Flow<PersistedSettings> = combine(
         repo.displayToggles,
         repo.arabicStyle,
         repo.themeMode,
+        repo.lastReadSectionId,
         _isDark,
-    ) { toggles, style, themeMode, isDark ->
-        TahlilUiState(toggles, style, themeMode, isDark)
+    ) { toggles, style, themeMode, lastRead, isDark ->
+        PersistedSettings(toggles, style, themeMode, lastRead, isDark)
+    }
+
+    val uiState: StateFlow<TahlilUiState> = combine(
+        persisted,
+        _isFullscreen,
+    ) { p, isFullscreen ->
+        TahlilUiState(
+            toggles = p.toggles,
+            style = p.style,
+            themeMode = p.themeMode,
+            isDark = p.isDark,
+            isFullscreen = isFullscreen,
+            lastReadSectionId = p.lastRead,
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
@@ -54,6 +93,12 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
     )
 
     fun setDark(value: Boolean) { _isDark.value = value }
+
+    /** Toggle (or set) the immersive fullscreen mode for the current session. */
+    fun setFullscreen(value: Boolean) { _isFullscreen.value = value }
+
+    /** Convenience: flip the fullscreen flag. */
+    fun toggleFullscreen() { _isFullscreen.value = !_isFullscreen.value }
 
     fun updateToggles(transform: (DisplayToggles) -> DisplayToggles) {
         val next = transform(uiState.value.toggles)
@@ -69,14 +114,26 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
         viewModelScope.launch { repo.updateThemeMode(mode) }
     }
 
-    /** Convenience: toggle between Light and Dark (skipping System). */
+    /**
+     * Convenience: cycle theme modes for the quick toggle button in the
+     * header. System → Light → Dark → System → … so all three modes are
+     * reachable from the header without opening Settings.
+     */
     fun toggleTheme() {
-        val current = uiState.value.themeMode
-        val next = when (current) {
-            ThemeMode.System, ThemeMode.Light -> ThemeMode.Dark
-            ThemeMode.Dark -> ThemeMode.Light
+        val next = when (uiState.value.themeMode) {
+            ThemeMode.System -> ThemeMode.Light
+            ThemeMode.Light -> ThemeMode.Dark
+            ThemeMode.Dark -> ThemeMode.System
         }
         setThemeMode(next)
+    }
+
+    /**
+     * Persist the last-read section id (called whenever a section is opened).
+     * Pass null to clear the pointer ("Mulai dari awal").
+     */
+    fun setLastReadSectionId(id: String?) {
+        viewModelScope.launch { repo.setLastReadSectionId(id) }
     }
 
     companion object {

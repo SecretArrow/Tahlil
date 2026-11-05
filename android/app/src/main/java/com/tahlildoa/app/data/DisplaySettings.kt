@@ -15,9 +15,12 @@ import kotlinx.serialization.Serializable
  * - colorizeArabic:   When true, each Arabic word is rendered in one of two
  *                     alternating shades so consecutive words are visually
  *                     distinguishable.
+ * - keepScreenOn:     When true, the device screen stays awake while the app
+ *                     is in the foreground (FLAG_KEEP_SCREEN_ON). Default
+ *                     OFF so users don't drain their battery accidentally.
  *
- * All toggles default to true except [punctuateArabic] and [colorizeArabic],
- * matching the web app's defaults.
+ * All toggles default to true except [punctuateArabic], [colorizeArabic], and
+ * [keepScreenOn], matching the web app's defaults.
  */
 @Serializable
 data class DisplayToggles(
@@ -26,6 +29,7 @@ data class DisplayToggles(
     val translation: Boolean = true,
     val punctuateArabic: Boolean = false,
     val colorizeArabic: Boolean = false,
+    val keepScreenOn: Boolean = false,
 ) {
     companion object {
         val Default = DisplayToggles()

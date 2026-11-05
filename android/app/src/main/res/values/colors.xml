@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#0D9488</color>
-    <color name="emerald_40">#FF10B981</color>
-    <color name="emerald_80">#FF74E5B8</color>
-    <color name="amber_50">#FFF59E0B</color>
-    <color name="amber_80">#FFFFD070</color>
-    <color name="cream_background">#FFFAF7F0</color>
-    <color name="dark_background">#FF0A1612</color>
+    <!-- Adaptive-icon background (single flat color used by Android when the
+         vector drawable gradient cannot be rendered — e.g. older API levels). -->
+    <color name="ic_launcher_background">#065F46</color>
+
+    <!-- OKLCH-derived brand colors mirrored from Color.kt so XML themes can use them. -->
+    <color name="brand_emerald_deep">#FF065F46</color>
+    <color name="brand_emerald">#FF10B981</color>
+    <color name="brand_teal">#FF0D9488</color>
+    <color name="brand_cream">#FFFEF3C7</color>
+    <color name="brand_gold">#FFF59E0B</color>
+
+    <!-- Light theme tokens (OKLCH converted). -->
+    <color name="light_background">#FFFCFAF1</color>
+    <color name="light_surface">#FFFFFBF1</color>
+    <color name="light_primary">#FF005C41</color>
+    <color name="light_on_primary">#FFFFFFFF</color>
+    <color name="light_secondary">#FFDDB049</color>
+
+    <!-- Dark theme tokens (OKLCH converted). -->
+    <color name="dark_background">#FF05100B</color>
+    <color name="dark_surface">#FF0A1A13</color>
+    <color name="dark_primary">#FF32A67D</color>
+    <color name="dark_on_primary">#FF05100B</color>
+    <color name="dark_secondary">#FFCA9D33</color>
+
+    <!-- Aliases used by the splash screen + windowBackground. -->
+    <color name="cream_background">#FFFCFAF1</color>
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
 </resources>

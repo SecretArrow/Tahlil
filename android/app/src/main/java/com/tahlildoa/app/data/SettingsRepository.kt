@@ -11,7 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/** Theme preference — system follows the platform setting. */
+/** Theme preference — System follows the platform setting, Light/Dark force. */
 enum class ThemeMode(val storageKey: String, val label: String) {
     System("system", "Sistem"),
     Light("light", "Terang"),
@@ -36,6 +36,10 @@ private val Context.tahlilDataStore: DataStore<Preferences> by preferencesDataSt
  *
  * All values are exposed as cold [Flow]s so the UI recomposes reactively
  * when settings change.
+ *
+ * In addition to display toggles + typography, this repository also owns the
+ * "continue last reading" pointer ([lastReadSectionId]) so the app can
+ * restore the user's last opened section on the next launch.
  */
 class SettingsRepository(private val context: Context) {
 
@@ -45,6 +49,7 @@ class SettingsRepository(private val context: Context) {
     private val KEY_TRANSLATION = booleanPreferencesKey("display_translation")
     private val KEY_PUNCTUATE = booleanPreferencesKey("display_punctuate_arabic")
     private val KEY_COLORIZE = booleanPreferencesKey("display_colorize_arabic")
+    private val KEY_KEEP_SCREEN_ON = booleanPreferencesKey("display_keep_screen_on")
 
     // --- Arabic style ----------------------------------------------------
     private val KEY_MODE = stringPreferencesKey("arabic_mode")
@@ -57,6 +62,9 @@ class SettingsRepository(private val context: Context) {
     // --- Theme ------------------------------------------------------------
     private val KEY_THEME = stringPreferencesKey("theme_mode")
 
+    // --- Continue last reading -------------------------------------------
+    private val KEY_LAST_READ_SECTION = stringPreferencesKey("last_read_section_id")
+
     val displayToggles: Flow<DisplayToggles> = context.tahlilDataStore.data.map { p ->
         DisplayToggles(
             arabic = p[KEY_ARABIC] ?: true,
@@ -64,6 +72,7 @@ class SettingsRepository(private val context: Context) {
             translation = p[KEY_TRANSLATION] ?: true,
             punctuateArabic = p[KEY_PUNCTUATE] ?: false,
             colorizeArabic = p[KEY_COLORIZE] ?: false,
+            keepScreenOn = p[KEY_KEEP_SCREEN_ON] ?: false,
         )
     }
 
@@ -82,6 +91,14 @@ class SettingsRepository(private val context: Context) {
         ThemeMode.fromStorageKey(p[KEY_THEME])
     }
 
+    /**
+     * Last section id the user opened — used by the Home screen to show a
+     * "Continue reading" card and (optionally) auto-navigate to it on launch.
+     */
+    val lastReadSectionId: Flow<String?> = context.tahlilDataStore.data.map { p ->
+        p[KEY_LAST_READ_SECTION]
+    }
+
     // --- Mutators --------------------------------------------------------
     suspend fun updateDisplayToggles(toggles: DisplayToggles) {
         context.tahlilDataStore.edit { p ->
@@ -90,6 +107,7 @@ class SettingsRepository(private val context: Context) {
             p[KEY_TRANSLATION] = toggles.translation
             p[KEY_PUNCTUATE] = toggles.punctuateArabic
             p[KEY_COLORIZE] = toggles.colorizeArabic
+            p[KEY_KEEP_SCREEN_ON] = toggles.keepScreenOn
         }
     }
 
@@ -107,6 +125,20 @@ class SettingsRepository(private val context: Context) {
     suspend fun updateThemeMode(mode: ThemeMode) {
         context.tahlilDataStore.edit { p ->
             p[KEY_THEME] = mode.storageKey
+        }
+    }
+
+    /**
+     * Persist the user's last-read section id. Pass `null` to clear the
+     * pointer (used by the "Mulai dari awal" affordance on the Home screen).
+     */
+    suspend fun setLastReadSectionId(id: String?) {
+        context.tahlilDataStore.edit { p ->
+            if (id.isNullOrEmpty()) {
+                p.remove(KEY_LAST_READ_SECTION)
+            } else {
+                p[KEY_LAST_READ_SECTION] = id
+            }
         }
     }
 }

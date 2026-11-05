@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -29,16 +31,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tahlildoa.app.data.ThemeMode
 
 /**
  * Header — top app bar with the app title and a few action buttons.
  *
  * - Back arrow (when [canNavigateBack] is true)
- * - Hamburger menu (when [showMenu] is true)
- * - Theme toggle (sun/moon) — switches between light/dark
- * - Settings gear (when [showSettings] is true)
+ * - Hamburger menu (when [canNavigateBack] is false)
+ * - Fullscreen toggle (enter / exit immersive mode) — present on every screen
+ *   so the user can switch to fullscreen from any view.
+ * - Theme toggle (sun/moon) — cycles through System → Light → Dark.
+ * - Settings gear
  *
  * A thin emerald accent bar runs under the header.
+ *
+ * When [isFullscreen] is true, the whole header is collapsed to a thin
+ * transparent strip (the system bars are hidden by MainActivity). The
+ * fullscreen toggle button stays in place so the user can exit fullscreen
+ * from any screen via the Header, OR via the floating button that
+ * [TahlilNavigation] overlays on top of the content.
  */
 @Composable
 fun Header(
@@ -47,6 +58,9 @@ fun Header(
     onThemeToggleClick: () -> Unit,
     onSettingsClick: () -> Unit,
     isDark: Boolean,
+    themeMode: ThemeMode,
+    isFullscreen: Boolean,
+    onToggleFullscreen: () -> Unit,
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = false,
     onBackClick: () -> Unit = {},
@@ -113,10 +127,31 @@ fun Header(
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onThemeToggleClick) {
+                    // Fullscreen toggle — present on every screen.
+                    IconButton(onClick = onToggleFullscreen) {
                         Icon(
-                            imageVector = if (isDark) Icons.Filled.LightMode else Icons.Filled.DarkMode,
-                            contentDescription = if (isDark) "Mode terang" else "Mode gelap",
+                            imageVector = if (isFullscreen) Icons.Filled.FullscreenExit
+                            else Icons.Filled.Fullscreen,
+                            contentDescription = if (isFullscreen) "Keluar dari mode layar penuh"
+                            else "Mode layar penuh",
+                            tint = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                    IconButton(onClick = onThemeToggleClick) {
+                        // Icon: show what the user would switch TO next.
+                        // toggleTheme() cycles System → Light → Dark → System.
+                        // In System mode we use the resolved `isDark` flag so
+                        // the icon reflects what's actually on screen.
+                        val nextIsDark = when (themeMode) {
+                            ThemeMode.System -> !isDark   // flip the resolved system value
+                            ThemeMode.Light -> true       // next is Dark
+                            ThemeMode.Dark -> false       // next is System/Light
+                        }
+                        Icon(
+                            imageVector = if (nextIsDark) Icons.Filled.DarkMode
+                            else Icons.Filled.LightMode,
+                            contentDescription = if (nextIsDark) "Mode gelap"
+                            else "Mode terang",
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
