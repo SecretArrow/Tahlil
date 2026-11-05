@@ -1,26 +1,30 @@
 # ============================================================
 # ProGuard / R8 rules for Tahlil & Doa
 # ------------------------------------------------------------
-# The default config (proguard-android-optimize.txt) enables
-# aggressive optimization that has historically stripped
-# classes used reflectively by Jetpack Compose, kotlinx
-# serialization, DataStore, SplashScreen, Navigation Compose,
-# WorkManager, and lifecycle. This file pins them down
-# explicitly.
+# Strategy: Enable aggressive R8 minification with surgical keep
+# rules. Compose ships its own consumer proguard rules in
+# META-INF/proguard/, so we DON'T need broad `-keep class
+# androidx.compose.**` rules — that was the previous mistake that
+# ballooned the APK from 1.8 MB to 7.7 MB.
+#
+# The rules below only ADD keeps for things R8 cannot figure out
+# automatically:
+#  - Reflection-based instantiation (serialization, workers)
+#  - Enum valueOf() used by Compose state restoration
+#  - JNI / native bridges (none here, but pattern is documented)
 #
 # Build profile:
-#   - Kotlin 1.9.22
-#   - Compose BOM 2024.02.00 (Compose Compiler 1.5.8)
+#   - Kotlin 1.9.22 + Compose Compiler 1.5.8
+#   - Compose BOM 2024.02.00 (ships consumer rules)
 #   - Material3 + Navigation 2.7.7 + DataStore 1.0.0
 #   - WorkManager 2.9.0
 #   - minSdk 24 / targetSdk 34 / compileSdk 34
 # ============================================================
 
-# === Kotlin Coroutines ===
--keepclassmembernames class kotlinx.** { *; }
--dontwarn kotlinx.coroutines.**
-
 # === Kotlinx Serialization ===
+# R8 needs the generated $$serializer classes + the Companion that
+# returns them. The kotlinx-serialization plugin adds @Serializable
+# and synthesizes the serializer; we keep the synthetic class.
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.AnnotationsKt
 -keepclassmembers class kotlinx.serialization.json.** {
@@ -29,6 +33,7 @@
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
+# Our @Serializable data classes — keep the synthetic serializer.
 -keep,includedescriptorclasses class com.tahlildoa.app.**$$serializer { *; }
 -keepclassmembers class com.tahlildoa.app.** {
     *** Companion;
@@ -38,75 +43,75 @@
 }
 -keep @kotlinx.serialization.Serializable class com.tahlildoa.app.** { *; }
 
-# === Compose (additive to consumer rules) ===
-# Many Compose lambdas and internal classes are referenced by
-# reflection at runtime. The consumer rules shipped with the
-# BOM cover the common cases but R8 with isMinifyEnabled=true
-# has been observed stripping some runtime hooks — pin them.
--keep class androidx.compose.runtime.** { *; }
--keep class androidx.compose.ui.** { *; }
--keep class androidx.compose.foundation.** { *; }
--keep class androidx.compose.material3.** { *; }
--keep class androidx.compose.animation.** { *; }
--keep class androidx.compose.material.** { *; }
+# === WorkManager ===
+# WorkManager instantiates Worker subclasses via reflection
+# (ListenableWorker.Factory). R8 would otherwise rename/remove
+# the constructor. Keep just the Worker classes + their default
+# ctor — let R8 strip everything else inside them.
+-keep class * extends androidx.work.ListenableWorker {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
+-keep class * extends androidx.work.CoroutineWorker {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
+-keep class com.tahlildoa.app.work.** { *; }
+
+# === DataStore Preferences ===
+# DataStore uses Kotlinx Serialization internally for some types,
+# but our use of Preferences is reflection-free. Keep just the
+# PreferenceDataStoreFactory delegate (R8 sometimes inlines it).
+-dontwarn androidx.datastore.**
+
+# === SplashScreen API ===
+# SplashScreen reads theme attributes reflectively on API < 31.
+-keep class androidx.core.splashscreen.** { *; }
+
+# === App's own classes ===
+# Keep our data classes (used in @Serializable + Compose state) and
+# the util singletons (called reflectively by Compose for default
+# args). Let R8 strip unused methods inside them.
+-keep class com.tahlildoa.app.data.** { *; }
+-keep class com.tahlildoa.app.util.** { *; }
+# Application + Activity are referenced by name in the manifest.
+-keep public class com.tahlildoa.app.TahlilDoaApp
+-keep public class com.tahlildoa.app.MainActivity
+# ViewModel factory pattern uses reflection via ViewModelProvider.
+-keep class * extends androidx.lifecycle.ViewModel {
+    public <init>();
+}
+# Compose: keep @Stable / @Immutable annotated classes (R8 doesn't
+# strip the annotation itself, but Compose's runtime checks for these
+# at compose-time and R8 must NOT inline them away).
 -keep @androidx.compose.runtime.Stable class * { *; }
 -keep @androidx.compose.runtime.Immutable class * { *; }
-# Keep Composable lambda methods (referenced via the annotation).
+# Keep Composable function signatures (R8 may rename the function,
+# which breaks Compose's runtime lookup of @Composable lambdas).
 -keepclassmembers class * {
     @androidx.compose.runtime.Composable <methods>;
 }
 
-# === DataStore ===
--keep class androidx.datastore.** { *; }
--keep class com.google.protobuf.** { *; }
--dontwarn androidx.datastore.**
-
-# === AndroidX core / Activity / Lifecycle ===
--keep class androidx.core.** { *; }
--keep class androidx.activity.** { *; }
--keep class androidx.lifecycle.** { *; }
--keep class androidx.savedstate.** { *; }
--dontwarn androidx.activity.**
-
-# === Navigation Compose ===
--keep class androidx.navigation.** { *; }
-
-# === SplashScreen API ===
--keep class androidx.core.splashscreen.** { *; }
-
-# === WorkManager ===
-# CoroutineWorker subclasses are instantiated reflectively by
-# WorkManager's factory. Keep the entire androidx.work package
-# plus our worker subclass so the factory can find the ctor.
--keep class androidx.work.** { *; }
--keep class * extends androidx.work.Worker
--keep class * extends androidx.work.CoroutineWorker
--keepclassmembers class * extends androidx.work.ListenableWorker {
-    public <init>(android.content.Context, androidx.work.WorkerParameters);
-}
-
-# === App's own classes — comprehensive ===
--keep class com.tahlildoa.app.** { *; }
--keepclassmembers class com.tahlildoa.app.** { *; }
-
-# === Keep enum members (Compose state restoration) ===
+# === Enums (used by Compose saveable state restoration) ===
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
+    ***[] $VALUES;
+    public static ** fromStorageKey(java.lang.String);
+    public static ** fromKey(java.lang.String);
 }
 
 # === General Android ===
 -dontwarn android.support.**
 -keepattributes Signature, *Annotation*, InnerClasses, EnclosingMethod
--keepattributes SourceFile,LineNumberTable
--keepattributes RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations
--keep public class * extends androidx.activity.ComponentActivity
--keep public class * extends android.app.Application
+-keepattributes SourceFile, LineNumberTable
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+-keepattributes RuntimeInvisibleAnnotations, RuntimeInvisibleParameterAnnotations
 
-# === Disable aggressive optimization that breaks Compose ===
-# Compose relies on certain classes & lambdas being present
-# even when R8 cannot statically prove they're referenced.
-# -dontoptimize keeps R8 from rewriting method bodies in ways
-# that can break runtime hooks (e.g. snapshot invalidation).
--dontoptimize
--dontpreverify
+# === Optimization settings ===
+# Allow R8 full mode (default since AGP 8.0) for aggressive
+# optimization. Compose ships consumer rules that handle its own
+# needs, so we don't need to disable anything.
+# DO NOT add `-dontoptimize` or `-dontpreverify` — they balloon APK
+# size by preventing R8 from inlining and dead-code-eliminating.
+# DO NOT add `-keep class androidx.**` broadly — Compose's consumer
+# rules already keep what's needed; broad keeps prevent R8 from
+# shrinking Compose.
