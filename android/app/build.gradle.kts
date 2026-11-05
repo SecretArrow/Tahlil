@@ -3,6 +3,7 @@ import java.io.File
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
@@ -102,9 +103,9 @@ android {
         buildConfig = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
-    }
+    // Compose compiler is now provided by the `org.jetbrains.kotlin.plugin.compose`
+    // Gradle plugin (Kotlin 2.0+ integrated compiler) — the legacy
+    // `composeOptions.kotlinCompilerExtensionVersion` is no longer used.
 
     packaging {
         resources {
@@ -134,8 +135,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
 
-    // Jetpack Compose (BOM-managed)
-    val composeBom = platform("androidx.compose:compose-bom:2024.02.00")
+    // Jetpack Compose (BOM-managed) — bumped to 2024.09.03 to ship Compose UI 1.7.x,
+    // which fixes the `ModifierLocalProvider.all(...)` IncompatibleClassChangeError
+    // that crashed every minified release build on Compose UI 1.6.x.
+    val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
@@ -153,8 +156,8 @@ dependencies {
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    // Kotlinx Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    // Kotlinx Serialization (compatible with Kotlin 2.0.21)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
