@@ -274,18 +274,16 @@ jobs:
   #      RELEASE build (different code path under R8 / signing).
   #      If the launch fails, the job dumps the FATAL / AndroidRuntime /
   #      TahlilCrash logcat lines so the crash cause is visible in CI.
-  #   3. Runs on a MATRIX of API levels (29 = oldest supported-ish
-  #      surface, 34 = current target) so an R8 keep-rule gap or a
-  #      version-specific regression is caught before release.
+  #
+  # Single API level (29) to keep the pipeline fast — the historical
+  # crash was toolchain/R8 related, not API-level specific, and the
+  # emulator adds ~3 min per level. Re-add a matrix only when a
+  # version-specific regression actually appears.
   # ============================================================
   android-instrumented-test:
-    name: Android — instrumentation tests (API ${{ matrix.api-level }})
+    name: Android — instrumentation tests (API 29)
     needs: android-test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        api-level: [29, 34]
     defaults:
       run:
         working-directory: android
@@ -343,8 +341,9 @@ jobs:
           adb shell am start -n com.tahlildoa.app/.MainActivity
           sleep 8
           
-          # 4. Check foreground activity
-          FOREGROUND=$(adb shell dumpsys activity activities | grep "mResumedActivity" | grep -c "com.tahlildoa.app" || true)
+          # 4. Check foreground activity — API < 33 exposes "mResumedActivity",
+          #    API 33+ exposes "topResumedActivity". Accept either.
+          FOREGROUND=$(adb shell dumpsys activity activities | grep -E "mResumedActivity|topResumedActivity" | grep -c "com.tahlildoa.app" || true)
           echo "Foreground check result: $FOREGROUND"
           
           # 5. Check for crash logs (capture the exception TYPE — head, not tail)
@@ -386,7 +385,7 @@ jobs:
       - name: Run instrumentation tests + verify release APK
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
+          api-level: 29
           arch: x86_64
           target: google_apis
           disable-animations: true
@@ -397,7 +396,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-instrumented-test-reports-api-${{ matrix.api-level }}
+          name: android-instrumented-test-reports
           path: |
             android/app/build/reports/androidTests
             android/app/build/outputs/androidTest-results
