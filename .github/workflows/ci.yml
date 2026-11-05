@@ -314,50 +314,71 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Write release verification script
+        run: |
+          cat > /tmp/verify_release.sh << 'VERIFY_EOF'
+          #!/bin/bash
+          set -e
+          
+          # 1. Run instrumentation tests on debug build
+          echo "=== Running instrumentation tests (debug build) ==="
+          ./gradlew connectedDebugAndroidTest --no-daemon
+          
+          # 2. Install the release APK (the same artifact users download)
+          echo ""
+          echo "=== Installing release APK ==="
+          adb install -r "$GITHUB_WORKSPACE/downloaded-apks/app-universal-release.apk"
+          
+          # 3. Clear logcat and launch the app
+          echo ""
+          echo "=== Launching release APK ==="
+          adb logcat -c
+          adb shell am start -n com.tahlildoa.app/.MainActivity
+          sleep 8
+          
+          # 4. Check foreground activity
+          FOREGROUND=$(adb shell dumpsys activity activities | grep "mResumedActivity" | grep -c "com.tahlildoa.app" || true)
+          echo "Foreground check result: $FOREGROUND"
+          
+          # 5. Check for crash logs
+          CRASH=$(adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime.*Error|TahlilCrash" | head -5 || true)
+          
+          # 6. Report
+          if [ "$FOREGROUND" -eq "0" ]; then
+            echo ""
+            echo "=== ERROR: Release APK crashed on launch! ==="
+            echo ""
+            echo "=== Foreground activity check ==="
+            adb shell dumpsys activity activities | grep -E "mResumedActivity|topResumedActivity" || true
+            echo ""
+            echo "=== Crash logcat ==="
+            adb logcat -d | grep -E "FATAL|AndroidRuntime|TahlilCrash" | tail -100 || true
+            echo ""
+            echo "=== Full logcat (last 200 lines) ==="
+            adb logcat -d | tail -200
+            exit 1
+          fi
+          
+          if [ -n "$CRASH" ]; then
+            echo ""
+            echo "=== WARNING: Crash logs detected but app is running ==="
+            echo "$CRASH"
+            echo ""
+            echo "This may indicate an app-level exception was caught and logged."
+            echo "Continuing since the app is in the foreground..."
+          fi
+          
+          echo ""
+          echo "=== OK: Release APK launches successfully and is in foreground ==="
+          VERIFY_EOF
+          chmod +x /tmp/verify_release.sh
+
       - name: Run instrumentation tests + verify release APK
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           arch: x86_64
-          script: |
-            set -e
-            ./gradlew connectedDebugAndroidTest --no-daemon
-            # Verify the release APK launches on the emulator
-            adb install -r $GITHUB_WORKSPACE/downloaded-apks/app-universal-release.apk
-            # Launch the app with crash log capture
-            adb logcat -c  # clear logcat
-            adb shell am start -n com.tahlildoa.app/.MainActivity
-            sleep 8  # generous wait for app startup (DataStore, Compose init)
-            
-            # Check foreground activity
-            FOREGROUND=$(adb shell dumpsys activity activities | grep "mResumedActivity" | grep -c "com.tahlildoa.app" || true)
-            
-            # Check for any crash logs
-            CRASH=$(adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime.*Error|TahlilCrash" | head -5 || true)
-            
-            if [ "$FOREGROUND" -eq "0" ]; then
-              echo "ERROR: Release APK crashed on launch!"
-              echo ""
-              echo "=== Foreground activity check ==="
-              adb shell dumpsys activity activities | grep -E "mResumedActivity|topResumedActivity" || true
-              echo ""
-              echo "=== Crash logcat ==="
-              adb logcat -d | grep -E "FATAL|AndroidRuntime|TahlilCrash" | tail -100 || true
-              echo ""
-              echo "=== Full logcat (last 200 lines) ==="
-              adb logcat -d | tail -200
-              exit 1
-            fi
-            
-            if [ -n "$CRASH" ]; then
-              echo "WARNING: Crash logs detected but app is running:"
-              echo "$CRASH"
-              echo ""
-              echo "This may indicate an app-level exception was caught and logged."
-              echo "Continuing since the app is in the foreground..."
-            fi
-            
-            echo "OK: Release APK launches successfully and is in foreground."
+          script: /tmp/verify_release.sh
           working-directory: android
 
       - name: Upload test reports
