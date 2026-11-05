@@ -58,11 +58,14 @@ import com.tahlildoa.app.data.ThemeMode
  * Insets: the app runs edge-to-edge (`enableEdgeToEdge()`), so WITHOUT any
  * compensation the header row would render UNDER the status bar — the
  * hamburger / fullscreen / theme / settings icons and the title would
- * collide with the clock and battery icons. When [isFullscreen] is false
- * we therefore pad the header by [WindowInsets.statusBars]; the surface
- * background still extends behind the status bar so there is no white
- * strip. In fullscreen the bars are hidden and the header stays truly
- * edge-to-edge.
+ * collide with the clock and battery icons. The header therefore pads by
+ * [WindowInsets.statusBars] in EVERY mode; the surface background still
+ * extends behind the status bar so there is no white strip. In fullscreen
+ * the bars are hidden, the inset reads 0 and the padding collapses — the
+ * header stays truly edge-to-edge. If the bars become visible again
+ * (transient swipe-reveal, or an OEM ROM that ignores the hide call) the
+ * padding re-applies instantly, so the header can never clash with the
+ * notification bar in either mode.
  */
 @Composable
 fun Header(
@@ -85,14 +88,17 @@ fun Header(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
-            // Pad by the status-bar height (unless fullscreen) so the header
-            // content never overlaps the notification bar. Background is
-            // applied FIRST so the colored surface still extends behind the
-            // status bar area instead of leaving a gap.
-            .then(
-                if (isFullscreen) Modifier
-                else Modifier.windowInsetsPadding(WindowInsets.statusBars)
-            )
+            // ALWAYS pad by the status-bar height so the header content never
+            // overlaps the notification bar — in BOTH normal and fullscreen
+            // mode. Background is applied FIRST so the colored surface still
+            // extends behind the status bar area instead of leaving a gap.
+            // In fullscreen the system bars are hidden and this inset reads
+            // 0, so the padding collapses to nothing and the header stays
+            // truly edge-to-edge; if the bars are ever shown again (transient
+            // swipe-reveal, or an OEM ROM that ignores the hide call) the
+            // padding immediately re-applies and nothing can collide with the
+            // clock / battery indicator.
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         Column {
             // Single-row app bar: [menu/back] [logo] [title•••weight•••] [actions].

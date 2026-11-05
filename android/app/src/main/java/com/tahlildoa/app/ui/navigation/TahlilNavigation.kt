@@ -22,8 +22,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Done
@@ -291,7 +293,8 @@ fun TahlilNavigation(
 
 /**
  * Drawer (Table of Contents) — shows the app logo at the top, a "Home" /
- * "Settings" pair of shortcuts, then a scrollable list of all 11 sections.
+ * "Settings" pair of shortcuts, then a vertically-scrollable list of all
+ * 11 sections.
  *
  * Tapping a section navigates to [Routes.SECTION] for that id; the
  * active section is highlighted.
@@ -306,140 +309,159 @@ private fun DrawerContent(
     ModalDrawerSheet(
         drawerShape = RoundedCornerShape(topEnd = 24.dp, bottomEnd = 24.dp),
     ) {
-        // Header — logo + app name
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.tertiary,
-                            MaterialTheme.colorScheme.secondary,
-                        )
-                    )
-                )
-                .padding(horizontal = 20.dp, vertical = 24.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.22f)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "ت",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-                Spacer(Modifier.width(12.dp))
-                Column {
-                    Text(
-                        text = "Tahlil & Doa",
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    )
-                    Text(
-                        text = "Majelis Tahlil & Doa",
-                        color = Color.White.copy(alpha = 0.85f),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
-            }
-        }
-
-        // Quick links
-        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-            NavigationDrawerItem(
-                label = { Text("Beranda") },
-                selected = false,
-                onClick = onHomeClick,
-                icon = { Icon(Icons.Filled.Home, contentDescription = null) },
-                colors = NavigationDrawerItemDefaults.colors(),
-            )
-            NavigationDrawerItem(
-                label = { Text("Pengaturan") },
-                selected = false,
-                onClick = onSettingsClick,
-                icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
-                colors = NavigationDrawerItemDefaults.colors(),
-            )
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        // Section label
-        Text(
-            text = "Daftar Isi",
-            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
-        )
-
-        // Section list — NOTE: NOT a LazyColumn.
-        // Material3's ModalDrawerSheet already wraps its content slot in a
-        // Column(Modifier.verticalScroll(rememberScrollState())) — using a
-        // LazyColumn here creates a nested-scrollable, which on minified
-        // release builds causes R8 to merge two ScrollableState
-        // ModifierLocalProvider implementations and throw:
-        //   IncompatibleClassChangeError: Conflicting default method
-        //   implementations androidx.compose.ui.modifier.ModifierLocalProvider.all(...)
-        // A plain Column + forEach relies on the parent's scroll. 11 items
-        // is well within Column's comfort zone (no perf concern).
-        val sections = remember { TahlilContent.sections }
+        // ONE vertically-scrollable column wrapping the whole sheet content.
+        //
+        // Material3's ModalDrawerSheet does NOT scroll its content by itself:
+        // its internal Column only applies DrawerDefaults.windowInsets
+        // (status + navigation bars) and has NO verticalScroll (verified
+        // against the material3 1.3.0 sources). Without this scroll the 11
+        // "Daftar Isi" entries overflow on small screens or in landscape and
+        // the bottom sections are simply unreachable.
+        //
+        // The sheet's own inset padding sits OUTSIDE this scroll, so while
+        // scrolling nothing ever slides under the notification bar or the
+        // Android system menu at the bottom.
+        //
+        // Deliberately a single `verticalScroll` — NOT a LazyColumn — so
+        // there is never a nested-scrollable pair here (a historical
+        // minified-release IncompatibleClassChangeError class of issue from
+        // mixed Compose 1.6/1.7 bytecode). 11 items is well within Column's
+        // comfort zone (no perf concern).
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+                .verticalScroll(rememberScrollState()),
         ) {
-            sections.forEach { section ->
-                val isActive = section.id == activeSectionId
-                NavigationDrawerItem(
-                    label = {
-                        Column {
-                            Text(
-                                text = "${section.number}. ${section.title}",
-                                style = MaterialTheme.typography.bodyMedium,
+            // Header — logo + app name
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.secondary,
                             )
-                            if (!section.subtitle.isNullOrEmpty()) {
+                        )
+                    )
+                    .padding(horizontal = 20.dp, vertical = 24.dp),
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.22f)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "ت",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Tahlil & Doa",
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        )
+                        Text(
+                            text = "Majelis Tahlil & Doa",
+                            color = Color.White.copy(alpha = 0.85f),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                }
+            }
+
+            // Quick links
+            Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                NavigationDrawerItem(
+                    label = { Text("Beranda") },
+                    selected = false,
+                    onClick = onHomeClick,
+                    icon = { Icon(Icons.Filled.Home, contentDescription = null) },
+                    colors = NavigationDrawerItemDefaults.colors(),
+                )
+                NavigationDrawerItem(
+                    label = { Text("Pengaturan") },
+                    selected = false,
+                    onClick = onSettingsClick,
+                    icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
+                    colors = NavigationDrawerItemDefaults.colors(),
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Section label
+            Text(
+                text = "Daftar Isi",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
+            )
+
+            // Section entries — plain Column + forEach. The whole sheet
+            // content already lives in the single vertically-scrollable
+            // Column above; a second (nested) scrollable here is exactly the
+            // pattern we avoid. 11 items is well within Column's comfort
+            // zone (no perf concern).
+            val sections = remember { TahlilContent.sections }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                sections.forEach { section ->
+                    val isActive = section.id == activeSectionId
+                    NavigationDrawerItem(
+                        label = {
+                            Column {
                                 Text(
-                                    text = section.subtitle,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    text = "${section.number}. ${section.title}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                                if (!section.subtitle.isNullOrEmpty()) {
+                                    Text(
+                                        text = section.subtitle,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        },
+                        selected = isActive,
+                        onClick = { onSectionClick(section.id) },
+                        icon = {
+                            Box(
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (isActive) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.surfaceVariant
+                                    ),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = section.number.toString(),
+                                    color = if (isActive) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                                 )
                             }
-                        }
-                    },
-                    selected = isActive,
-                    onClick = { onSectionClick(section.id) },
-                    icon = {
-                        Box(
-                            modifier = Modifier
-                                .size(28.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (isActive) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.surfaceVariant
-                                ),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = section.number.toString(),
-                                color = if (isActive) MaterialTheme.colorScheme.onPrimary
-                                else MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                            )
-                        }
-                    },
-                    colors = NavigationDrawerItemDefaults.colors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
-                    ),
-                )
+                        },
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+                        ),
+                    )
+                }
             }
         }
     }

@@ -211,13 +211,14 @@ fun HomeScreen(
     // --- Bottom system-bar inset ------------------------------------------
     // The app is edge-to-edge, so the bottom of the list (the footer) and
     // the back-to-top FAB would otherwise sit UNDER the Android navigation
-    // bar (gesture pill or 3-button bar). Read the navigationBars inset;
-    // in fullscreen the bars are hidden and it reads 0, so the content
-    // stays truly edge-to-edge.
+    // bar (gesture pill or 3-button bar). The navigationBars inset is read
+    // in BOTH modes: in fullscreen the bars are hidden and it reads 0, so
+    // the content stays truly edge-to-edge — but if the bars are ever
+    // visible again (transient swipe-reveal, an OEM ROM that ignores the
+    // hide call, or the exit transition) the padding re-applies and neither
+    // the list nor the FAB can ever collide with the system menu.
     val density = LocalDensity.current
-    val navBarBottomDp =
-        if (isFullscreen) 0.dp
-        else with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
+    val navBarBottomDp = with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
 
     Box(modifier = modifier.fillMaxSize()) {
         // Card list capped at CONTENT_MAX_WIDTH and centered — on phones it
@@ -287,8 +288,10 @@ fun HomeScreen(
             exit = scaleOut() + fadeOut(),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                // Keep the FAB clear of the Android navigation bar.
-                .then(if (isFullscreen) Modifier else Modifier.navigationBarsPadding())
+                // Keep the FAB clear of the Android navigation bar in EVERY
+                // mode — the inset reads 0 while the bars are hidden in
+                // fullscreen, so it only takes space when the bar is visible.
+                .navigationBarsPadding()
                 .padding(end = 16.dp, bottom = 16.dp),
         ) {
             FloatingActionButton(
