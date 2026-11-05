@@ -347,8 +347,8 @@ jobs:
           FOREGROUND=$(adb shell dumpsys activity activities | grep "mResumedActivity" | grep -c "com.tahlildoa.app" || true)
           echo "Foreground check result: $FOREGROUND"
           
-          # 5. Check for crash logs
-          CRASH=$(adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime.*Error|TahlilCrash" | head -5 || true)
+          # 5. Check for crash logs (capture the exception TYPE — head, not tail)
+          CRASH=$(adb logcat -d -s TahlilCrash:E AndroidRuntime:E | grep -E "Exception:|FATAL EXCEPTION|IncompatibleClassChange|Caused by:" | head -10 || true)
           
           # 6. Report
           if [ "$FOREGROUND" -eq "0" ]; then
@@ -358,11 +358,14 @@ jobs:
             echo "=== Foreground activity check ==="
             adb shell dumpsys activity activities | grep -E "mResumedActivity|topResumedActivity" || true
             echo ""
-            echo "=== Crash logcat ==="
-            adb logcat -d | grep -E "FATAL|AndroidRuntime|TahlilCrash" | tail -100 || true
+            echo "=== Crash type + cause (head of TahlilCrash block) ==="
+            adb logcat -d -s TahlilCrash:E | head -30
             echo ""
-            echo "=== Full logcat (last 200 lines) ==="
-            adb logcat -d | tail -200
+            echo "=== AndroidRuntime fatal ==="
+            adb logcat -d -s AndroidRuntime:E | head -50
+            echo ""
+            echo "=== Full TahlilCrash stack (first 60 lines) ==="
+            adb logcat -d -s TahlilCrash:E | head -60
             exit 1
           fi
           
