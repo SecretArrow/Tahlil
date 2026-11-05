@@ -202,7 +202,7 @@ object TahlilContent {
                     translation = "Tiada Tuhan selain Allah, Dia-lah Yang Maha Besar dan hanya bagi-Nya lah segala puji.",
                 ),
                 ContentBlock(
-                    arabic = "بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيْمِ ۝١ قُلْ أَعُوْذُ بِرَبِّ النَّاسِ ۝٢ مَلِكِ النَّاسِ ۝٣ إِلٰهِ النَّاسِ ۝٤ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝٥ الَّذِيْنَ يُوَسْوِسُ فِيْ صُدُوْرِ النَّاسِ ۝٦ مِنَ الْجِنَّةِ وَالْنَّاسِ ۝٧",
+                    arabic = "بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيْمِ ۝١ قُلْ أَعُوْذُ بِرَبِّ النَّاسِ ۝٢ مَلِكِ النَّاسِ ۝٣ إِلٰهِ النَّاسِ ۝٤ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝٥ الَّذِيْ يُوَسْوِسُ فِيْ صُدُوْرِ النَّاسِ ۝٦ مِنَ الْجِنَّةِ وَالْنَّاسِ ۝٧",
                     transliteration = "Bismillaahirrahmaanir-rahiim. Qul a'uudzu birabbin-naas. Malikin-naas. Ilaahin-naas. Min syarril-waswaasil-khannaas. Alladzii yuwaswisu fii shuduurin-naas. Minal-jinnati wan-naas.",
                     translation = "Katakanlah: Aku berlindung kepada Tuhan manusia. Raja manusia. Sembahan manusia. Dari kejahatan (bisikan) syetan yang biasa bersembunyi. Yang membisikan (kejahatan) ke dalam dada manusia. Dari jin dan manusia.",
                     note = "Surat An-Nas",
@@ -340,7 +340,7 @@ object TahlilContent {
                     translation = "Sebagai hadiah yang menjadi penyambung, sebagai rahmat yang turun dan sebagai berkah yang menyebar kepada kekasih kami, penolong kami dan buah hati kami, pemuka dan pemimpin kami, yaitu Nabi Muhammad SAW.",
                 ),
                 ContentBlock(
-                    arabic = "وَإِلَى جَمِيْعِ إِخْوَانِهِ مِنَ الْأَنْبِيَاءِ وَالْمُرْسَلِيْنَ وَالْأَوْلِيَاءِ وَالْالشُّهَدَاءِ وَالْصَّالِحِيْنَ وَالْصَّحَابَةِ وَالْتَّابِعِيْنَ وَالْعُلَمَاءِ الْعَامِلِيْنَ وَالْمُصَنِّفِيْنَ الْمُخْلِصِيْنَ وَجَمِيْعِ الْمَلَائِكَةِ الْمُقَرَّبِيْنَ، خُصُوْصًا إِلَى سَيِّدِنَا الشَّيْخِ عَبْدِ الْقَادِرِ الْجِيْلَانِي",
+                    arabic = "وَإِلَى جَمِيْعِ إِخْوَانِهِ مِنَ الْأَنْبِيَاءِ وَالْمُرْسَلِيْنَ وَالْأَوْلِيَاءِ وَالْشُّهَدَاءِ وَالْصَّالِحِيْنَ وَالْصَّحَابَةِ وَالْتَّابِعِيْنَ وَالْعُلَمَاءِ الْعَامِلِيْنَ وَالْمُصَنِّفِيْنَ الْمُخْلِصِيْنَ وَجَمِيْعِ الْمَلَائِكَةِ الْمُقَرَّبِيْنَ، خُصُوْصًا إِلَى سَيِّدِنَا الشَّيْخِ عَبْدِ الْقَادِرِ الْجِيْلَانِي",
                     transliteration = "Wa ilaa jamii'i ikhwaanihi minal-anbiya'i wal-mursaliin wal-auliya'i wasy-syuhadaa'i wash-shaalihiin wash-shahaabati wat-taabi'iin wal-'ulamaa'il-'aamiliin wal-mushannifiinal-mukhlishiin wa jamii'il-malaaikatil-muqarrabiin, khushushon ilaa sayyidinasy-syaikhi 'abdil-qaadir al-jilaani.",
                     translation = "Dan kepada seluruh saudara-saudaranya dari kalangan para nabi, para rasul, para wali, para syuhada, orang-orang saleh, para sahabat, para tabi'in, ulama yang mengamalkan ilmunya, para penulis yang ikhlas, dan seluruh malaikat muqarrabin, khususnya kepada syaikh kita, Syekh Abdul Qadir al-Jilani.",
                 ),
