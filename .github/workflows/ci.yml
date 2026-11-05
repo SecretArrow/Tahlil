@@ -205,13 +205,6 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platforms;android-34
-            build-tools;34.0.0
-
       - name: Download built APKs
         uses: actions/download-artifact@v4
         with:
@@ -221,26 +214,38 @@ jobs:
       - name: List APKs
         run: ls -la apks/
 
-      - name: Verify each APK with apksigner
-        env:
-          KEYSTORE_PATH: ${{ runner.temp }}/release.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Find apksigner
+        id: find_signer
         run: |
           set -e
-          SIGNER="$(find $ANDROID_HOME -name apksigner | head -1)"
-          echo "Using apksigner: $SIGNER"
+          # apksigner is shipped with Android build-tools on the runner
+          SIGNER=$(find $ANDROID_HOME -name apksigner 2>/dev/null | head -1 || true)
+          if [ -z "$SIGNER" ]; then
+            # Fallback: search common locations
+            SIGNER=$(find /usr/local/lib/android -name apksigner 2>/dev/null | head -1 || true)
+          fi
+          if [ -z "$SIGNER" ]; then
+            echo "ERROR: apksigner not found on runner."
+            echo "Available build-tools:"
+            ls -la $ANDROID_HOME/build-tools/ 2>/dev/null || true
+            ls -la /usr/local/lib/android/sdk/build-tools/ 2>/dev/null || true
+            exit 1
+          fi
+          echo "apksigner: $SIGNER"
+          echo "path=$SIGNER" >> "$GITHUB_OUTPUT"
+
+      - name: Verify each APK with apksigner
+        env:
+          APKSIGNER: ${{ steps.find_signer.outputs.path }}
+        run: |
+          set -e
           for apk in apks/*.apk; do
             echo "--- Verifying: $apk ---"
-            if [ -n "$SIGNER" ]; then
-              "$SIGNER" verify --print-certs --verbose "$apk" || {
-                echo "Verification failed for $apk"
-                exit 1
-              }
-            else
-              echo "apksigner not found — skipping verification for $apk"
-            fi
+            "$APKSIGNER" verify --print-certs --verbose "$apk" || {
+              echo "Verification failed for $apk"
+              exit 1
+            }
+            echo "--- OK: $apk ---"
           done
           echo "All APKs verified."
 
