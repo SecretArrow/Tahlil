@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -382,15 +380,24 @@ private fun DrawerContent(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
         )
 
-        // Section list — scrollable, max height to prevent overflow
+        // Section list — NOTE: NOT a LazyColumn.
+        // Material3's ModalDrawerSheet already wraps its content slot in a
+        // Column(Modifier.verticalScroll(rememberScrollState())) — using a
+        // LazyColumn here creates a nested-scrollable, which on minified
+        // release builds causes R8 to merge two ScrollableState
+        // ModifierLocalProvider implementations and throw:
+        //   IncompatibleClassChangeError: Conflicting default method
+        //   implementations androidx.compose.ui.modifier.ModifierLocalProvider.all(...)
+        // A plain Column + forEach relies on the parent's scroll. 11 items
+        // is well within Column's comfort zone (no perf concern).
         val sections = remember { TahlilContent.sections }
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .fillMaxHeight()
+                .fillMaxWidth()
                 .padding(horizontal = 12.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            items(items = sections, key = { it.id }) { section ->
+            sections.forEach { section ->
                 val isActive = section.id == activeSectionId
                 NavigationDrawerItem(
                     label = {
