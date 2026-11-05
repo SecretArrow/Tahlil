@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -59,6 +60,15 @@ import com.tahlildoa.app.util.ColorizeUtil
  * The alternation is CONTINUOUS across all lines (shared counter).
  *
  * Port of `ArabicText` from `arabic-text.tsx`.
+ *
+ * ALIGNMENT NOTE (bug fix): each rendered line is a standalone [Text] inside
+ * a [Column]. A Text that wraps its content gives [TextAlign] nothing to
+ * align against — the line would sit at the Column's start (LEFT edge) no
+ * matter what [TextAlign] says, which is exactly why short Arabic clauses
+ * appeared left-aligned. Every line therefore gets `Modifier.fillMaxWidth()`
+ * so `TextAlign.Right` / `TextAlign.Justify` has the full width to align
+ * against — mirroring the web, where `direction: rtl` + `text-align: right`
+ * applies to a full-width block element.
  */
 @Composable
 fun ArabicText(
@@ -115,6 +125,10 @@ fun ArabicText(
         Column(
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(4.dp),
+            // End = right in this (LTR) composition context — keeps the
+            // suffix (repeat badge) and any wrap-content child on the
+            // Arabic side of the block.
+            horizontalAlignment = Alignment.End,
         ) {
             lines.forEach { line ->
                 ArabicLineRenderer(
@@ -165,8 +179,18 @@ private fun ArabicLineRenderer(line: Line, baseStyle: TextStyle, isDark: Boolean
                 }
             }
         }
-        is Line.Sentence -> Text(text = line.text, style = baseStyle)
-        is Line.Trailing -> Text(text = line.text, style = baseStyle)
+        is Line.Sentence -> Text(
+            text = line.text,
+            style = baseStyle,
+            // fillMaxWidth is REQUIRED for TextAlign.Right/Justify to take
+            // effect — a wrap-content Text has nothing to align against.
+            modifier = Modifier.fillMaxWidth(),
+        )
+        is Line.Trailing -> Text(
+            text = line.text,
+            style = baseStyle,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

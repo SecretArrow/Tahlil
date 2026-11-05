@@ -3,7 +3,10 @@ package com.tahlildoa.app.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.tahlildoa.app.data.ArabicStyleSettings
 import com.tahlildoa.app.data.DisplayToggles
@@ -40,10 +44,19 @@ fun SectionDetailScreen(
     val section = remember(sectionId) { TahlilContent.byId(sectionId) } ?: return
     val state = rememberLazyListState()
 
+    // Bottom navigation-bar inset — the app is edge-to-edge, so without this
+    // the last cards would sit under the Android system menu (gesture pill
+    // / 3-button bar). When the bars are hidden (fullscreen) the inset reads
+    // 0 and the content stays truly edge-to-edge.
+    val density = LocalDensity.current
+    val navBarBottomDp = with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
+
     LazyColumn(
         state = state,
         modifier = modifier.fillMaxSize(),
-        contentPadding = contentPadding,
+        contentPadding = PaddingValues(
+            bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 16.dp
+        ),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item(key = section.id) {

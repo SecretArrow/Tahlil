@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -50,6 +53,15 @@ import com.tahlildoa.app.data.ThemeMode
  * fullscreen toggle button stays in place so the user can exit fullscreen
  * from any screen via the Header, OR via the floating button that
  * [TahlilNavigation] overlays on top of the content.
+ *
+ * Insets: the app runs edge-to-edge (`enableEdgeToEdge()`), so WITHOUT any
+ * compensation the header row would render UNDER the status bar — the
+ * hamburger / fullscreen / theme / settings icons and the title would
+ * collide with the clock and battery icons. When [isFullscreen] is false
+ * we therefore pad the header by [WindowInsets.statusBars]; the surface
+ * background still extends behind the status bar so there is no white
+ * strip. In fullscreen the bars are hidden and the header stays truly
+ * edge-to-edge.
  */
 @Composable
 fun Header(
@@ -72,6 +84,14 @@ fun Header(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
+            // Pad by the status-bar height (unless fullscreen) so the header
+            // content never overlaps the notification bar. Background is
+            // applied FIRST so the colored surface still extends behind the
+            // status bar area instead of leaving a gap.
+            .then(
+                if (isFullscreen) Modifier
+                else Modifier.windowInsetsPadding(WindowInsets.statusBars)
+            )
     ) {
         Column {
             Row(

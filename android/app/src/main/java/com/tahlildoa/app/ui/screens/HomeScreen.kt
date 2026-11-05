@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -56,6 +59,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -202,11 +206,24 @@ fun HomeScreen(
         }
     }
 
+    // --- Bottom system-bar inset ------------------------------------------
+    // The app is edge-to-edge, so the bottom of the list (the footer) and
+    // the back-to-top FAB would otherwise sit UNDER the Android navigation
+    // bar (gesture pill or 3-button bar). Read the navigationBars inset;
+    // in fullscreen the bars are hidden and it reads 0, so the content
+    // stays truly edge-to-edge.
+    val density = LocalDensity.current
+    val navBarBottomDp =
+        if (isFullscreen) 0.dp
+        else with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
+
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             state = state,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = contentPadding,
+            contentPadding = PaddingValues(
+                bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 16.dp
+            ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Continue reading card (only if a last-read section exists).
@@ -262,6 +279,8 @@ fun HomeScreen(
             exit = scaleOut() + fadeOut(),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
+                // Keep the FAB clear of the Android navigation bar.
+                .then(if (isFullscreen) Modifier else Modifier.navigationBarsPadding())
                 .padding(end = 16.dp, bottom = 24.dp),
         ) {
             FloatingActionButton(
