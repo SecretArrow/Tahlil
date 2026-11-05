@@ -132,7 +132,7 @@ fun TahlilNavigation(
         },
         modifier = modifier,
     ) {
-        val currentRoute = currentBackStackEntryAsState().value?.destination?.route
+        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
         val canNavigateBack = currentRoute != null && currentRoute != Routes.HOME
 
         androidx.compose.foundation.layout.Column(modifier = Modifier.fillMaxHeight()) {
