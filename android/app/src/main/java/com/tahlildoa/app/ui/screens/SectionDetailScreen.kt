@@ -55,9 +55,9 @@ fun SectionDetailScreen(
         state = state,
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(
-            bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 16.dp
+            bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp
         ),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item(key = section.id) {
             Column(modifier = Modifier.padding(top = 8.dp)) {

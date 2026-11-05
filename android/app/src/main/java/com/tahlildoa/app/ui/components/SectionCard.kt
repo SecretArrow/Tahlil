@@ -158,7 +158,7 @@ private fun BlockItem(
                             )
                         )
                     )
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                    .padding(horizontal = 14.dp, vertical = 14.dp),
             ) {
                 Row(
                     verticalAlignment = Alignment.Top,
@@ -290,7 +290,7 @@ fun SectionCard(
                 )
         )
 
-        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
             // Header: number + title + type pill
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -320,7 +320,7 @@ fun SectionCard(
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(10.dp))
 
             // Ornamental divider
             Row(
@@ -330,10 +330,10 @@ fun SectionCard(
                 ArabicOrnament()
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(12.dp))
 
             // Blocks
-            Column(verticalArrangement = Arrangement.spacedBy(28.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 section.blocks.forEachIndexed { i, block ->
                     BlockItem(
                         block = block,

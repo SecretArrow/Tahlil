@@ -68,10 +68,10 @@ fun SettingsScreen(
         contentPadding = PaddingValues(
             start = 16.dp,
             end = 16.dp,
-            top = 16.dp,
-            bottom = 16.dp + navBarBottomDp + 8.dp,
+            top = 12.dp,
+            bottom = navBarBottomDp + 8.dp,
         ),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item { SectionTitle("Tampilan") }
         togglesSection(toggles, onTogglesChange)

@@ -222,9 +222,9 @@ fun HomeScreen(
             state = state,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 16.dp
+                bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Continue reading card (only if a last-read section exists).
             val lastSection = lastReadSectionId?.let { id ->
@@ -281,7 +281,7 @@ fun HomeScreen(
                 .align(Alignment.BottomEnd)
                 // Keep the FAB clear of the Android navigation bar.
                 .then(if (isFullscreen) Modifier else Modifier.navigationBarsPadding())
-                .padding(end = 16.dp, bottom = 24.dp),
+                .padding(end = 16.dp, bottom = 16.dp),
         ) {
             FloatingActionButton(
                 onClick = {
@@ -395,7 +395,7 @@ private fun Hero(onCtaClick: (String) -> Unit, modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 32.dp),
+                .padding(horizontal = 20.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -519,7 +519,7 @@ private fun Footer(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 32.dp),
+            .padding(horizontal = 20.dp, vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
