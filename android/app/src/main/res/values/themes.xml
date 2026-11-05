@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-
-    <!-- Base application theme (light) — minimal, Compose handles the rest. -->
-    <style name="Theme.TahlilDoa" parent="android:Theme.Material.Light.NoActionBar">
+<resources>
+    <!-- Base application theme (light) — minimal framework theme, Compose handles the rest. -->
+    <style name="Theme.TahlilDoa" parent="android:Theme.DeviceDefault.Light.NoActionBar">
         <item name="android:windowBackground">@color/cream_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
-        <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>
     </style>
 
-    <!-- Splash screen theme — applied via AndroidManifest's activity. -->
+    <!-- Splash screen theme. -->
     <style name="Theme.TahlilDoa.Splash" parent="Theme.TahlilDoa">
         <item name="android:windowBackground">@color/cream_background</item>
     </style>

@@ -145,6 +145,9 @@ dependencies {
     // Splashscreen API
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    // WorkManager — for background tasks (daily reading reminder)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
     // Debugging tools
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

@@ -10,9 +10,10 @@ name: CI
 #   - manual dispatch       → run everything (optionally build & release)
 #
 # Parallel jobs:
-#   - web-test              → Next.js lint + build (web/)
-#   - android-test          → ./gradlew lint test + assembleRelease
-#   - android-split-apks    → depends on android-test, runs ABI splits + verifies each APK
+#   - web-test                → Next.js lint + build (web/)
+#   - android-test            → ./gradlew lint test + assembleRelease
+#   - android-split-apks      → depends on android-test, runs ABI splits + verifies each APK
+#   - android-instrumented-test → depends on android-test, runs instrumentation tests on emulator
 #
 # Required secrets (for signed Android release APKs):
 #   - KEYSTORE_BASE64       base64-encoded *.jks keystore
@@ -258,11 +259,75 @@ jobs:
           if-no-files-found: error
 
   # ============================================================
-  # 4. Create GitHub Release with all artifacts (push to main only)
+  # 4. Android instrumentation tests (on emulator)
+  # ============================================================
+  # Boots an Android emulator on the GitHub runner and runs the
+  # instrumentation suite (`./gradlew connectedDebugAndroidTest`).
+  # This is the regression net for the launch-time crash that
+  # prompted the ProGuard / theme / manifest fixes — `MainActivityTest
+  # .appLaunchesWithoutCrash` will fail here before any release
+  # can ship.
+  # ============================================================
+  android-instrumented-test:
+    name: Android — instrumentation tests
+    needs: android-test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+    env:
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.caching=true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: "8.5"
+          arguments: --no-daemon
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Generate Gradle wrapper (if missing)
+        run: gradle wrapper --gradle-version 8.5 --distribution-type bin
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0777"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          script: ./gradlew connectedDebugAndroidTest --no-daemon
+          working-directory: android
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-instrumented-test-reports
+          path: |
+            android/app/build/reports/androidTests
+            android/app/build/outputs/androidTest-results
+          retention-days: 14
+          if-no-files-found: warn
+
+  # ============================================================
+  # 5. Create GitHub Release with all artifacts (push to main only)
   # ============================================================
   release:
     name: Create GitHub Release
-    needs: [web-test, android-test, android-split-apks]
+    needs: [web-test, android-test, android-split-apks, android-instrumented-test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:

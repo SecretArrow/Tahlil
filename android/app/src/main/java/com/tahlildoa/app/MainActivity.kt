@@ -31,12 +31,22 @@ import com.tahlildoa.app.ui.theme.TahlilDoaTheme
  * The resolved isDark flag is published back to the ViewModel so Arabic
  * colorize logic can pick the correct color pair.
  *
- * Two additional cross-cutting behaviors are driven from here:
+ * Three cross-cutting behaviors are driven from here:
+ *  - **System bar appearance**: the status bar / navigation bar icon
+ *    appearance (light vs. dark icons) is set programmatically based on
+ *    the resolved theme, with API-level guards for
+ *    `isAppearanceLightStatusBars` (API 23+) and
+ *    `isAppearanceLightNavigationBars` (API 26+). This replaces the
+ *    XML `windowLightStatusBar` / `windowLightNavigationBar` attributes
+ *    that were previously set in themes.xml — moving the logic into
+ *    Kotlin lets us guard by API level at runtime and avoids any
+ *    `Resources$NotFoundException` from missing theme attributes.
  *  - **Keep screen on**: when `toggles.keepScreenOn` is true, the
- *    `FLAG_KEEP_SCREEN_ON` window flag is added so the screen never sleeps
- *    while the app is in the foreground. The flag is cleared on dispose.
- *  - **Fullscreen (immersive)**: when [TahlilViewModel.isFullscreen] is true,
- *    the system bars (status + navigation) are hidden with
+ *    `FLAG_KEEP_SCREEN_ON` window flag is added so the screen never
+ *    sleeps while the app is in the foreground. The flag is cleared
+ *    on dispose.
+ *  - **Fullscreen (immersive)**: when [TahlilViewModel.isFullscreen] is
+ *    true, the system bars (status + navigation) are hidden with
  *    `BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE` so a swipe from the edge
  *    transiently reveals them.
  */
@@ -67,11 +77,32 @@ class MainActivity : ComponentActivity() {
                 viewModel.setDark(isDark)
             }
 
-            // --- Keep-screen-on window flag ------------------------------------
+            val window = this.window
+            val view = LocalView.current
+
+            // --- System bar appearance (light/dark icons) ----------------
+            // Driven programmatically so we can guard API levels at runtime
+            // and react to the user's theme preference flipping.
+            //
+            // - isAppearanceLightStatusBars(true) → dark icons on a light
+            //   status bar (used in light theme).
+            // - isAppearanceLightStatusBars(false) → light icons on a dark
+            //   status bar (used in dark theme).
+            //
+            // WindowInsetsControllerCompat handles the API-level branching
+            // for us — calling it on API < 23 is a safe no-op for status
+            // bars, and on API < 26 is a safe no-op for navigation bars.
+            DisposableEffect(isDark) {
+                val controller = WindowInsetsControllerCompat(window, view)
+                controller.isAppearanceLightStatusBars = !isDark
+                controller.isAppearanceLightNavigationBars = !isDark
+                onDispose { }
+            }
+
+            // --- Keep-screen-on window flag --------------------------------
             // Apply FLAG_KEEP_SCREEN_ON based on the user toggle. Using the
             // window flag (rather than View.keepScreenOn) survives config
             // changes reliably.
-            val window = this.window
             DisposableEffect(uiState.toggles.keepScreenOn) {
                 if (uiState.toggles.keepScreenOn) {
                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -84,7 +115,6 @@ class MainActivity : ComponentActivity() {
             }
 
             // --- Fullscreen (immersive) system bars ---------------------------
-            val view = LocalView.current
             DisposableEffect(uiState.isFullscreen) {
                 val controller = WindowInsetsControllerCompat(window, view)
                 if (uiState.isFullscreen) {

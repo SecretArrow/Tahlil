@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-
-    <!-- Dark theme override for status bar / navigation bar icons. -->
-    <style name="Theme.TahlilDoa" parent="android:Theme.Material.NoActionBar">
+<resources>
+    <style name="Theme.TahlilDoa" parent="android:Theme.DeviceDefault.NoActionBar">
         <item name="android:windowBackground">@color/dark_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
-        <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>
     </style>
 
     <style name="Theme.TahlilDoa.Splash" parent="Theme.TahlilDoa">
