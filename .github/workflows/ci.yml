@@ -274,11 +274,18 @@ jobs:
   #      RELEASE build (different code path under R8 / signing).
   #      If the launch fails, the job dumps the FATAL / AndroidRuntime /
   #      TahlilCrash logcat lines so the crash cause is visible in CI.
+  #   3. Runs on a MATRIX of API levels (29 = oldest supported-ish
+  #      surface, 34 = current target) so an R8 keep-rule gap or a
+  #      version-specific regression is caught before release.
   # ============================================================
   android-instrumented-test:
-    name: Android — instrumentation tests
+    name: Android — instrumentation tests (API ${{ matrix.api-level }})
     needs: android-test
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [29, 34]
     defaults:
       run:
         working-directory: android
@@ -376,8 +383,10 @@ jobs:
       - name: Run instrumentation tests + verify release APK
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: ${{ matrix.api-level }}
           arch: x86_64
+          target: google_apis
+          disable-animations: true
           script: /tmp/verify_release.sh
           working-directory: android
 
@@ -385,7 +394,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-instrumented-test-reports
+          name: android-instrumented-test-reports-api-${{ matrix.api-level }}
           path: |
             android/app/build/reports/androidTests
             android/app/build/outputs/androidTest-results
@@ -432,14 +441,30 @@ jobs:
 
             Built from commit ${{ github.sha }} on branch ${{ github.ref_name }}.
 
-            ### Artifacts
+            ### 📱 Unduh APK (signed release, pilih SESUAI perangkat)
 
-            - **Android APKs** (per-ABI + universal):
-              - `app-arm64-v8a-release.apk` (modern 64-bit ARM)
-              - `app-armeabi-v7a-release.apk` (legacy 32-bit ARM)
-              - `app-x86_64-release.apk` (emulators / x86_64 devices)
-              - `app-universal-release.apk` (all ABIs in one APK)
-            - **Web build** — `web-build.zip` (Next.js standalone output)
+            | File | Untuk perangkat |
+            |------|-----------------|
+            | `app-arm64-v8a-release.apk` | ⭐ **Ponsel modern (rekomendasi)** — hampir semua ponsel sejak 2018 (Redmi, Samsung, Pixel, Oppo, Vivo, dll.) |
+            | `app-armeabi-v7a-release.apk` | Ponsel/lama 32-bit ARM (sebelum ~2016) |
+            | `app-x86_64-release.apk` | Emulator / tablet Intel |
+            | `app-universal-release.apk` | Semua arsitektur dalam satu file (paling besar — pakai hanya jika bingung) |
+
+            Cara cek arsitektur: aplikasi CPU-Z, atau situs "what is my android cpu abi". Ragu? Ambil **arm64-v8a**.
+
+            Semua APK di atas **signed release** (satu kunci yang sama — bisa dipasang
+            berdampingan / saling mengganti). Versi aplikasi: 1.1.0.
+
+            ### 🌐 Web
+
+            - `web-build.zip` (Next.js output)
+
+            ### Verifikasi otomatis
+
+            - ✅ Lint + unit test + instrumented test (API 29 & 34)
+            - ✅ APK release benar-benar di-install & di-launch di emulator —
+              pipeline gagal jika force-close
+            - ✅ Signature setiap APK diverifikasi apksigner
 
             ### Source
 

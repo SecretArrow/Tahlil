@@ -14,8 +14,13 @@ android {
         applicationId = "com.tahlildoa.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
+
+        // Ship only the locales the app actually uses (Indonesian + English
+        // fallback + Arabic). AndroidX/Material bundles ~80 locales that would
+        // otherwise bloat every APK (~200-400 KB of unused strings.xml tables).
+        resourceConfigurations.addAll(listOf("id", "en", "ar"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -50,15 +55,16 @@ android {
 
     buildTypes {
         release {
-            // TEMPORARILY DISABLED: R8 minification was causing runtime crashes
-            // on real devices (stripping classes needed by Compose/DataStore/WorkManager).
-            // The debug build (used by instrumented tests) has minification off,
-            // so connectedDebugAndroidTest passed while the minified release APK
-            // force-closed. Re-enable AFTER the root cause is identified and fixed
-            // with proper keep rules + release-build instrumented tests.
-            // Cost: APK grows ~1.8 MB → ~7 MB. A working 7 MB APK beats a broken 1.8 MB one.
-            isMinifyEnabled = false
-            isShrinkResources = false
+            // R8 minification ON. The historical release-only crash was rooted
+            // in installSplashScreen() being called with a non-splash theme
+            // (before super.onCreate, outside any try/catch) — it has been
+            // removed. The surgical keep rules in proguard-rules.pro cover
+            // everything R8 cannot infer (serializers, workers, enums,
+            // ViewModels). The CI pipeline installs THIS exact APK on real
+            // emulators (API 29 + API 34) and fails the run if it force-closes,
+            // so a broken minified build can never reach a Release again.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -105,6 +111,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/LICENSE.md"
             excludes += "META-INF/LICENSE-notice.md"
+            // Dead weight that never runs on Android:
+            excludes += "META-INF/*.version"
+            excludes += "DebugProbesKt.bin"
+            excludes += "META-INF/DEPENDENCIES"
         }
     }
 
