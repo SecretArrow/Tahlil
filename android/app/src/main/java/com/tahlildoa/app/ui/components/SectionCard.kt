@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tahlildoa.app.data.ArabicStyleSettings
@@ -145,6 +146,9 @@ private fun BlockItem(
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
         // --- Arabic verse ------------------------------------------------
+        // Own container: gradient box, auto-height (no fixed sizes — grows
+        // with the number of wrapped lines). Horizontal padding keeps the
+        // text clear of the card edges.
         if (!block.arabic.isNullOrEmpty() && toggles.arabic) {
             Box(
                 modifier = Modifier
@@ -158,24 +162,18 @@ private fun BlockItem(
                             )
                         )
                     )
-                    .padding(horizontal = 14.dp, vertical = 14.dp),
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
             ) {
-                Row(
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        ArabicText(
-                            text = block.arabic,
-                            style = style,
-                            toggles = toggles,
-                            isDark = isDark,
-                            suffix = if (block.repeat != null && block.repeat > 1) {
-                                { RepeatBadge(count = block.repeat) }
-                            } else null,
-                        )
-                    }
-                }
+                ArabicText(
+                    text = block.arabic,
+                    style = style,
+                    toggles = toggles,
+                    isDark = isDark,
+                    modifier = Modifier.fillMaxWidth(),
+                    suffix = if (block.repeat != null && block.repeat > 1) {
+                        { RepeatBadge(count = block.repeat) }
+                    } else null,
+                )
             }
         }
 
@@ -291,7 +289,10 @@ fun SectionCard(
         )
 
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-            // Header: number + title + type pill
+            // Header: [number badge] [title + subtitle group • weight(1f)]
+            // The badge and the text group are vertically centered against
+            // each other; the type pill sits at the row's end and can never
+            // collide with the title (title is weight-constrained + wraps).
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -306,6 +307,9 @@ fun SectionCard(
                             text = section.title,
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                         )
                         TypePill(type = section.type)
                     }

@@ -34,6 +34,7 @@ import com.tahlildoa.app.data.DisplayToggles
 import com.tahlildoa.app.data.ThemeMode
 import com.tahlildoa.app.ui.components.SliderRow
 import com.tahlildoa.app.ui.components.ToggleRow
+import com.tahlildoa.app.ui.components.contentMaxWidth
 
 /**
  * SettingsScreen — all display & typography settings on one scrollable
@@ -63,27 +64,30 @@ fun SettingsScreen(
     val density = LocalDensity.current
     val navBarBottomDp = with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
 
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            end = 16.dp,
-            top = 12.dp,
-            bottom = navBarBottomDp + 8.dp,
-        ),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        item { SectionTitle("Tampilan") }
-        togglesSection(toggles, onTogglesChange)
+    // Centered + width-capped for tablet / desktop screen widths.
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+        LazyColumn(
+            modifier = Modifier.contentMaxWidth().fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                top = 12.dp,
+                bottom = navBarBottomDp + 8.dp,
+            ),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item { SectionTitle("Tampilan") }
+            togglesSection(toggles, onTogglesChange)
 
-        item { SectionTitle("Tema") }
-        themeSection(themeMode, onThemeModeChange)
+            item { SectionTitle("Tema") }
+            themeSection(themeMode, onThemeModeChange)
 
-        item { SectionTitle("Mode Font Arab") }
-        fontModeSection(style, onStyleChange)
+            item { SectionTitle("Mode Font Arab") }
+            fontModeSection(style, onStyleChange)
 
-        item { SectionTitle("Tipografi Arab") }
-        typographySection(style, onStyleChange)
+            item { SectionTitle("Tipografi Arab") }
+            typographySection(style, onStyleChange)
+        }
     }
 }
 

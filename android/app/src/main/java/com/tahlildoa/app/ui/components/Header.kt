@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tahlildoa.app.data.ThemeMode
@@ -94,57 +95,62 @@ fun Header(
             )
     ) {
         Column {
+            // Single-row app bar: [menu/back] [logo] [title•••weight•••] [actions].
+            // The title gets weight(1f) + ellipsis so it can NEVER push the
+            // action icons off-screen or collide with them on narrow displays;
+            // everything is center-aligned vertically in one row.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 6.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (canNavigateBack) {
-                        IconButton(onClick = onBackClick) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Kembali",
-                                tint = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                    } else {
-                        IconButton(onClick = onMenuClick) {
-                            Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = "Menu",
-                                tint = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .size(34.dp)
-                            .clip(CircleShape)
-                            .background(
-                                Brush.linearGradient(listOf(primary, secondary))
-                            ),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = "ت",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
+                if (canNavigateBack) {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Kembali",
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
+                } else {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Menu",
+                            tint = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
 
+                Box(
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(
+                            Brush.linearGradient(listOf(primary, secondary))
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
                     Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(start = 10.dp),
+                        text = "ت",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
                     )
                 }
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 10.dp, end = 4.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     // Fullscreen toggle — present on every screen.

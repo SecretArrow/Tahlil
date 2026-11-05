@@ -67,6 +67,7 @@ import androidx.compose.ui.unit.sp
 import com.tahlildoa.app.data.HeroInfo
 import com.tahlildoa.app.data.TahlilContent
 import com.tahlildoa.app.ui.components.SectionCard
+import com.tahlildoa.app.ui.components.contentMaxWidth
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -218,9 +219,15 @@ fun HomeScreen(
         else with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
 
     Box(modifier = modifier.fillMaxSize()) {
+        // Card list capped at CONTENT_MAX_WIDTH and centered — on phones it
+        // uses the full width; on tablets/desktop the list stays a comfortable
+        // reading width instead of stretching edge to edge.
         LazyColumn(
             state = state,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .contentMaxWidth()
+                .fillMaxSize(),
             contentPadding = PaddingValues(
                 bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp
             ),
