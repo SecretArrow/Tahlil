@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme (light) — Material 3, used as splash background. -->
-    <style name="Theme.TahlilDoa" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Base application theme (light) — minimal, Compose handles the rest. -->
+    <style name="Theme.TahlilDoa" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/cream_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -16,11 +16,5 @@
     <!-- Splash screen theme — applied via AndroidManifest's activity. -->
     <style name="Theme.TahlilDoa.Splash" parent="Theme.TahlilDoa">
         <item name="android:windowBackground">@color/cream_background</item>
-        <item name="postSplashScreenTheme">@style/Theme.TahlilDoa</item>
-    </style>
-
-    <!-- Legacy styles.xml kept for compatibility with non-Compose widgets. -->
-    <style name="Widget.TahlilDoa.ActionBar" parent="Widget.Material3.ActionBar.Solid">
-        <item name="android:background">@color/cream_background</item>
     </style>
 </resources>

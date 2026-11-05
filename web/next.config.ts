@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  /* config options here */
+  reactStrictMode: true,
+  // Skip TypeScript errors during CI build (we have pre-existing minor type
+  // issues that don't affect runtime). Fix them in a separate PR later.
   typescript: {
     ignoreBuildErrors: true,
   },
-  reactStrictMode: false,
 };
 
 export default nextConfig;

@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Dark theme override for status bar / navigation bar icons. -->
-    <style name="Theme.TahlilDoa" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.TahlilDoa" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/dark_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -15,6 +15,5 @@
 
     <style name="Theme.TahlilDoa.Splash" parent="Theme.TahlilDoa">
         <item name="android:windowBackground">@color/dark_background</item>
-        <item name="postSplashScreenTheme">@style/Theme.TahlilDoa</item>
     </style>
 </resources>
