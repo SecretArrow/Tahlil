@@ -47,6 +47,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tahlildoa.app.data.ArabicStyleSettings
@@ -131,8 +132,7 @@ fun TahlilNavigation(
         },
         modifier = modifier,
     ) {
-        val currentRoute = androidx.navigation.compose.currentBackStackEntryAsState()
-            .value?.destination?.route
+        val currentRoute = currentBackStackEntryAsState().value?.destination?.route
         val canNavigateBack = currentRoute != null && currentRoute != Routes.HOME
 
         androidx.compose.foundation.layout.Column(modifier = Modifier.fillMaxHeight()) {
