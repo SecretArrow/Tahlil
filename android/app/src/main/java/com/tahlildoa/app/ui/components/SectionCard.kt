@@ -1,6 +1,7 @@
 package com.tahlildoa.app.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -54,8 +54,7 @@ private fun SectionNumberBadge(
         modifier = modifier
             .size(48.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Brush.linearGradient(listOf(start, end)))
-            .shadow(2.dp, RoundedCornerShape(16.dp)),
+            .background(Brush.linearGradient(listOf(start, end))),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -245,9 +244,18 @@ private fun BlockItem(
 /**
  * SectionCard — renders one [Section] (header + blocks).
  *
- * The whole card is wrapped in [AnimatedVisibility] for a smooth slide-in
- * when the user scrolls past it. Set [animate] to false on the home screen
- * to keep things simple (the LazyColumn already handles entrance animations).
+ * Card treatment mirrors the web (`rounded-3xl border bg-card shadow-sm`):
+ * a rounded surface with a 1dp hairline border for definition. The old
+ * implementation applied `Modifier.shadow(...)` AFTER `.background(...)`,
+ * which made the shadow wrap only the inner content — some devices then
+ * rendered that shadow ON TOP of the card background, producing a gray
+ * ring that looked like a square "backing card" sticking out beyond the
+ * rounded card. The shadow is therefore gone entirely; the border gives
+ * the same crisp, professional edge on both themes without any shadow
+ * rendering quirks.
+ *
+ * Set [animate] to false on the home screen to keep things simple (the
+ * LazyColumn already handles entrance animations).
  */
 @Composable
 fun SectionCard(
@@ -266,11 +274,7 @@ fun SectionCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(cardBg)
-            .shadow(
-                elevation = 1.dp,
-                shape = RoundedCornerShape(24.dp),
-                clip = false,
-            ),
+            .border(1.dp, borderColor, RoundedCornerShape(24.dp)),
     ) {
         // Top accent gradient strip
         Box(

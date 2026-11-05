@@ -64,6 +64,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tahlildoa.app.BuildConfig
 import com.tahlildoa.app.data.HeroInfo
 import com.tahlildoa.app.data.TahlilContent
 import com.tahlildoa.app.ui.components.SectionCard
@@ -520,9 +521,15 @@ private fun CtaChip(
     }
 }
 
-/** Footer shown at the bottom of the home list. */
+/**
+ * Footer shown at the bottom of the home list and the section reading view.
+ * Internal (not private) so [SectionDetailScreen] can reuse it as an
+ * end-cap. The version line reads the real versionName from BuildConfig so
+ * it always matches the release instead of drifting like the old hardcoded
+ * "v1.0.0".
+ */
 @Composable
-private fun Footer(modifier: Modifier = Modifier) {
+internal fun Footer(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -550,7 +557,7 @@ private fun Footer(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
         )
         Text(
-            text = "v1.0.0",
+            text = "v${BuildConfig.VERSION_NAME}",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
         )

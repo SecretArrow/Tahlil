@@ -242,8 +242,8 @@ fun TahlilNavigation(
                             toggles = toggles,
                             style = style,
                             isDark = isDark,
+                            onActiveSectionChange = { activeSectionId = it },
                         )
-                        activeSectionId = id
                         // Persist the last-read pointer whenever a section opens.
                         onSetLastReadSection(id)
                     }

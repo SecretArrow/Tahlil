@@ -431,6 +431,10 @@ jobs:
           if [ -d "artifacts/web-build" ]; then
             (cd artifacts && zip -qr ${{ github.workspace }}/release/web-build.zip web-build)
           fi
+          # Read the real versionName so the release body never drifts from
+          # the app (the old hardcoded "1.1.0" went stale after v1.1.2).
+          APP_VERSION=$(grep -oP 'versionName = "\K[^"]+' android/app/build.gradle.kts | head -1)
+          echo "APP_VERSION=${APP_VERSION:-unknown}" >> "$GITHUB_ENV"
           ls -la release/
 
       - name: Create GitHub Release
@@ -455,7 +459,7 @@ jobs:
             Cara cek arsitektur: aplikasi CPU-Z, atau situs "what is my android cpu abi". Ragu? Ambil **arm64-v8a**.
 
             Semua APK di atas **signed release** (satu kunci yang sama — bisa dipasang
-            berdampingan / saling mengganti). Versi aplikasi: 1.1.0.
+            berdampingan / saling mengganti). Versi aplikasi: ${{ env.APP_VERSION }}.
 
             ### 🌐 Web
 

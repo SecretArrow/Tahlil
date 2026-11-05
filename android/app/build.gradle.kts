@@ -15,8 +15,8 @@ android {
         applicationId = "com.tahlildoa.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 5
-        versionName = "1.1.3"
+        versionCode = 6
+        versionName = "1.1.4"
 
         // Ship only the locales the app actually uses (Indonesian + English
         // fallback + Arabic). AndroidX/Material bundles ~80 locales that would

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tahlildoa.app.data.ThemeMode
 import com.tahlildoa.app.ui.TahlilViewModel
 import com.tahlildoa.app.ui.navigation.TahlilNavigation
+import com.tahlildoa.app.ui.theme.DarkBackground
+import com.tahlildoa.app.ui.theme.LightBackground
 import com.tahlildoa.app.ui.theme.TahlilDoaTheme
 
 /**
@@ -164,22 +168,50 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // --- Window background follows the RESOLVED in-app theme -----------
+        // The XML theme (values-night) picks its window background from the
+        // SYSTEM dark mode, but the app manages light/dark in-app
+        // (ThemeMode). With system=dark + app=light the old window
+        // background stayed near-black, so every gap between the light
+        // cards showed a dark "hole". Painting the resolved theme color on
+        // the DecorView (and a full-size root Box below) makes the whole
+        // window — status-bar area included — match the active theme in
+        // every combination of system vs. in-app mode.
+        DisposableEffect(isDark) {
+            try {
+                window.setBackgroundDrawable(
+                    android.graphics.drawable.ColorDrawable(
+                        (if (isDark) DarkBackground else LightBackground).toArgb()
+                    )
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "window background sync failed", e)
+            }
+            onDispose { }
+        }
+
         TahlilDoaTheme(themeMode = uiState.themeMode) {
-            TahlilNavigation(
-                toggles = uiState.toggles,
-                style = uiState.style,
-                themeMode = uiState.themeMode,
-                isDark = isDark,
-                isFullscreen = uiState.isFullscreen,
-                lastReadSectionId = uiState.lastReadSectionId,
-                onTogglesChange = { newToggles -> viewModel.updateToggles { newToggles } },
-                onStyleChange = { newStyle -> viewModel.updateStyle { newStyle } },
-                onThemeModeChange = { mode -> viewModel.setThemeMode(mode) },
-                onToggleThemeClick = { viewModel.toggleTheme() },
-                onToggleFullscreen = { viewModel.toggleFullscreen() },
-                onSetLastReadSection = { id -> viewModel.setLastReadSectionId(id) },
-                onClearLastReadSection = { viewModel.setLastReadSectionId(null) },
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                TahlilNavigation(
+                    toggles = uiState.toggles,
+                    style = uiState.style,
+                    themeMode = uiState.themeMode,
+                    isDark = isDark,
+                    isFullscreen = uiState.isFullscreen,
+                    lastReadSectionId = uiState.lastReadSectionId,
+                    onTogglesChange = { newToggles -> viewModel.updateToggles { newToggles } },
+                    onStyleChange = { newStyle -> viewModel.updateStyle { newStyle } },
+                    onThemeModeChange = { mode -> viewModel.setThemeMode(mode) },
+                    onToggleThemeClick = { viewModel.toggleTheme() },
+                    onToggleFullscreen = { viewModel.toggleFullscreen() },
+                    onSetLastReadSection = { id -> viewModel.setLastReadSectionId(id) },
+                    onClearLastReadSection = { viewModel.setLastReadSectionId(null) },
+                )
+            }
         }
     }
 

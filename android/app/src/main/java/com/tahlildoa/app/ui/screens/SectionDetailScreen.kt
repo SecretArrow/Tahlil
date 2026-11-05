@@ -2,7 +2,6 @@ package com.tahlildoa.app.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,17 +23,29 @@ import com.tahlildoa.app.data.DisplayToggles
 import com.tahlildoa.app.data.TahlilContent
 import com.tahlildoa.app.ui.components.SectionCard
 import com.tahlildoa.app.ui.components.contentMaxWidth
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
- * SectionDetailScreen — a focused view of a single [Section].
+ * SectionDetailScreen — the reading view opened from a CTA button, the
+ * drawer, or the "Lanjutkan membaca" (continue reading) card.
  *
- * Useful when the user taps a CTA or a TOC entry in the drawer — it shows
- * just that section's blocks (with full typography settings applied)
- * without the surrounding hero or other sections.
+ * The screen renders ALL sections — positioned initially at [sectionId] —
+ * instead of only the target section. This way, after continuing their
+ * reading, the user can still scroll UP to revisit earlier sections and
+ * DOWN to keep reading the following ones (the whole list behaves like the
+ * home list, minus the hero).
  *
- * The section is identified by [sectionId]. If the id doesn't match any
- * known section, the screen renders nothing (the navigation layer should
- * guard against this).
+ * The list starts exactly at the requested section:
+ *  - [rememberLazyListState] is seeded with the target index so the first
+ *    frame already shows the right card (no visible jump);
+ *  - a [LaunchedEffect] on [sectionId] re-scrolls whenever the target
+ *    changes while the screen is already visible — the drawer navigates
+ *    with `launchSingleTop`, which UPDATES the arguments of the existing
+ *    entry instead of pushing a new one, so seeding alone wouldn't fire.
+ *
+ * The first visible section is reported through [onActiveSectionChange]
+ * while scrolling so the drawer's highlight follows the reading position
+ * (same tracking approach as [HomeScreen]).
  */
 @Composable
 fun SectionDetailScreen(
@@ -43,9 +55,13 @@ fun SectionDetailScreen(
     isDark: Boolean,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    onActiveSectionChange: (String) -> Unit = {},
 ) {
-    val section = remember(sectionId) { TahlilContent.byId(sectionId) } ?: return
-    val state = rememberLazyListState()
+    val sections = remember { TahlilContent.sections }
+    val startIndex = remember(sectionId, sections) {
+        sections.indexOfFirst { it.id == sectionId }.coerceAtLeast(0)
+    }
+    val state = rememberLazyListState(initialFirstVisibleItemIndex = startIndex)
 
     // Bottom navigation-bar inset — the app is edge-to-edge, so without this
     // the last cards would sit under the Android system menu (gesture pill
@@ -54,27 +70,46 @@ fun SectionDetailScreen(
     val density = LocalDensity.current
     val navBarBottomDp = with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
 
-    // Centered + width-capped so the card keeps a comfortable reading width
+    // Follow the reading position for the drawer's active-section highlight.
+    LaunchedEffect(state, sections) {
+        androidx.compose.runtime.snapshotFlow { state.firstVisibleItemIndex }
+            .distinctUntilChanged()
+            .collect { index ->
+                sections.getOrNull(index)?.let { onActiveSectionChange(it.id) }
+            }
+    }
+
+    // When the requested section changes while this screen is already on
+    // screen (drawer navigation with launchSingleTop), jump to it.
+    LaunchedEffect(sectionId) {
+        state.scrollToItem(startIndex)
+    }
+
+    // Centered + width-capped so the cards keep a comfortable reading width
     // on tablets / desktop instead of stretching edge to edge.
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
             state = state,
             modifier = Modifier.contentMaxWidth().fillMaxSize(),
             contentPadding = PaddingValues(
+                top = 8.dp,
                 bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item(key = section.id) {
-                Column(modifier = Modifier.padding(top = 8.dp)) {
-                    SectionCard(
-                        section = section,
-                        toggles = toggles,
-                        style = style,
-                        isDark = isDark,
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                    )
-                }
+            items(items = sections, key = { it.id }) { section ->
+                SectionCard(
+                    section = section,
+                    toggles = toggles,
+                    style = style,
+                    isDark = isDark,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                )
+            }
+            item(key = "footer") {
+                Footer(modifier = Modifier.fillMaxWidth())
             }
         }
     }
