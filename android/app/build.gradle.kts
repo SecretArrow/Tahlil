@@ -50,8 +50,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            // TEMPORARILY DISABLED: R8 minification was causing runtime crashes
+            // on real devices (stripping classes needed by Compose/DataStore/WorkManager).
+            // The debug build (used by instrumented tests) has minification off,
+            // so connectedDebugAndroidTest passed while the minified release APK
+            // force-closed. Re-enable AFTER the root cause is identified and fixed
+            // with proper keep rules + release-build instrumented tests.
+            // Cost: APK grows ~1.8 MB → ~7 MB. A working 7 MB APK beats a broken 1.8 MB one.
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -143,7 +150,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // Splashscreen API
-    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // WorkManager — for background tasks (daily reading reminder)
     implementation("androidx.work:work-runtime-ktx:2.9.0")

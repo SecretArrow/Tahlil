@@ -7,9 +7,4 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
-
-    <!-- Splash screen theme. -->
-    <style name="Theme.TahlilDoa.Splash" parent="Theme.TahlilDoa">
-        <item name="android:windowBackground">@color/cream_background</item>
-    </style>
 </resources>

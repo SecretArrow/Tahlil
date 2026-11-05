@@ -1,24 +1,22 @@
 package com.tahlildoa.app.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.tahlildoa.app.data.ThemeMode
 
 /**
  * App theme — Material 3 with a custom emerald/gold palette derived from the
  * web app's OKLCH design tokens (see [Color.kt] for the conversion math).
  *
- * - When [dynamicColor] is true and the device supports it (Android 12+),
- *   the system palette is used so the app matches the user's wallpaper.
- * - Otherwise the custom OKLCH-derived palette is used.
- * - Dark mode follows [themeMode] with a System fallback.
+ * Dynamic color (Material You / `dynamicDarkColorScheme` /
+ * `dynamicLightColorScheme`) is intentionally NOT used: it reads system
+ * color resources that can fail or behave inconsistently on some OEM
+ * Android 12+ ROMs, and it isn't needed — the app ships a complete
+ * OKLCH-derived palette for both light and dark modes. Dark mode follows
+ * [themeMode] with a System fallback.
  */
 private val LightColors = lightColorScheme(
     primary = LightPrimary,
@@ -79,24 +77,18 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun TahlilDoaTheme(
     themeMode: ThemeMode = ThemeMode.System,
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val systemDark = isSystemInDarkTheme()
     val darkTheme = when (themeMode) {
-        ThemeMode.System -> systemDark
+        ThemeMode.System -> isSystemInDarkTheme()
         ThemeMode.Light -> false
         ThemeMode.Dark -> true
     }
 
-    val context = LocalContext.current
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColors
-        else -> LightColors
-    }
+    // Always use our custom OKLCH-derived palette — no dynamic color
+    // (dynamicDarkColorScheme / dynamicLightColorScheme can fail on
+    // some devices and isn't needed since we have a complete palette).
+    val colorScheme = if (darkTheme) DarkColors else LightColors
 
     MaterialTheme(
         colorScheme = colorScheme,

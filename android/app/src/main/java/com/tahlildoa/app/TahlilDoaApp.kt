@@ -14,9 +14,18 @@ import com.tahlildoa.app.work.BackgroundScheduler
  * constraint. The repository is created lazily and exposed via the
  * application context.
  *
- * The daily reminder is scheduled from [onCreate] via WorkManager's
- * `enqueueUniquePeriodicWork` with `KEEP` policy — this is idempotent
- * so re-scheduling on every app launch is safe and cheap.
+ * Launch-time work is ordered defensively so that no optional subsystem
+ * can force-close the app:
+ *
+ *  1. [TahlilCrashHandler] is installed FIRST — before anything else can
+ *     throw — so every subsequent crash is logged to logcat (tag
+ *     `TahlilCrash`) and persisted to `cache/last_crash.txt` for
+ *     inspection on the next launch.
+ *  2. The daily reminder is scheduled via WorkManager's
+ *     `enqueueUniquePeriodicWork` with `KEEP` policy (idempotent across
+ *     launches) inside a try/catch — a WorkManager initialization failure
+ *     is logged but never fatal. The reminder is a nice-to-have, not
+ *     critical functionality.
  */
 class TahlilDoaApp : Application() {
 
@@ -28,14 +37,20 @@ class TahlilDoaApp : Application() {
         super.onCreate()
         instance = this
 
-        // Schedule the daily reading reminder — KEEP policy means it
-        // won't replace an existing schedule (idempotent across launches).
-        // Wrapped in a try/catch so any WorkManager initialization issue
-        // is logged but doesn't crash the app on launch.
+        // Install the crash handler FIRST so any subsequent crash is logged.
+        try {
+            TahlilCrashHandler.install(cacheDir)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to install crash handler", e)
+        }
+
+        // Schedule the daily reading reminder — idempotent (KEEP policy).
         try {
             BackgroundScheduler.scheduleDailyReminder(this)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to schedule daily reminder", e)
+            // WorkManager init failure should NOT crash the app —
+            // the reminder is a nice-to-have, not critical functionality.
+            Log.e(TAG, "Failed to schedule reminder", e)
         }
     }
 

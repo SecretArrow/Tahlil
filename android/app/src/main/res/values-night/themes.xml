@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Dark theme — minimal framework theme, Compose handles the rest. -->
     <style name="Theme.TahlilDoa" parent="android:Theme.DeviceDefault.NoActionBar">
         <item name="android:windowBackground">@color/dark_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-    </style>
-
-    <style name="Theme.TahlilDoa.Splash" parent="Theme.TahlilDoa">
-        <item name="android:windowBackground">@color/dark_background</item>
     </style>
 </resources>
