@@ -128,12 +128,23 @@ android {
 }
 
 dependencies {
-    // AndroidX core
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation("androidx.activity:activity-compose:1.8.2")
+    // AndroidX core — bumped to match Tahlil-Singkat exactly.
+    // The previous versions (core-ktx 1.12.0, lifecycle 2.7.0, activity-compose 1.8.2,
+    // navigation-compose 2.7.7) were all COMPILED AGAINST COMPOSE 1.6.x. Even with
+    // our Compose BOM bumped to 2024.09.03, these libraries shipped bytecode that
+    // still references the pre-1.7 `androidx.compose.ui.modifier.ModifierLocalProvider`
+    // interface signature — and at runtime the JVM sees two conflicting default-method
+    // implementations of `ModifierLocalProvider.all(...)` (one from Compose UI 1.7.x,
+    // one residual from the 1.6.x-compiled transitive deps) and throws:
+    //   IncompatibleClassChangeError: Conflicting default method implementations
+    //   boolean androidx.compose.ui.modifier.ModifierLocalProvider.all(...)
+    // on the first composed frame. The fix is to use libraries that were themselves
+    // compiled against Compose 1.7.x.
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
+    implementation("androidx.activity:activity-compose:1.9.2")
 
     // Jetpack Compose (BOM-managed) — bumped to 2024.09.03 to ship Compose UI 1.7.x,
     // which fixes the `ModifierLocalProvider.all(...)` IncompatibleClassChangeError
@@ -150,8 +161,10 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.animation:animation")
 
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    // Navigation — 2.8.x is the first Navigation Compose release compiled
+    // against Compose UI 1.7.x. Earlier 2.7.x pulls Compose 1.6.x-compiled
+    // bytecode into the APK and re-introduces the ModifierLocalProvider ICE.
+    implementation("androidx.navigation:navigation-compose:2.8.4")
 
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
