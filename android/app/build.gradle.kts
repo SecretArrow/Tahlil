@@ -159,7 +159,11 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.animation:animation")
+    // NOTE: `androidx.compose.animation:animation` is intentionally NOT declared.
+    // Singkat doesn't declare it either — it comes in transitively via material3
+    // -> foundation -> animation. An explicit declaration caused R8 to retain more
+    // symbols from animation, increasing the surface for the ModifierLocalProvider
+    // IncompatibleClassChangeError. Let it come in transitively.
 
     // Navigation — 2.8.x is the first Navigation Compose release compiled
     // against Compose UI 1.7.x. Earlier 2.7.x pulls Compose 1.6.x-compiled
