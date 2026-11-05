@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    styles.xml — kept for legacy (non-Compose) widgets; Compose handles its
+    own styling. The Theme.TahlilDoa is defined in themes.xml.
+-->
+<resources>
+</resources>

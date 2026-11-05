@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Backup rules — declare which app data should be included in cloud
+    backups. DataStore preferences hold the user's display & typography
+    settings, which we want to restore on a new device.
+-->
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+    <include domain="file" path="datastore/." />
+</full-backup-content>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Circular background for ۝X ayah-mark ornament.
+    Used by Compose Box with CircleShape — this XML provides a fallback
+    legacy drawable (not currently referenced by Compose code, but kept
+    here for completeness / future use in non-Compose contexts).
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#1F10B981" />
+    <stroke
+        android:width="1.5dp"
+        android:color="#8010B981" />
+    <size
+        android:width="22dp"
+        android:height="22dp" />
+</shape>

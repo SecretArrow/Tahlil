@@ -1,0 +1,387 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-arabic: var(--font-arabic);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.875rem;
+  /* Light: warm cream background, emerald primary, gold accent */
+  --background: oklch(0.985 0.012 95);
+  --foreground: oklch(0.22 0.04 160);
+  --card: oklch(1 0.006 95);
+  --card-foreground: oklch(0.22 0.04 160);
+  --popover: oklch(1 0.006 95);
+  --popover-foreground: oklch(0.22 0.04 160);
+  --primary: oklch(0.42 0.09 165);
+  --primary-foreground: oklch(0.985 0.012 95);
+  --secondary: oklch(0.94 0.02 95);
+  --secondary-foreground: oklch(0.3 0.05 165);
+  --muted: oklch(0.95 0.015 95);
+  --muted-foreground: oklch(0.48 0.03 160);
+  --accent: oklch(0.78 0.13 85);
+  --accent-foreground: oklch(0.25 0.06 75);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.9 0.02 95);
+  --input: oklch(0.92 0.015 95);
+  --ring: oklch(0.55 0.1 165);
+  --chart-1: oklch(0.55 0.13 165);
+  --chart-2: oklch(0.7 0.14 85);
+  --chart-3: oklch(0.6 0.1 200);
+  --chart-4: oklch(0.65 0.15 50);
+  --chart-5: oklch(0.5 0.12 280);
+  --sidebar: oklch(0.985 0.012 95);
+  --sidebar-foreground: oklch(0.22 0.04 160);
+  --sidebar-primary: oklch(0.42 0.09 165);
+  --sidebar-primary-foreground: oklch(0.985 0.012 95);
+  --sidebar-accent: oklch(0.94 0.02 95);
+  --sidebar-accent-foreground: oklch(0.3 0.05 165);
+  --sidebar-border: oklch(0.9 0.02 95);
+  --sidebar-ring: oklch(0.55 0.1 165);
+
+  /* Custom Islamic-themed tokens */
+  --pattern-color: rgba(13, 79, 60, 0.04);
+  --ornament: oklch(0.7 0.13 85);
+}
+
+.dark {
+  /* Dark: deep forest green background, warm cream text, gold accent */
+  --background: oklch(0.16 0.02 165);
+  --foreground: oklch(0.95 0.015 95);
+  --card: oklch(0.2 0.025 165);
+  --card-foreground: oklch(0.95 0.015 95);
+  --popover: oklch(0.2 0.025 165);
+  --popover-foreground: oklch(0.95 0.015 95);
+  --primary: oklch(0.65 0.12 165);
+  --primary-foreground: oklch(0.16 0.02 165);
+  --secondary: oklch(0.25 0.025 165);
+  --secondary-foreground: oklch(0.95 0.015 95);
+  --muted: oklch(0.25 0.02 165);
+  --muted-foreground: oklch(0.7 0.02 95);
+  --accent: oklch(0.72 0.13 85);
+  --accent-foreground: oklch(0.2 0.03 75);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.6 0.1 165);
+  --chart-1: oklch(0.65 0.13 165);
+  --chart-2: oklch(0.75 0.14 85);
+  --chart-3: oklch(0.6 0.1 200);
+  --chart-4: oklch(0.7 0.15 50);
+  --chart-5: oklch(0.6 0.12 280);
+  --sidebar: oklch(0.2 0.025 165);
+  --sidebar-foreground: oklch(0.95 0.015 95);
+  --sidebar-primary: oklch(0.65 0.12 165);
+  --sidebar-primary-foreground: oklch(0.16 0.02 165);
+  --sidebar-accent: oklch(0.25 0.02 165);
+  --sidebar-accent-foreground: oklch(0.95 0.015 95);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.6 0.1 165);
+
+  --pattern-color: rgba(212, 175, 55, 0.06);
+  --ornament: oklch(0.78 0.13 85);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(
+        circle at 15% 20%,
+        var(--pattern-color) 0,
+        transparent 35%
+      ),
+      radial-gradient(
+        circle at 85% 75%,
+        var(--pattern-color) 0,
+        transparent 40%
+      );
+    background-attachment: fixed;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--primary) 35%, transparent);
+  border-radius: 999px;
+  border: 2px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--primary) 55%, transparent);
+}
+
+/* Arabic text styling — base typography is applied inline by <ArabicText/>
+   so user-controlled font/size/line-height/word-spacing/alignment always wins.
+   These classes only carry font-family fallback + direction. */
+.font-arabic {
+  font-family: var(--font-arabic), "Amiri", "Scheherazade New", serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+.font-arabic-quran {
+  font-family: var(--font-arabic-quran), "Amiri Quran",
+    var(--font-arabic-naskh), "Scheherazade New", serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+  -webkit-font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+}
+/* Naskhi Tebal (Pemula) — Scheherazade New with joining ligatures & calt
+   disabled for horizontal, un-joined letter forms (isolated forms) that are
+   easier for beginners to recognise letter-by-letter.
+   CRITICAL: mark/mkmk/ccmp explicitly ENABLED so ALL harakat (fathah,
+   kasrah, dammah, shadda, sukun, tanwin, madda, dagger alef, etc.) attach
+   correctly to every letter — even in isolated form. kern re-enabled for
+   better spacing & mark positioning. rvrn (required variation alternates)
+   re-enabled because it's needed for proper glyph selection. */
+.font-arabic-naskhi {
+  font-family: var(--font-arabic-naskh), "Scheherazade New", "Amiri", serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-weight: 700;
+  /* Disable ligatures & contextual alternates (joining) so each letter
+     stands alone. Keep all mark-positioning features ON for harakat. */
+  font-feature-settings: "liga" 0, "rlig" 0, "dlig" 0, "clig" 0, "calt" 0,
+    "ccmp" 1, "mark" 1, "mkmk" 1, "kern" 1, "rvrn" 1;
+  -webkit-font-feature-settings: "liga" 0, "rlig" 0, "dlig" 0, "clig" 0,
+    "calt" 0, "ccmp" 1, "mark" 1, "mkmk" 1, "kern" 1, "rvrn" 1;
+  font-variant-ligatures: no-common-ligatures no-discretionary-ligatures;
+  /* Slight letter spacing for clarity (does not affect RTL flow) */
+  letter-spacing: 0.01em;
+}
+
+/* ── Ayah Mark (۝ + number) ──────────────────────────────────────────
+   The ۝ (U+06DD ARABIC END OF AYAH) is an ornamental symbol that should
+   have the ayah number INSIDE it (centered). Font rendering of the ۝
+   with embedded digits is inconsistent across Amiri / Amiri Quran /
+   Scheherazade New, so we draw a decorative double-circle via CSS and
+   center the digit inside it. The ۝ character is kept in the DOM for
+   accessibility (aria-hidden) but visually hidden. */
+.ayah-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0 0.15em;
+  vertical-align: middle;
+  position: relative;
+  /* Outer decorative circle */
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+/* Inner decorative ring (gives the "ornamental" double-circle look) */
+.ayah-mark::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 0.5px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.45;
+}
+/* Hide the raw ۝ character — CSS-drawn circles are used instead */
+.ayah-mark-ornament {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.ayah-mark-digit {
+  position: relative;
+  z-index: 1;
+  font-size: 0.55em;
+  font-weight: 700;
+  line-height: 1;
+  font-family: inherit;
+  white-space: nowrap;
+  opacity: 1;
+}
+
+/* Each ayat (mark + following text) wrapped in .ayah-line so it breaks to
+   a new line on ALL viewports for readability & memorisation.
+   For long dua text (no ayah marks), the text is also split by sentence
+   (Arabic comma ، or Latin period .) so each clause gets its own line. */
+.ayah-line {
+  display: block;
+  margin-bottom: 0.25em;
+}
+
+/* Decorative Islamic pattern background utility */
+.islamic-pattern {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(
+      var(--pattern-color) 1.5px,
+      transparent 1.5px
+    );
+  background-size: 22px 22px;
+}
+
+/* Ornamental divider */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--ornament);
+}
+.ornament-divider::before,
+.ornament-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  max-width: 8rem;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklch, var(--ornament) 60%, transparent),
+    transparent
+  );
+}
+
+/* Animated gradient text */
+.gradient-text {
+  background: linear-gradient(
+    120deg,
+    oklch(0.42 0.09 165),
+    oklch(0.6 0.12 145),
+    oklch(0.72 0.13 85)
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(
+    120deg,
+    oklch(0.72 0.12 165),
+    oklch(0.8 0.13 145),
+    oklch(0.82 0.13 85)
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Subtle floating animation */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Gentle pulse for ornaments */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+.animate-glow {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+/* Shimmer effect for hero */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Glass morphism */
+.glass {
+  background: color-mix(in oklch, var(--card) 70%, transparent);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+}

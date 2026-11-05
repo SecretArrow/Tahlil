@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#0D9488</color>
+    <color name="emerald_40">#FF10B981</color>
+    <color name="emerald_80">#FF74E5B8</color>
+    <color name="amber_50">#FFF59E0B</color>
+    <color name="amber_80">#FFFFD070</color>
+    <color name="cream_background">#FFFAF7F0</color>
+    <color name="dark_background">#FF0A1612</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>

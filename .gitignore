@@ -1,0 +1,46 @@
+# Node.js
+node_modules/
+.next/
+out/
+.env*.local
+npm-debug.log*
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+android/.cxx/
+*.iml
+.idea/
+.DS_Store
+
+# Build outputs
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Cache
+.gradle/
+gradle/caches/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+dev.log
+
+# Secrets
+secrets/
+.env
+*.pem
+*.p12

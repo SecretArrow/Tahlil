@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fullscreen launcher icon (foreground) — mosque dome silhouette with
+    crescent moon above. Vector path drawn in white on a transparent
+    background; the adaptive-icon background provides the emerald gradient.
+    Designed for adaptive-icon sizing (108dp viewport with 72dp safe area).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Mosque dome silhouette -->
+    <group
+        android:scaleX="0.95"
+        android:scaleY="0.95"
+        android:pivotX="54"
+        android:pivotY="54">
+        <!-- Crescent moon (above dome) -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M60,18
+                              a16,16 0 1,0 0,28
+                              a12,12 0 1,1 0,-28 z" />
+        <!-- Main dome body -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M54,30
+                              C40,30 32,42 32,56
+                              L32,76
+                              L76,76
+                              L76,56
+                              C76,42 68,30 54,30 z" />
+        <!-- Dome finial -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M52,22 L56,22 L56,32 L52,32 z" />
+        <!-- Doorway (negative space carved out) -->
+        <path
+            android:fillColor="#FF0D9488"
+            android:pathData="M50,62
+                              a4,4 0 0,1 8,0
+                              L58,76
+                              L50,76 z" />
+        <!-- Side windows -->
+        <path
+            android:fillColor="#FF0D9488"
+            android:pathData="M38,58 L44,58 L44,68 L38,68 z" />
+        <path
+            android:fillColor="#FF0D9488"
+            android:pathData="M64,58 L70,58 L70,68 L64,68 z" />
+        <!-- Minaret left -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M24,44 L28,44 L28,76 L24,76 z" />
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M24,40 L28,40 L28,46 L24,46 z" />
+        <!-- Minaret right -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M80,44 L84,44 L84,76 L80,76 z" />
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M80,40 L84,40 L84,46 L80,46 z" />
+        <!-- Ground line -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M20,76 L88,76 L88,80 L20,80 z" />
+    </group>
+</vector>
