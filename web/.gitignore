@@ -1,0 +1,7 @@
+
+# Test / build artifacts (Playwright crash dumps, run state, build output)
+/test-results/
+/playwright-report/
+/.next/
+/core
+*.core
