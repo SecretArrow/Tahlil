@@ -123,7 +123,9 @@ describe("tahlil-content — no forbidden references", () => {
             token.length <= 3
               ? new RegExp(`\\b${token}\\b`)
               : new RegExp(token.replace(/\s+/g, "\\s+"), "i");
-          expect(re.test(hay), `${variant}: ${hay} (matched token)`).toBe(false);
+          expect(re.test(hay), `${variant}: ${hay} (matched token)`).toBe(
+            false,
+          );
         }
       }
     }

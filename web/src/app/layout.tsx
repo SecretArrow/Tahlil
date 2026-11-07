@@ -143,8 +143,7 @@ function parseDisplayToggles(raw: string | null): DisplayToggles {
       translation: typeof p.translation === "boolean" ? p.translation : true,
       punctuateArabic:
         typeof p.punctuateArabic === "boolean" ? p.punctuateArabic : false,
-      breakOnComma:
-        typeof p.breakOnComma === "boolean" ? p.breakOnComma : true,
+      breakOnComma: typeof p.breakOnComma === "boolean" ? p.breakOnComma : true,
       colorizeArabic:
         typeof p.colorizeArabic === "boolean" ? p.colorizeArabic : false,
     };
