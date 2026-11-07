@@ -123,8 +123,8 @@ fun ArabicText(
         )
 
     val lines =
-        remember(renderedText, colors, counter) {
-            buildLines(renderedText, colors, counter)
+        remember(renderedText, colors, counter, toggles.breakOnComma) {
+            buildLines(renderedText, colors, counter, toggles.breakOnComma)
         }
 
     SelectionContainer {
@@ -270,9 +270,13 @@ private fun AyahMark(
  * Build the list of [Line]s for the given [text].
  *
  * If the text contains ayah marks (۝X), split by ayah marks — each verse
- * ends with its mark on the same line.
- * Otherwise split by sentence delimiters (، or .) — each clause ends with
- * its delimiter on its own line.
+ * ends with its mark on the same line. Ayah marks are real verse
+ * boundaries and always force a line break, regardless of [breakOnComma].
+ *
+ * Otherwise (or within each verse), sentence delimiters (، or .) only
+ * force a line break when [breakOnComma] is true. When false, each verse
+ * (or the whole non-ayah text) is emitted as a single block line instead
+ * of being sub-split by comma/period — letting the Arabic text flow.
  *
  * Each non-whitespace word within a line is colored alternately if
  * [colors] is non-null. The [counter] is shared across all lines.
@@ -281,14 +285,21 @@ private fun buildLines(
     text: String,
     colors: ColorizeUtil.ColorPair?,
     counter: ColorizeUtil.Counter,
+    breakOnComma: Boolean,
 ): List<Line> {
     val ayahMarks = AyahMarkUtil.findMarks(text)
     val out = mutableListOf<Line>()
 
     if (ayahMarks.isEmpty()) {
-        // No ayah marks — split by sentence.
-        AyahMarkUtil.splitBySentence(text).forEach { sentenceLine ->
-            out.add(Line.Sentence(colorizeLine(sentenceLine.text, colors, counter)))
+        // No ayah marks — split by sentence when breakOnComma is on; emit
+        // the whole text as a single line otherwise. (Skip empty/whitespace
+        // text entirely, mirroring splitBySentence's own empty guard.)
+        if (breakOnComma) {
+            AyahMarkUtil.splitBySentence(text).forEach { sentenceLine ->
+                out.add(Line.Sentence(colorizeLine(sentenceLine.text, colors, counter)))
+            }
+        } else if (text.trim().isNotEmpty()) {
+            out.add(Line.Sentence(colorizeLine(text, colors, counter)))
         }
         return out
     }
@@ -297,10 +308,14 @@ private fun buildLines(
     for (mark in ayahMarks) {
         val verse = text.substring(cursor, mark.start)
         // Try sentence-splitting within the verse for dua-style text mixed
-        // with ayah marks. If splitBySentence yields one fragment, colorize
-        // and emit as a verse. If multiple, emit each as a sentence then a
-        // final verse with the mark.
-        val sentences = AyahMarkUtil.splitBySentence(verse)
+        // with ayah marks. When breakOnComma is off, treat the whole verse
+        // as a single fragment so it stays on one line with its mark.
+        val sentences =
+            if (breakOnComma) {
+                AyahMarkUtil.splitBySentence(verse)
+            } else {
+                listOf(AyahMarkUtil.SentenceLine(verse))
+            }
         if (sentences.size <= 1) {
             out.add(Line.Ayah(colorizeLine(verse, colors, counter), mark.digits))
         } else {
@@ -319,8 +334,12 @@ private fun buildLines(
     // Trailing text after the last mark.
     if (cursor < text.length) {
         val trailing = text.substring(cursor)
-        AyahMarkUtil.splitBySentence(trailing).forEach { s ->
-            out.add(Line.Trailing(colorizeLine(s.text, colors, counter)))
+        if (breakOnComma) {
+            AyahMarkUtil.splitBySentence(trailing).forEach { s ->
+                out.add(Line.Trailing(colorizeLine(s.text, colors, counter)))
+            }
+        } else if (trailing.trim().isNotEmpty()) {
+            out.add(Line.Trailing(colorizeLine(trailing, colors, counter)))
         }
     }
     return out

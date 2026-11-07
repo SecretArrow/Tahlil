@@ -12,6 +12,11 @@ import kotlinx.serialization.Serializable
  *                     connectors — mirroring the punctuation already present
  *                     in the Indonesian translation. Quran verses (with ۝ or
  *                     ۩ marks) are never modified.
+ * - breakOnComma:     When true (default), each Arabic comma (،) and Latin
+ *                     period (.) in Arabic text starts a new line — the
+ *                     classic per-clause layout. When false, Arabic text
+ *                     flows as a single block (only ayah marks still force
+ *                     a line break, since they are real verse boundaries).
  * - colorizeArabic:   When true, each Arabic word is rendered in one of two
  *                     alternating shades so consecutive words are visually
  *                     distinguishable.
@@ -25,6 +30,8 @@ import kotlinx.serialization.Serializable
  *
  * All toggles default to true except [punctuateArabic], [colorizeArabic],
  * [keepScreenOn], and [dailyReminder], matching the web app's defaults.
+ * [breakOnComma] also defaults to true to preserve the historical per-clause
+ * line layout.
  */
 @Serializable
 data class DisplayToggles(
@@ -32,6 +39,7 @@ data class DisplayToggles(
     val transliteration: Boolean = true,
     val translation: Boolean = true,
     val punctuateArabic: Boolean = false,
+    val breakOnComma: Boolean = true,
     val colorizeArabic: Boolean = false,
     val keepScreenOn: Boolean = false,
     val dailyReminder: Boolean = false,

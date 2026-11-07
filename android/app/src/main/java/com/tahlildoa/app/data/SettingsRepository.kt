@@ -52,6 +52,7 @@ class SettingsRepository(
     private val KEY_TRANSLIT = booleanPreferencesKey("display_transliteration")
     private val KEY_TRANSLATION = booleanPreferencesKey("display_translation")
     private val KEY_PUNCTUATE = booleanPreferencesKey("display_punctuate_arabic")
+    private val KEY_BREAK_ON_COMMA = booleanPreferencesKey("display_break_on_comma")
     private val KEY_COLORIZE = booleanPreferencesKey("display_colorize_arabic")
     private val KEY_KEEP_SCREEN_ON = booleanPreferencesKey("display_keep_screen_on")
     private val KEY_DAILY_REMINDER = booleanPreferencesKey("display_daily_reminder")
@@ -80,6 +81,7 @@ class SettingsRepository(
                 transliteration = p[KEY_TRANSLIT] ?: true,
                 translation = p[KEY_TRANSLATION] ?: true,
                 punctuateArabic = p[KEY_PUNCTUATE] ?: false,
+                breakOnComma = p[KEY_BREAK_ON_COMMA] ?: true,
                 colorizeArabic = p[KEY_COLORIZE] ?: false,
                 keepScreenOn = p[KEY_KEEP_SCREEN_ON] ?: false,
                 dailyReminder = p[KEY_DAILY_REMINDER] ?: false,
@@ -128,6 +130,7 @@ class SettingsRepository(
             p[KEY_TRANSLIT] = toggles.transliteration
             p[KEY_TRANSLATION] = toggles.translation
             p[KEY_PUNCTUATE] = toggles.punctuateArabic
+            p[KEY_BREAK_ON_COMMA] = toggles.breakOnComma
             p[KEY_COLORIZE] = toggles.colorizeArabic
             p[KEY_KEEP_SCREEN_ON] = toggles.keepScreenOn
             p[KEY_DAILY_REMINDER] = toggles.dailyReminder

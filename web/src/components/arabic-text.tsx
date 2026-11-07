@@ -226,6 +226,29 @@ function maybeColorize(
 }
 
 /**
+ * Render the whole `text` as a single `.ayah-line` span — used when the
+ * `breakOnComma` toggle is OFF. Preserves word-level colorization (via
+ * `maybeColorize`) and the RTL line styling, but does NOT split on Arabic
+ * commas (،) or Latin periods (.). The text still word-wraps naturally
+ * via CSS. Mirrors `splitBySentence`'s trimming + empty-fragment handling
+ * so the two paths are interchangeable.
+ */
+function renderAsSingleLine(
+  text: string,
+  keyPrefix: string,
+  colors: readonly [string, string] | null,
+  counterRef: { current: number },
+): React.ReactNode[] {
+  const trimmed = text.trim();
+  if (!trimmed) return [<React.Fragment key={`${keyPrefix}-0`} />];
+  return [
+    <span key={`${keyPrefix}-0`} className="ayah-line" style={LINE_STYLE}>
+      {maybeColorize(trimmed, colors, counterRef, keyPrefix)}
+    </span>,
+  ];
+}
+
+/**
  * Parse an Arabic string and return an array of React nodes where:
  *  - each ayah (text + ۝X mark) is wrapped together in an `.ayah-line` span,
  *    with the ayah number mark placed at the END of the verse text —
@@ -245,12 +268,16 @@ function renderArabicWithAyahMarks(
   keyPrefix: string,
   colors: readonly [string, string] | null = null,
   counterRef: { current: number } = { current: 0 },
+  breakOnComma: boolean = true,
 ): React.ReactNode[] {
   const matches = Array.from(text.matchAll(AYAH_MARK_REGEX));
   if (matches.length === 0) {
     // No ayah marks — this is likely a long dua text.
-    // Split by Arabic comma (،) or Latin period (.) to break into lines.
-    return splitBySentence(text, keyPrefix, colors, counterRef);
+    // Split by Arabic comma (،) or Latin period (.) to break into lines,
+    // unless the `breakOnComma` toggle is OFF (then render as one block).
+    return breakOnComma
+      ? splitBySentence(text, keyPrefix, colors, counterRef)
+      : renderAsSingleLine(text, keyPrefix, colors, counterRef);
   }
 
   const nodes: React.ReactNode[] = [];
@@ -286,9 +313,17 @@ function renderArabicWithAyahMarks(
   // without a closing mark, or whitespace) — render it as a trailing line.
   if (cursor < text.length) {
     const trailing = text.substring(cursor);
-    // Also split trailing by sentence for dua-style text
+    // Also split trailing by sentence for dua-style text, unless the
+    // `breakOnComma` toggle is OFF (then render as a single trailing line).
     nodes.push(
-      ...splitBySentence(trailing, `${keyPrefix}-trail`, colors, counterRef),
+      ...(breakOnComma
+        ? splitBySentence(trailing, `${keyPrefix}-trail`, colors, counterRef)
+        : renderAsSingleLine(
+            trailing,
+            `${keyPrefix}-trail`,
+            colors,
+            counterRef,
+          )),
     );
   }
 
@@ -431,7 +466,13 @@ export function ArabicText({
       style={style}
       {...rest}
     >
-      {renderArabicWithAyahMarks(renderedText, "t", colors, counterRef)}
+      {renderArabicWithAyahMarks(
+        renderedText,
+        "t",
+        colors,
+        counterRef,
+        toggles.breakOnComma,
+      )}
       {suffix}
     </p>
   );

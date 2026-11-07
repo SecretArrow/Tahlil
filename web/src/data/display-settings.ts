@@ -19,6 +19,15 @@ export type DisplayToggles = {
    */
   punctuateArabic: boolean;
   /**
+   * When true (default), each Arabic comma (،) and Latin period (.) in
+   * Arabic text starts a new line — the long-standing hardcoded behaviour
+   * in `splitBySentence`. When false, the Arabic text flows as a single
+   * block (no line break per comma); it still word-wraps naturally via
+   * CSS. Ayah marks (۝X) are real verse boundaries and are always split
+   * regardless of this toggle.
+   */
+  breakOnComma: boolean;
+  /**
    * When true, each Arabic word is wrapped in a colored span, alternating
    * between two shades so consecutive words are visually distinguishable.
    * The two shades are picked based on the active theme:
@@ -35,5 +44,6 @@ export const defaultDisplayToggles: DisplayToggles = {
   transliteration: true,
   translation: true,
   punctuateArabic: false,
+  breakOnComma: true,
   colorizeArabic: false,
 };

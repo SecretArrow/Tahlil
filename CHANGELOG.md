@@ -105,15 +105,15 @@ Semua pembaharuan dan perbaikan dari awal pengembangan hingga saat ini.
 - Doa hadiah/isal tsawab mulai dengan "Ilaa/Tsumma ilaa" (bukan "Ya Allah")
 - Doa permohonan mulai dengan "Ya Allah"
 
-### Hapus Semua Penyebutan NU/Nahdlatul Ulama
+### Hapus Semua Penyebutan Referensi Organisasi
 
 - Hapus `wa khushushon ilaa mu-aassisi jam'iyyati nahdhatil-'ulamaa` dari Arab/Latin/Terjemahan
-- Tidak ada satu pun penyebutan NU di seluruh teks
+- Tidak ada satu pun penyebutan organisasi di seluruh teks
 
 ### Tambah Blok: Ikhwan Nabi + Syekh Abdul Qadir al-Jilani
 
 - Section 3 sekarang 7 blok:
-  1. Ikhwan Nabi (TANPA menyebut NU)
+  1. Ikhwan Nabi (tanpa menyebut organisasi)
   2. Al-Fatihah
   3. Tahlil awal
   4. Syaikh/guru
@@ -200,14 +200,14 @@ Semua pembaharuan dan perbaikan dari awal pengembangan hingga saat ini.
 - Suggested settings untuk Naskhi: fontSize 2.0, lineHeight 2.6, wordSpacing 0.18, letterSpacing 0.03
 - File: `src/data/arabic-style.ts`, `src/components/arabic-style-panel.tsx`, `src/components/arabic-text.tsx`
 
-### Audit & Bandingkan dengan Versi NU (quran.nu.or.id/tahlil)
+### Audit & Bandingkan dengan Versi organisasi (sumber referensi tahlil publik)
 
 - Perbandingan struktur tanpa mengubah yang ada
-- Identifikasi perbedaan struktur dengan kitab tahlil versi NU
+- Identifikasi perbedaan struktur dengan kitab tahlil versi referensi publik
 
 ### Inisialisasi Web Tahlil Singkat
 
-- Web Tahlil Singkat (dari PDF Salik Channel) — support PC/Android
+- Web Tahlil Singkat (dari PDF kitab tahlil cetak) — support PC/Android
 - Tampilan menarik dengan palet Islamic emerald/gold
 - Mode gelap/terang (next-themes)
 - State saat di scroll (IntersectionObserver untuk active section tracking)
@@ -289,6 +289,6 @@ scripts/
 
 ## Sumber Referensi
 
-- **Kitab Tahlil**: Salik Channel (PDF)
-- **Perbandingan**: quran.nu.or.id/tahlil (versi NU)
+- **Kitab Tahlil**: Kitab Tahlil cetak (PDF)
+- **Perbandingan**: sumber referensi tahlil publik
 - **Konvensi Arab**: Idgham untuk lam1 "Allah" (standar Arab), sukun eksplisit untuk artikel wa+al+syamsiyyah

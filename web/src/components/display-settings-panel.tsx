@@ -11,6 +11,7 @@ import {
   RotateCcw,
   ListPlus,
   Palette,
+  WrapText,
 } from "lucide-react";
 import { useDisplaySettings } from "@/components/display-settings-provider";
 import { ArabicText } from "@/components/arabic-text";
@@ -246,6 +247,15 @@ export function DisplaySettingsPanel({ open, onClose }: Props) {
                 active={toggles.punctuateArabic}
                 onToggle={() =>
                   setToggle("punctuateArabic", !toggles.punctuateArabic)
+                }
+              />
+              <ToggleRow
+                label="Pisah Baris per Koma"
+                description="Setiap koma (،) memulai baris baru pada teks Arab"
+                icon={WrapText}
+                active={toggles.breakOnComma}
+                onToggle={() =>
+                  setToggle("breakOnComma", !toggles.breakOnComma)
                 }
               />
               <ToggleRow
