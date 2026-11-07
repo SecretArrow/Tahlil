@@ -1,22 +1,32 @@
 package com.tahlildoa.app.data
 
 import android.content.Context
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-/** Type of a section — drives the colored badge and accent color. */
+/**
+ * Type of a section — drives the colored badge and accent color.
+ *
+ * Each constant carries a lowercase [key] (used by [fromKey] lookups and as
+ * the JSON discriminator) and a localized [label]. The [SerialName] on each
+ * constant makes kotlinx.serialization read/write the lowercase key from
+ * `assets/tahlil-content.json` (e.g. `"pembukaan"`) instead of the Kotlin
+ * enum name (`Pembukaan`) — the JSON file is shared with the web app, which
+ * uses the lowercase form.
+ */
 @Serializable
 enum class SectionType(
     val key: String,
     val label: String,
 ) {
-    Pembukaan("pembukaan", "Pembukaan"),
-    Sholawat("sholawat", "Shalawat"),
-    Surah("surah", "Surat"),
-    Tahlil("tahlil", "Tahlil"),
-    Ayat("ayat", "Ayat"),
-    Doa("doa", "Doa"),
-    Dzikir("dzikir", "Dzikir"),
+    @SerialName("pembukaan") Pembukaan("pembukaan", "Pembukaan"),
+    @SerialName("sholawat") Sholawat("sholawat", "Shalawat"),
+    @SerialName("surah") Surah("surah", "Surat"),
+    @SerialName("tahlil") Tahlil("tahlil", "Tahlil"),
+    @SerialName("ayat") Ayat("ayat", "Ayat"),
+    @SerialName("doa") Doa("doa", "Doa"),
+    @SerialName("dzikir") Dzikir("dzikir", "Dzikir"),
     ;
 
     companion object {
