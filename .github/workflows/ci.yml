@@ -302,9 +302,13 @@ jobs:
           fi
           # Decode the base64 zip into a temp file
           echo "$KEYSTORE_ZIP_BASE64" | base64 -d > "$RUNNER_TEMP/key-sign-apk.zip"
-          # Verify the zip is valid before unzipping
-          unzip -t "$RUNNER_TEMP/key-sign-apk.zip" >/dev/null 2>&1 || {
-            echo "ERROR: key-sign-apk.zip is corrupt or not a valid zip."
+          # Verify the zip is a valid archive BEFORE attempting the
+          # password-protected extraction. Note: `unzip -t` on an
+          # encrypted zip needs `-P` to read the encrypted entries,
+          # otherwise it reports "unable to get password" and exits
+          # non-zero on stricter runners (e.g. GitHub's Ubuntu image).
+          unzip -t -P "$KEYSTORE_ZIP_PASSWORD" "$RUNNER_TEMP/key-sign-apk.zip" >/dev/null 2>&1 || {
+            echo "ERROR: key-sign-apk.zip is corrupt, not a valid zip, or the zip password is wrong."
             exit 1
           }
           # Unzip with the password into a fresh dir
