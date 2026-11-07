@@ -20,13 +20,26 @@ enum class SectionType(
     val key: String,
     val label: String,
 ) {
-    @SerialName("pembukaan") Pembukaan("pembukaan", "Pembukaan"),
-    @SerialName("sholawat") Sholawat("sholawat", "Shalawat"),
-    @SerialName("surah") Surah("surah", "Surat"),
-    @SerialName("tahlil") Tahlil("tahlil", "Tahlil"),
-    @SerialName("ayat") Ayat("ayat", "Ayat"),
-    @SerialName("doa") Doa("doa", "Doa"),
-    @SerialName("dzikir") Dzikir("dzikir", "Dzikir"),
+    @SerialName("pembukaan")
+    Pembukaan("pembukaan", "Pembukaan"),
+
+    @SerialName("sholawat")
+    Sholawat("sholawat", "Shalawat"),
+
+    @SerialName("surah")
+    Surah("surah", "Surat"),
+
+    @SerialName("tahlil")
+    Tahlil("tahlil", "Tahlil"),
+
+    @SerialName("ayat")
+    Ayat("ayat", "Ayat"),
+
+    @SerialName("doa")
+    Doa("doa", "Doa"),
+
+    @SerialName("dzikir")
+    Dzikir("dzikir", "Dzikir"),
     ;
 
     companion object {
