@@ -7,22 +7,22 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { getTahlilSections, tahlilSource } from "@/data/tahlil-content";
 import { useDisplaySettings } from "@/components/display-settings-provider";
 
-
 type HeaderProps = {
   onOpenNav: () => void;
   onOpenArabicStyle: () => void;
   onOpenDisplay: () => void;
 };
 
-export function Header({ onOpenNav, onOpenArabicStyle, onOpenDisplay }: HeaderProps) {
+export function Header({
+  onOpenNav,
+  onOpenArabicStyle,
+  onOpenDisplay,
+}: HeaderProps) {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = React.useState(false);
   const [activeId, setActiveId] = React.useState<string>("");
   const { variant } = useDisplaySettings();
-  const sections = React.useMemo(
-    () => getTahlilSections(variant),
-    [variant]
-  );
+  const sections = React.useMemo(() => getTahlilSections(variant), [variant]);
 
   useMotionValueEvent(scrollY, "change", (v) => {
     setScrolled(v > 24);
@@ -38,7 +38,7 @@ export function Header({ onOpenNav, onOpenArabicStyle, onOpenDisplay }: HeaderPr
           }
         });
       },
-      { rootMargin: "-30% 0px -55% 0px", threshold: 0 }
+      { rootMargin: "-30% 0px -55% 0px", threshold: 0 },
     );
     sections.forEach((s) => {
       const el = document.getElementById(s.id);
@@ -145,10 +145,7 @@ export function MobileNav({
   onClose: () => void;
 }) {
   const { variant } = useDisplaySettings();
-  const sections = React.useMemo(
-    () => getTahlilSections(variant),
-    [variant]
-  );
+  const sections = React.useMemo(() => getTahlilSections(variant), [variant]);
   return (
     <motion.div
       initial={false}

@@ -72,12 +72,13 @@ fun SettingsScreen(
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
             modifier = Modifier.contentMaxWidth().fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 12.dp,
-                bottom = navBarBottomDp + 8.dp,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 12.dp,
+                    bottom = navBarBottomDp + 8.dp,
+                ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item { SectionTitle("Tampilan") }
@@ -112,11 +113,12 @@ private fun SectionTitle(text: String) {
 @Composable
 private fun SettingsCard(content: @Composable () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         content()
     }
@@ -211,15 +213,20 @@ private fun LazyListScope.variantSection(
 }
 
 @Composable
-private fun ThemeChip(label: String, selected: Boolean, onClick: () -> Unit) {
+private fun ThemeChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
     FilterChip(
         selected = selected,
         onClick = onClick,
         label = { Text(label) },
-        colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
-            selectedLabelColor = MaterialTheme.colorScheme.primary,
-        ),
+        colors =
+            FilterChipDefaults.filterChipColors(
+                selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                selectedLabelColor = MaterialTheme.colorScheme.primary,
+            ),
     )
 }
 
@@ -237,11 +244,12 @@ private fun LazyListScope.fontModeSection(
                         onClick = {
                             // When switching to Naskhi for the first time,
                             // apply the suggested defaults.
-                            val nextStyle = if (mode == ArabicStyleMode.Naskhi) {
-                                ArabicStyleSettings.NaskhiSuggested
-                            } else {
-                                style.copy(mode = mode)
-                            }
+                            val nextStyle =
+                                if (mode == ArabicStyleMode.Naskhi) {
+                                    ArabicStyleSettings.NaskhiSuggested
+                                } else {
+                                    style.copy(mode = mode)
+                                }
                             onChange(nextStyle)
                         },
                     )
@@ -265,10 +273,11 @@ private fun FontModeRow(
             selected = selected,
             onClick = onClick,
             label = { Text(mode.label) },
-            colors = FilterChipDefaults.filterChipColors(
-                selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
-                selectedLabelColor = MaterialTheme.colorScheme.primary,
-            ),
+            colors =
+                FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                    selectedLabelColor = MaterialTheme.colorScheme.primary,
+                ),
         )
     }
     Spacer(Modifier.height(4.dp))
@@ -329,19 +338,21 @@ private fun LazyListScope.typographySection(
                     selected = style.align == ArabicAlign.Right,
                     onClick = { onChange(style.copy(align = ArabicAlign.Right)) },
                     label = { Text(ArabicAlign.Right.label) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
-                        selectedLabelColor = MaterialTheme.colorScheme.primary,
-                    ),
+                    colors =
+                        FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                            selectedLabelColor = MaterialTheme.colorScheme.primary,
+                        ),
                 )
                 FilterChip(
                     selected = style.align == ArabicAlign.Justify,
                     onClick = { onChange(style.copy(align = ArabicAlign.Justify)) },
                     label = { Text(ArabicAlign.Justify.label) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
-                        selectedLabelColor = MaterialTheme.colorScheme.primary,
-                    ),
+                    colors =
+                        FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                            selectedLabelColor = MaterialTheme.colorScheme.primary,
+                        ),
                 )
             }
         }

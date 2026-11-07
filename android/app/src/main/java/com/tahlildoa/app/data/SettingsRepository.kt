@@ -12,19 +12,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /** Theme preference — System follows the platform setting, Light/Dark force. */
-enum class ThemeMode(val storageKey: String, val label: String) {
+enum class ThemeMode(
+    val storageKey: String,
+    val label: String,
+) {
     System("system", "Sistem"),
     Light("light", "Terang"),
-    Dark("dark", "Gelap");
+    Dark("dark", "Gelap"),
+    ;
 
     companion object {
-        fun fromStorageKey(key: String?): ThemeMode =
-            values().firstOrNull { it.storageKey == key } ?: System
+        fun fromStorageKey(key: String?): ThemeMode = values().firstOrNull { it.storageKey == key } ?: System
     }
 }
 
 private val Context.tahlilDataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "tahlil_settings"
+    name = "tahlil_settings",
 )
 
 /**
@@ -41,8 +44,9 @@ private val Context.tahlilDataStore: DataStore<Preferences> by preferencesDataSt
  * "continue last reading" pointer ([lastReadSectionId]) so the app can
  * restore the user's last opened section on the next launch.
  */
-class SettingsRepository(private val context: Context) {
-
+class SettingsRepository(
+    private val context: Context,
+) {
     // --- Display toggles -------------------------------------------------
     private val KEY_ARABIC = booleanPreferencesKey("display_arabic")
     private val KEY_TRANSLIT = booleanPreferencesKey("display_transliteration")
@@ -69,48 +73,53 @@ class SettingsRepository(private val context: Context) {
     // --- Continue last reading -------------------------------------------
     private val KEY_LAST_READ_SECTION = stringPreferencesKey("last_read_section_id")
 
-    val displayToggles: Flow<DisplayToggles> = context.tahlilDataStore.data.map { p ->
-        DisplayToggles(
-            arabic = p[KEY_ARABIC] ?: true,
-            transliteration = p[KEY_TRANSLIT] ?: true,
-            translation = p[KEY_TRANSLATION] ?: true,
-            punctuateArabic = p[KEY_PUNCTUATE] ?: false,
-            colorizeArabic = p[KEY_COLORIZE] ?: false,
-            keepScreenOn = p[KEY_KEEP_SCREEN_ON] ?: false,
-            dailyReminder = p[KEY_DAILY_REMINDER] ?: false,
-        )
-    }
+    val displayToggles: Flow<DisplayToggles> =
+        context.tahlilDataStore.data.map { p ->
+            DisplayToggles(
+                arabic = p[KEY_ARABIC] ?: true,
+                transliteration = p[KEY_TRANSLIT] ?: true,
+                translation = p[KEY_TRANSLATION] ?: true,
+                punctuateArabic = p[KEY_PUNCTUATE] ?: false,
+                colorizeArabic = p[KEY_COLORIZE] ?: false,
+                keepScreenOn = p[KEY_KEEP_SCREEN_ON] ?: false,
+                dailyReminder = p[KEY_DAILY_REMINDER] ?: false,
+            )
+        }
 
-    val arabicStyle: Flow<ArabicStyleSettings> = context.tahlilDataStore.data.map { p ->
-        ArabicStyleSettings(
-            mode = ArabicStyleMode.fromStorageKey(p[KEY_MODE]),
-            fontSize = p[KEY_FONT_SIZE] ?: ArabicStyleSettings.Default.fontSize,
-            lineHeight = p[KEY_LINE_HEIGHT] ?: ArabicStyleSettings.Default.lineHeight,
-            wordSpacing = p[KEY_WORD_SPACING] ?: ArabicStyleSettings.Default.wordSpacing,
-            letterSpacing = p[KEY_LETTER_SPACING] ?: ArabicStyleSettings.Default.letterSpacing,
-            align = ArabicAlign.fromStorageKey(p[KEY_ALIGN]),
-        )
-    }
+    val arabicStyle: Flow<ArabicStyleSettings> =
+        context.tahlilDataStore.data.map { p ->
+            ArabicStyleSettings(
+                mode = ArabicStyleMode.fromStorageKey(p[KEY_MODE]),
+                fontSize = p[KEY_FONT_SIZE] ?: ArabicStyleSettings.Default.fontSize,
+                lineHeight = p[KEY_LINE_HEIGHT] ?: ArabicStyleSettings.Default.lineHeight,
+                wordSpacing = p[KEY_WORD_SPACING] ?: ArabicStyleSettings.Default.wordSpacing,
+                letterSpacing = p[KEY_LETTER_SPACING] ?: ArabicStyleSettings.Default.letterSpacing,
+                align = ArabicAlign.fromStorageKey(p[KEY_ALIGN]),
+            )
+        }
 
-    val themeMode: Flow<ThemeMode> = context.tahlilDataStore.data.map { p ->
-        ThemeMode.fromStorageKey(p[KEY_THEME])
-    }
+    val themeMode: Flow<ThemeMode> =
+        context.tahlilDataStore.data.map { p ->
+            ThemeMode.fromStorageKey(p[KEY_THEME])
+        }
 
     /**
      * The currently selected content variant ([ContentVariant.Singkat] by
      * default). Drives which sections the home / detail screens render.
      */
-    val variant: Flow<ContentVariant> = context.tahlilDataStore.data.map { p ->
-        ContentVariant.fromStorageKey(p[KEY_VARIANT])
-    }
+    val variant: Flow<ContentVariant> =
+        context.tahlilDataStore.data.map { p ->
+            ContentVariant.fromStorageKey(p[KEY_VARIANT])
+        }
 
     /**
      * Last section id the user opened — used by the Home screen to show a
      * "Continue reading" card and (optionally) auto-navigate to it on launch.
      */
-    val lastReadSectionId: Flow<String?> = context.tahlilDataStore.data.map { p ->
-        p[KEY_LAST_READ_SECTION]
-    }
+    val lastReadSectionId: Flow<String?> =
+        context.tahlilDataStore.data.map { p ->
+            p[KEY_LAST_READ_SECTION]
+        }
 
     // --- Mutators --------------------------------------------------------
     suspend fun updateDisplayToggles(toggles: DisplayToggles) {

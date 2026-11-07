@@ -24,7 +24,6 @@ package com.tahlildoa.app.util
  *  - Single-connector segments (no list) are left unchanged.
  */
 object ArabicCommaUtil {
-
     /** Fixed phrases whose leading " وَ" should never be split. */
     private val PHRASE_PATTERNS = listOf(" وَسَلَّمْ", " وَسَلِّمْ")
 
@@ -33,8 +32,7 @@ object ArabicCommaUtil {
     private const val CONNECTOR_LEN = CONNECTOR.length
 
     /** Skip Quran verses — they must never be modified. */
-    private fun isQuranVerse(text: String): Boolean =
-        text.contains('۝') || text.contains('۩')
+    private fun isQuranVerse(text: String): Boolean = text.contains('۝') || text.contains('۩')
 
     /**
      * Find all " وَ" connector positions in [text]. Returns a list of
@@ -63,7 +61,10 @@ object ArabicCommaUtil {
     }
 
     /** Map a connector position to its segment index. */
-    private fun segmentIndexOf(boundaries: List<Int>, pos: Int): Int {
+    private fun segmentIndexOf(
+        boundaries: List<Int>,
+        pos: Int,
+    ): Int {
         var idx = 0
         while (idx < boundaries.size && boundaries[idx] < pos) idx++
         return idx

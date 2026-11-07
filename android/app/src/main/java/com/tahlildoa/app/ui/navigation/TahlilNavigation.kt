@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,8 +26,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -53,11 +50,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -128,9 +123,10 @@ fun TahlilNavigation(
 ) {
     val navController = rememberNavController()
     var activeSectionId by remember(sections) { mutableStateOf(sections.firstOrNull()?.id ?: "") }
-    val drawerState = androidx.compose.material3.rememberDrawerState(
-        initialValue = androidx.compose.material3.DrawerValue.Closed
-    )
+    val drawerState =
+        androidx.compose.material3.rememberDrawerState(
+            initialValue = androidx.compose.material3.DrawerValue.Closed,
+        )
     val scope = rememberCoroutineScope()
 
     val openDrawer: () -> Unit = {
@@ -187,7 +183,12 @@ fun TahlilNavigation(
         },
         modifier = modifier,
     ) {
-        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+        val currentRoute =
+            navController
+                .currentBackStackEntryAsState()
+                .value
+                ?.destination
+                ?.route
         val canNavigateBack = currentRoute != null && currentRoute != Routes.HOME
 
         Box(modifier = Modifier.fillMaxHeight()) {
@@ -279,11 +280,12 @@ fun TahlilNavigation(
                 visible = isFullscreen,
                 enter = scaleIn() + fadeIn(),
                 exit = scaleOut() + fadeOut(),
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(end = 16.dp)
-                    .windowInsetsPadding(WindowInsets.statusBars)
-                    .padding(top = 8.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(end = 16.dp)
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .padding(top = 8.dp),
             ) {
                 FloatingActionButton(
                     onClick = onToggleFullscreen,
@@ -339,31 +341,33 @@ private fun DrawerContent(
         // mixed Compose 1.6/1.7 bytecode). 11 items is well within Column's
         // comfort zone (no perf concern).
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
         ) {
             // Header — logo + app name
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.tertiary,
-                                MaterialTheme.colorScheme.secondary,
-                            )
-                        )
-                    )
-                    .padding(horizontal = 20.dp, vertical = 24.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.tertiary,
+                                    MaterialTheme.colorScheme.secondary,
+                                ),
+                            ),
+                        ).padding(horizontal = 20.dp, vertical = 24.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.22f)),
+                        modifier =
+                            Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.22f)),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -423,9 +427,10 @@ private fun DrawerContent(
             // pattern we avoid. The active variant's section count stays
             // well within Column's comfort zone (no perf concern).
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 sections.forEach { section ->
@@ -450,26 +455,35 @@ private fun DrawerContent(
                         onClick = { onSectionClick(section.id) },
                         icon = {
                             Box(
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        if (isActive) MaterialTheme.colorScheme.primary
-                                        else MaterialTheme.colorScheme.surfaceVariant
-                                    ),
+                                modifier =
+                                    Modifier
+                                        .size(28.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            if (isActive) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.surfaceVariant
+                                            },
+                                        ),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
                                     text = section.number.toString(),
-                                    color = if (isActive) MaterialTheme.colorScheme.onPrimary
-                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color =
+                                        if (isActive) {
+                                            MaterialTheme.colorScheme.onPrimary
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                        },
                                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                                 )
                             }
                         },
-                        colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
-                        ),
+                        colors =
+                            NavigationDrawerItemDefaults.colors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+                            ),
                     )
                 }
             }

@@ -1,10 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  DisplayToggles,
-  defaultDisplayToggles,
-} from "@/data/display-settings";
+import { DisplayToggles, defaultDisplayToggles } from "@/data/display-settings";
 import type { ContentVariant } from "@/data/tahlil-content";
 import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/cookies/client";
 
@@ -22,9 +19,7 @@ const VALID_VARIANTS: readonly ContentVariant[] = ["singkat", "lengkap"];
 const DisplaySettingsContext = React.createContext<Ctx | null>(null);
 
 function parseVariant(raw: unknown): ContentVariant {
-  return raw === "lengkap" || raw === "singkat"
-    ? raw
-    : "singkat";
+  return raw === "lengkap" || raw === "singkat" ? raw : "singkat";
 }
 
 function parseStored(raw: string | null): DisplayToggles {
@@ -74,7 +69,7 @@ export function DisplaySettingsProvider({
   initialVariant?: ContentVariant;
 }) {
   const [toggles, setToggles] = React.useState<DisplayToggles>(
-    () => initialToggles ?? SERVER_INITIAL ?? defaultDisplayToggles
+    () => initialToggles ?? SERVER_INITIAL ?? defaultDisplayToggles,
   );
   // The variant lives in its own cookie (tahlil-variant-v1) so it can be
   // read server-side without parsing the toggles blob. `initialVariant` is
@@ -83,7 +78,7 @@ export function DisplaySettingsProvider({
   // SERVER_INITIAL_VARIANT as a backstop for any code path that mounts the
   // provider without the prop.
   const [variant, setVariantState] = React.useState<ContentVariant>(
-    () => initialVariant ?? SERVER_INITIAL_VARIANT
+    () => initialVariant ?? SERVER_INITIAL_VARIANT,
   );
 
   const persist = React.useCallback((next: DisplayToggles) => {
@@ -116,7 +111,7 @@ export function DisplaySettingsProvider({
       setToggles(next);
       persist(next);
     },
-    [persist]
+    [persist],
   );
 
   const setVariant = React.useCallback(
@@ -127,10 +122,10 @@ export function DisplaySettingsProvider({
       // Keep the variant mirrored inside the toggles blob too, so older
       // code paths that read it from there still see the right value.
       setToggles((prev) =>
-        prev.variant === next ? prev : { ...prev, variant: next }
+        prev.variant === next ? prev : { ...prev, variant: next },
       );
     },
-    [persistVariant]
+    [persistVariant],
   );
 
   const value = React.useMemo<Ctx>(
@@ -146,7 +141,7 @@ export function DisplaySettingsProvider({
       variant,
       setVariant,
     }),
-    [toggles, update, variant, setVariant]
+    [toggles, update, variant, setVariant],
   );
 
   return (
@@ -160,7 +155,7 @@ export function useDisplaySettings() {
   const ctx = React.useContext(DisplaySettingsContext);
   if (!ctx) {
     throw new Error(
-      "useDisplaySettings must be used within DisplaySettingsProvider"
+      "useDisplaySettings must be used within DisplaySettingsProvider",
     );
   }
   return ctx;

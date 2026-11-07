@@ -10,10 +10,19 @@ package com.tahlildoa.app.util
  * Port of the `AYAH_MARK_REGEX` parsing logic from `arabic-text.tsx`.
  */
 object AyahMarkUtil {
-
-    private val ARABIC_DIGITS = setOf(
-        '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'
-    )
+    private val ARABIC_DIGITS =
+        setOf(
+            '٠',
+            '١',
+            '٢',
+            '٣',
+            '٤',
+            '٥',
+            '٦',
+            '٧',
+            '٨',
+            '٩',
+        )
 
     /** End-of-ayah marker ۝ (U+06DD). */
     const val AYAH_SYMBOL = '۝'
@@ -28,7 +37,11 @@ object AyahMarkUtil {
      * A single match — the start index of the full mark in the original
      * string, the length of the mark, and the digit string (e.g. "١").
      */
-    data class Match(val start: Int, val length: Int, val digits: String) {
+    data class Match(
+        val start: Int,
+        val length: Int,
+        val digits: String,
+    ) {
         val endExclusive: Int get() = start + length
     }
 
@@ -67,7 +80,10 @@ object AyahMarkUtil {
      *
      * Used by `ArabicText` to render each ayah on its own line.
      */
-    data class AyahLine(val text: String, val mark: Match?)
+    data class AyahLine(
+        val text: String,
+        val mark: Match?,
+    )
 
     fun splitByAyahMarks(text: String): List<AyahLine> {
         val marks = findMarks(text)
@@ -93,7 +109,9 @@ object AyahMarkUtil {
      *
      * Port of `splitBySentence()` from `arabic-text.tsx`.
      */
-    data class SentenceLine(val text: String)
+    data class SentenceLine(
+        val text: String,
+    )
 
     fun splitBySentence(text: String): List<SentenceLine> {
         val trimmed = text.trim()

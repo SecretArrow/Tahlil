@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Amiri, Amiri_Quran, Plus_Jakarta_Sans, Scheherazade_New } from "next/font/google";
+import {
+  Amiri,
+  Amiri_Quran,
+  Plus_Jakarta_Sans,
+  Scheherazade_New,
+} from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -14,10 +19,7 @@ import {
   ArabicStyleSettings,
   defaultArabicSettings,
 } from "@/data/arabic-style";
-import {
-  DisplayToggles,
-  defaultDisplayToggles,
-} from "@/data/display-settings";
+import { DisplayToggles, defaultDisplayToggles } from "@/data/display-settings";
 import type { ContentVariant } from "@/data/tahlil-content";
 
 const amiri = Amiri({
@@ -131,12 +133,14 @@ function parseDisplayToggles(raw: string | null): DisplayToggles {
   try {
     const p = JSON.parse(raw) as Partial<DisplayToggles>;
     return {
-      variant: p.variant === "lengkap" || p.variant === "singkat" ? p.variant : "singkat",
+      variant:
+        p.variant === "lengkap" || p.variant === "singkat"
+          ? p.variant
+          : "singkat",
       arabic: typeof p.arabic === "boolean" ? p.arabic : true,
       transliteration:
         typeof p.transliteration === "boolean" ? p.transliteration : true,
-      translation:
-        typeof p.translation === "boolean" ? p.translation : true,
+      translation: typeof p.translation === "boolean" ? p.translation : true,
       punctuateArabic:
         typeof p.punctuateArabic === "boolean" ? p.punctuateArabic : false,
       colorizeArabic:

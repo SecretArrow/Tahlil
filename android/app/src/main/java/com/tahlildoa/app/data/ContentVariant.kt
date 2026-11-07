@@ -16,9 +16,13 @@ import kotlinx.serialization.Serializable
  * falling back to [Singkat] — the safest, smallest default.
  */
 @Serializable
-enum class ContentVariant(val storageKey: String, val label: String) {
+enum class ContentVariant(
+    val storageKey: String,
+    val label: String,
+) {
     Singkat("singkat", "Singkat"),
-    Lengkap("lengkap", "Lengkap");
+    Lengkap("lengkap", "Lengkap"),
+    ;
 
     companion object {
         /**
@@ -28,7 +32,6 @@ enum class ContentVariant(val storageKey: String, val label: String) {
          * corrupted DataStore entry) resolve to [Singkat] so the app
          * never crashes on a missing preference.
          */
-        fun fromStorageKey(key: String?): ContentVariant =
-            values().firstOrNull { it.storageKey == key } ?: Singkat
+        fun fromStorageKey(key: String?): ContentVariant = values().firstOrNull { it.storageKey == key } ?: Singkat
     }
 }

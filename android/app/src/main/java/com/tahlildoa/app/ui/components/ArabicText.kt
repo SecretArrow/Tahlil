@@ -79,47 +79,53 @@ fun ArabicText(
     modifier: Modifier = Modifier,
     suffix: (@Composable () -> Unit)? = null,
 ) {
-    val fontFamily = remember(style.mode) {
-        when (style.mode) {
-            ArabicStyleMode.Standard -> FontFamily.Default
-            ArabicStyleMode.Quran, ArabicStyleMode.Naskhi -> FontFamily.Serif
+    val fontFamily =
+        remember(style.mode) {
+            when (style.mode) {
+                ArabicStyleMode.Standard -> FontFamily.Default
+                ArabicStyleMode.Quran, ArabicStyleMode.Naskhi -> FontFamily.Serif
+            }
         }
-    }
 
-    val textAlign = when (style.align) {
-        ArabicAlign.Right -> TextAlign.Right
-        ArabicAlign.Justify -> TextAlign.Justify
-    }
+    val textAlign =
+        when (style.align) {
+            ArabicAlign.Right -> TextAlign.Right
+            ArabicAlign.Justify -> TextAlign.Justify
+        }
 
     // Apply Arabic comma transformation if the toggle is on.
     // (No-op for Quran verses — handled internally.)
-    val renderedText = remember(text, toggles.punctuateArabic) {
-        if (toggles.punctuateArabic) ArabicCommaUtil.addArabicCommas(text) else text
-    }
+    val renderedText =
+        remember(text, toggles.punctuateArabic) {
+            if (toggles.punctuateArabic) ArabicCommaUtil.addArabicCommas(text) else text
+        }
 
     // Pick color pair based on theme.
-    val colors = if (toggles.colorizeArabic) {
-        if (isDark) ColorizeUtil.DarkColors else ColorizeUtil.LightColors
-    } else {
-        null
-    }
+    val colors =
+        if (toggles.colorizeArabic) {
+            if (isDark) ColorizeUtil.DarkColors else ColorizeUtil.LightColors
+        } else {
+            null
+        }
 
     // Shared counter for colorize alternation — reset each render.
     val counter = remember(text, toggles, isDark, style) { ColorizeUtil.Counter() }
 
-    val baseTextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontSize = (style.fontSize * 16f).sp,  // rem → sp (1rem ≈ 16sp)
-        lineHeight = (style.fontSize * 16f * style.lineHeight).sp,
-        letterSpacing = (style.letterSpacing * 16f).sp,  // em → sp
-        textAlign = textAlign,
-        textDirection = TextDirection.Rtl,
-        color = MaterialTheme.colorScheme.onSurface,
-    )
+    val baseTextStyle =
+        TextStyle(
+            fontFamily = fontFamily,
+            fontSize = (style.fontSize * 16f).sp, // rem → sp (1rem ≈ 16sp)
+            lineHeight = (style.fontSize * 16f * style.lineHeight).sp,
+            letterSpacing = (style.letterSpacing * 16f).sp, // em → sp
+            textAlign = textAlign,
+            textDirection = TextDirection.Rtl,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
 
-    val lines = remember(renderedText, colors, counter) {
-        buildLines(renderedText, colors, counter)
-    }
+    val lines =
+        remember(renderedText, colors, counter) {
+            buildLines(renderedText, colors, counter)
+        }
 
     SelectionContainer {
         Column(
@@ -147,13 +153,26 @@ fun ArabicText(
  * plain clause (sentence-split line).
  */
 private sealed class Line {
-    data class Ayah(val text: AnnotatedString, val digits: String) : Line()
-    data class Sentence(val text: AnnotatedString) : Line()
-    data class Trailing(val text: AnnotatedString) : Line()
+    data class Ayah(
+        val text: AnnotatedString,
+        val digits: String,
+    ) : Line()
+
+    data class Sentence(
+        val text: AnnotatedString,
+    ) : Line()
+
+    data class Trailing(
+        val text: AnnotatedString,
+    ) : Line()
 }
 
 @Composable
-private fun ArabicLineRenderer(line: Line, baseStyle: TextStyle, isDark: Boolean) {
+private fun ArabicLineRenderer(
+    line: Line,
+    baseStyle: TextStyle,
+    isDark: Boolean,
+) {
     when (line) {
         is Line.Ayah -> {
             // Render in an RTL layout direction so the verse text appears on the
@@ -161,7 +180,7 @@ private fun ArabicLineRenderer(line: Line, baseStyle: TextStyle, isDark: Boolean
             // the left (end of the verse — matching Mushaf convention).
             androidx.compose.runtime.CompositionLocalProvider(
                 androidx.compose.ui.platform.LocalLayoutDirection provides
-                    androidx.compose.ui.unit.LayoutDirection.Rtl
+                    androidx.compose.ui.unit.LayoutDirection.Rtl,
             ) {
                 Row(
                     verticalAlignment = Alignment.Bottom,
@@ -179,18 +198,20 @@ private fun ArabicLineRenderer(line: Line, baseStyle: TextStyle, isDark: Boolean
                 }
             }
         }
-        is Line.Sentence -> Text(
-            text = line.text,
-            style = baseStyle,
-            // fillMaxWidth is REQUIRED for TextAlign.Right/Justify to take
-            // effect — a wrap-content Text has nothing to align against.
-            modifier = Modifier.fillMaxWidth(),
-        )
-        is Line.Trailing -> Text(
-            text = line.text,
-            style = baseStyle,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        is Line.Sentence ->
+            Text(
+                text = line.text,
+                style = baseStyle,
+                // fillMaxWidth is REQUIRED for TextAlign.Right/Justify to take
+                // effect — a wrap-content Text has nothing to align against.
+                modifier = Modifier.fillMaxWidth(),
+            )
+        is Line.Trailing ->
+            Text(
+                text = line.text,
+                style = baseStyle,
+                modifier = Modifier.fillMaxWidth(),
+            )
     }
 }
 
@@ -200,7 +221,10 @@ private fun ArabicLineRenderer(line: Line, baseStyle: TextStyle, isDark: Boolean
  * circular ornament with the digit overlaid.
  */
 @Composable
-private fun AyahMark(digits: String, isDark: Boolean) {
+private fun AyahMark(
+    digits: String,
+    isDark: Boolean,
+) {
     if (digits.isEmpty()) return
     val accentColor = MaterialTheme.colorScheme.primary
     val digitColor = MaterialTheme.colorScheme.onSurface
@@ -208,33 +232,36 @@ private fun AyahMark(digits: String, isDark: Boolean) {
     val size = if (isMultiDigit) 28.dp else 22.dp
 
     Box(
-        modifier = Modifier
-            .size(size)
-            .background(accentColor.copy(alpha = 0.12f), CircleShape)
-            .border(1.5.dp, accentColor.copy(alpha = 0.5f), CircleShape),
+        modifier =
+            Modifier
+                .size(size)
+                .background(accentColor.copy(alpha = 0.12f), CircleShape)
+                .border(1.5.dp, accentColor.copy(alpha = 0.5f), CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         // The decorative ۝ ornament sits behind the digit, faded.
         Text(
             text = "۝",
             color = accentColor.copy(alpha = 0.35f),
-            style = TextStyle(
-                fontSize = (size.value * 0.95f).sp,
-                fontFamily = FontFamily.Serif,
-                textDirection = TextDirection.Rtl,
-            ),
+            style =
+                TextStyle(
+                    fontSize = (size.value * 0.95f).sp,
+                    fontFamily = FontFamily.Serif,
+                    textDirection = TextDirection.Rtl,
+                ),
             modifier = Modifier.alpha(0.6f),
         )
         // The digit centered.
         Text(
             text = digits,
             color = digitColor,
-            style = TextStyle(
-                fontSize = (size.value * 0.42f).sp,
-                fontFamily = FontFamily.Serif,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                textDirection = TextDirection.Rtl,
-            ),
+            style =
+                TextStyle(
+                    fontSize = (size.value * 0.42f).sp,
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    textDirection = TextDirection.Rtl,
+                ),
         )
     }
 }

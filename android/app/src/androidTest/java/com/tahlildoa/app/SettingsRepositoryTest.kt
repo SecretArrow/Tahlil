@@ -27,7 +27,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class SettingsRepositoryTest {
-
     private lateinit var repo: SettingsRepository
 
     @Before
@@ -52,62 +51,68 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun defaultDisplayTogglesAreCorrect() = runBlocking {
-        val toggles = repo.displayToggles.first()
-        assertEquals(true, toggles.arabic)
-        assertEquals(true, toggles.transliteration)
-        assertEquals(true, toggles.translation)
-        assertEquals(false, toggles.punctuateArabic)
-        assertEquals(false, toggles.colorizeArabic)
-        assertEquals(false, toggles.keepScreenOn)
-        assertEquals(false, toggles.dailyReminder)
-    }
+    fun defaultDisplayTogglesAreCorrect() =
+        runBlocking {
+            val toggles = repo.displayToggles.first()
+            assertEquals(true, toggles.arabic)
+            assertEquals(true, toggles.transliteration)
+            assertEquals(true, toggles.translation)
+            assertEquals(false, toggles.punctuateArabic)
+            assertEquals(false, toggles.colorizeArabic)
+            assertEquals(false, toggles.keepScreenOn)
+            assertEquals(false, toggles.dailyReminder)
+        }
 
     @Test
-    fun defaultThemeIsSystem() = runBlocking {
-        val mode = repo.themeMode.first()
-        assertEquals(ThemeMode.System, mode)
-    }
+    fun defaultThemeIsSystem() =
+        runBlocking {
+            val mode = repo.themeMode.first()
+            assertEquals(ThemeMode.System, mode)
+        }
 
     @Test
-    fun defaultVariantIsSingkat() = runBlocking {
-        val variant = repo.variant.first()
-        assertEquals(ContentVariant.Singkat, variant)
-    }
+    fun defaultVariantIsSingkat() =
+        runBlocking {
+            val variant = repo.variant.first()
+            assertEquals(ContentVariant.Singkat, variant)
+        }
 
     @Test
-    fun updatingVariantToLengkapPersists() = runBlocking {
-        repo.updateVariant(ContentVariant.Lengkap)
-        val reloaded = repo.variant.first()
-        assertEquals(ContentVariant.Lengkap, reloaded)
-    }
+    fun updatingVariantToLengkapPersists() =
+        runBlocking {
+            repo.updateVariant(ContentVariant.Lengkap)
+            val reloaded = repo.variant.first()
+            assertEquals(ContentVariant.Lengkap, reloaded)
+        }
 
     @Test
-    fun updatingDisplayTogglesPersists() = runBlocking {
-        val updated = repo.displayToggles.first().copy(keepScreenOn = true)
-        repo.updateDisplayToggles(updated)
-        val reloaded = repo.displayToggles.first()
-        assertEquals(true, reloaded.keepScreenOn)
-    }
+    fun updatingDisplayTogglesPersists() =
+        runBlocking {
+            val updated = repo.displayToggles.first().copy(keepScreenOn = true)
+            repo.updateDisplayToggles(updated)
+            val reloaded = repo.displayToggles.first()
+            assertEquals(true, reloaded.keepScreenOn)
+        }
 
     @Test
-    fun updatingDailyReminderPersists() = runBlocking {
-        val updated = repo.displayToggles.first().copy(dailyReminder = true)
-        repo.updateDisplayToggles(updated)
-        val reloaded = repo.displayToggles.first()
-        assertEquals(true, reloaded.dailyReminder)
-    }
+    fun updatingDailyReminderPersists() =
+        runBlocking {
+            val updated = repo.displayToggles.first().copy(dailyReminder = true)
+            repo.updateDisplayToggles(updated)
+            val reloaded = repo.displayToggles.first()
+            assertEquals(true, reloaded.dailyReminder)
+        }
 
     @Test
-    fun lastReadSectionIdPersistsAndClears() = runBlocking {
-        repo.setLastReadSectionId("pengantar-al-fatihah-untuk-rasulullah-saw")
-        assertEquals(
-            "pengantar-al-fatihah-untuk-rasulullah-saw",
-            repo.lastReadSectionId.first(),
-        )
+    fun lastReadSectionIdPersistsAndClears() =
+        runBlocking {
+            repo.setLastReadSectionId("pengantar-al-fatihah-untuk-rasulullah-saw")
+            assertEquals(
+                "pengantar-al-fatihah-untuk-rasulullah-saw",
+                repo.lastReadSectionId.first(),
+            )
 
-        repo.setLastReadSectionId(null)
-        assertEquals(null, repo.lastReadSectionId.first())
-    }
+            repo.setLastReadSectionId(null)
+            assertEquals(null, repo.lastReadSectionId.first())
+        }
 }
-

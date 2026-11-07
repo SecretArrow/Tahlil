@@ -173,7 +173,8 @@ export function SectionCard({ section }: { section: Section }) {
                 {/* If all toggles off, show a subtle hint */}
                 {allHidden && (
                   <div className="rounded-xl border border-dashed border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground">
-                    Semua tampilan disembunyikan. Aktifkan minimal satu di tombol Tampilan.
+                    Semua tampilan disembunyikan. Aktifkan minimal satu di
+                    tombol Tampilan.
                   </div>
                 )}
 

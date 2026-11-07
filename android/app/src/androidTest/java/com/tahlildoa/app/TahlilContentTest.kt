@@ -23,7 +23,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class TahlilContentTest {
-
     @Test
     fun singkat_has_28_sections() {
         assertEquals(
@@ -77,10 +76,11 @@ class TahlilContentTest {
 
     @Test
     fun byIdReturnsCorrectSection() {
-        val section = TahlilContent.byId(
-            "pengantar-al-fatihah-untuk-rasulullah-saw",
-            ContentVariant.Singkat,
-        )
+        val section =
+            TahlilContent.byId(
+                "pengantar-al-fatihah-untuk-rasulullah-saw",
+                ContentVariant.Singkat,
+            )
         assertNotNull(section)
         assertEquals(1, section!!.number)
     }
@@ -95,7 +95,8 @@ class TahlilContentTest {
     fun lengkap_includes_yasin_sections() {
         assertTrue(
             "Lengkap variant should include Surah Yasin sections",
-            TahlilContent.sectionsFor(ContentVariant.Lengkap)
+            TahlilContent
+                .sectionsFor(ContentVariant.Lengkap)
                 .any { it.title.contains("Yasin") },
         )
     }

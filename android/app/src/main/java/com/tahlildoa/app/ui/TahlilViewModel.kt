@@ -60,8 +60,9 @@ private data class PersistedSettings(
  * Updates are fire-and-forget — the StateFlow is the source of truth and
  * always reflects what's persisted.
  */
-class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
-
+class TahlilViewModel(
+    private val repo: SettingsRepository,
+) : ViewModel() {
     // The isDark flag is set by the screen from the system theme resolver,
     // since only Composables can call isSystemInDarkTheme().
     private val _isDark = MutableStateFlow(false)
@@ -72,60 +73,69 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
     private val _isFullscreen = MutableStateFlow(false)
     val isFullscreen: StateFlow<Boolean> = _isFullscreen.asStateFlow()
 
-    private val persisted: Flow<PersistedSettings> = combine(
-        repo.displayToggles,
-        repo.arabicStyle,
-        repo.themeMode,
-        repo.lastReadSectionId,
-        _isDark,
-    ) { toggles, style, themeMode, lastRead, isDark ->
-        PersistedSettings(toggles, style, themeMode, lastRead, isDark)
-    }
+    private val persisted: Flow<PersistedSettings> =
+        combine(
+            repo.displayToggles,
+            repo.arabicStyle,
+            repo.themeMode,
+            repo.lastReadSectionId,
+            _isDark,
+        ) { toggles, style, themeMode, lastRead, isDark ->
+            PersistedSettings(toggles, style, themeMode, lastRead, isDark)
+        }
 
     // Three-way combine (the 3-arg `combine` overload) threads the persisted
     // 5-flow result, the session-only fullscreen flag, and the content
     // variant into one [TahlilUiState]. Variant lives outside `persisted`
     // so the 5-arg combine stays within kotlinx-coroutines' typed arity.
-    val uiState: StateFlow<TahlilUiState> = combine(
-        persisted,
-        _isFullscreen,
-        repo.variant,
-    ) { p, isFullscreen, variant ->
-        TahlilUiState(
-            toggles = p.toggles,
-            style = p.style,
-            themeMode = p.themeMode,
-            isDark = p.isDark,
-            isFullscreen = isFullscreen,
-            lastReadSectionId = p.lastRead,
-            variant = variant,
+    val uiState: StateFlow<TahlilUiState> =
+        combine(
+            persisted,
+            _isFullscreen,
+            repo.variant,
+        ) { p, isFullscreen, variant ->
+            TahlilUiState(
+                toggles = p.toggles,
+                style = p.style,
+                themeMode = p.themeMode,
+                isDark = p.isDark,
+                isFullscreen = isFullscreen,
+                lastReadSectionId = p.lastRead,
+                variant = variant,
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = TahlilUiState(),
         )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000L),
-        initialValue = TahlilUiState(),
-    )
 
     /**
      * Variant-aware sections list. Recomputes whenever the persisted
      * variant changes, seeded with the [ContentVariant.Singkat] list so the
      * first frame is never empty before DataStore emits.
      */
-    val sections: StateFlow<List<Section>> = repo.variant
-        .map { variant -> TahlilContent.sectionsFor(variant) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = TahlilContent.sectionsFor(ContentVariant.Singkat),
-        )
+    val sections: StateFlow<List<Section>> =
+        repo.variant
+            .map { variant -> TahlilContent.sectionsFor(variant) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = TahlilContent.sectionsFor(ContentVariant.Singkat),
+            )
 
-    fun setDark(value: Boolean) { _isDark.value = value }
+    fun setDark(value: Boolean) {
+        _isDark.value = value
+    }
 
     /** Toggle (or set) the immersive fullscreen mode for the current session. */
-    fun setFullscreen(value: Boolean) { _isFullscreen.value = value }
+    fun setFullscreen(value: Boolean) {
+        _isFullscreen.value = value
+    }
 
     /** Convenience: flip the fullscreen flag. */
-    fun toggleFullscreen() { _isFullscreen.value = !_isFullscreen.value }
+    fun toggleFullscreen() {
+        _isFullscreen.value = !_isFullscreen.value
+    }
 
     /** Persist the selected content variant (Singkat / Lengkap). */
     fun setVariant(variant: ContentVariant) {
@@ -152,11 +162,12 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
      * reachable from the header without opening Settings.
      */
     fun toggleTheme() {
-        val next = when (uiState.value.themeMode) {
-            ThemeMode.System -> ThemeMode.Light
-            ThemeMode.Light -> ThemeMode.Dark
-            ThemeMode.Dark -> ThemeMode.System
-        }
+        val next =
+            when (uiState.value.themeMode) {
+                ThemeMode.System -> ThemeMode.Light
+                ThemeMode.Light -> ThemeMode.Dark
+                ThemeMode.Dark -> ThemeMode.System
+            }
         setThemeMode(next)
     }
 
@@ -172,8 +183,7 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
         fun factory(repo: SettingsRepository): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                    TahlilViewModel(repo) as T
+                override fun <T : ViewModel> create(modelClass: Class<T>): T = TahlilViewModel(repo) as T
             }
     }
 }

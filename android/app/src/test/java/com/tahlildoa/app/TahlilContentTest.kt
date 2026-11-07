@@ -18,14 +18,16 @@ import org.junit.Test
  * (wrong section counts, missing blocks, banned attributions).
  */
 class TahlilContentTest {
-
     /**
      * Load the production JSON asset from the test classpath and parse it
      * into a [TahlilContentData].
      */
     private fun loadContent(): TahlilContentData {
-        val json = javaClass.getResourceAsStream("/assets/tahlil-content.json")!!
-            .bufferedReader().use { it.readText() }
+        val json =
+            javaClass
+                .getResourceAsStream("/assets/tahlil-content.json")!!
+                .bufferedReader()
+                .use { it.readText() }
         return loadFromJson(json)
     }
 
@@ -132,4 +134,3 @@ class TahlilContentTest {
         assertEquals(first.number, lookup.number)
     }
 }
-

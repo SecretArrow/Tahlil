@@ -66,7 +66,6 @@ import com.tahlildoa.app.ui.theme.TahlilDoaTheme
  *  controllers.
  */
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -93,14 +92,15 @@ class MainActivity : ComponentActivity() {
         // failure here shows up as a logged error and a fallback screen, not a
         // force-close. The try/catch must live INSIDE the remember {} — the
         // Compose compiler rejects try/catch around composable invocations.
-        val factory = remember {
-            try {
-                TahlilViewModel.factory(app.settingsRepository)
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to create ViewModel factory", e)
-                null
+        val factory =
+            remember {
+                try {
+                    TahlilViewModel.factory(app.settingsRepository)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to create ViewModel factory", e)
+                    null
+                }
             }
-        }
         if (factory == null) {
             TahlilDoaTheme {
                 ErrorFallback()
@@ -116,11 +116,12 @@ class MainActivity : ComponentActivity() {
 
         // Compute the actual dark flag from the user's preference + system.
         val systemDark = isSystemInDarkTheme()
-        val isDark = when (uiState.themeMode) {
-            ThemeMode.System -> systemDark
-            ThemeMode.Light -> false
-            ThemeMode.Dark -> true
-        }
+        val isDark =
+            when (uiState.themeMode) {
+                ThemeMode.System -> systemDark
+                ThemeMode.Light -> false
+                ThemeMode.Dark -> true
+            }
 
         // Push the resolved flag into the ViewModel so ArabicText can read it.
         LaunchedEffect(isDark) {
@@ -142,7 +143,8 @@ class MainActivity : ComponentActivity() {
             onDispose {
                 try {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
             }
         }
 
@@ -168,7 +170,8 @@ class MainActivity : ComponentActivity() {
                 try {
                     val controller = WindowInsetsControllerCompat(window, view)
                     controller.show(WindowInsetsCompat.Type.systemBars())
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
             }
         }
 
@@ -185,8 +188,8 @@ class MainActivity : ComponentActivity() {
             try {
                 window.setBackgroundDrawable(
                     android.graphics.drawable.ColorDrawable(
-                        (if (isDark) DarkBackground else LightBackground).toArgb()
-                    )
+                        (if (isDark) DarkBackground else LightBackground).toArgb(),
+                    ),
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "window background sync failed", e)
@@ -196,9 +199,10 @@ class MainActivity : ComponentActivity() {
 
         TahlilDoaTheme(themeMode = uiState.themeMode) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
             ) {
                 TahlilNavigation(
                     toggles = uiState.toggles,
@@ -230,9 +234,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun ErrorFallback() {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {

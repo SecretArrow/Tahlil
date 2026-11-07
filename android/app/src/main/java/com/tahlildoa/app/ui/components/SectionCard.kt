@@ -32,15 +32,16 @@ import com.tahlildoa.app.data.Section
 import com.tahlildoa.app.data.SectionType
 
 /** Accent colors per section type — mirrors the web's `typeConfig`. */
-private fun SectionType.accentColors(): Pair<Color, Color> = when (this) {
-    SectionType.Pembukaan -> Color(0xFF10B981) to Color(0xFF0D9488)  // emerald → teal
-    SectionType.Sholawat -> Color(0xFF14B8A6) to Color(0xFF0D9488)  // teal
-    SectionType.Surah -> Color(0xFFF59E0B) to Color(0xFFD97706)  // amber
-    SectionType.Tahlil -> Color(0xFF10B981) to Color(0xFF0D9488)
-    SectionType.Ayat -> Color(0xFFEAB308) to Color(0xFFCA8A04)  // yellow
-    SectionType.Doa -> Color(0xFFF43F5E) to Color(0xFFE11D48)  // rose
-    SectionType.Dzikir -> Color(0xFF8B5CF6) to Color(0xFF7C3AED)  // violet
-}
+private fun SectionType.accentColors(): Pair<Color, Color> =
+    when (this) {
+        SectionType.Pembukaan -> Color(0xFF10B981) to Color(0xFF0D9488) // emerald → teal
+        SectionType.Sholawat -> Color(0xFF14B8A6) to Color(0xFF0D9488) // teal
+        SectionType.Surah -> Color(0xFFF59E0B) to Color(0xFFD97706) // amber
+        SectionType.Tahlil -> Color(0xFF10B981) to Color(0xFF0D9488)
+        SectionType.Ayat -> Color(0xFFEAB308) to Color(0xFFCA8A04) // yellow
+        SectionType.Doa -> Color(0xFFF43F5E) to Color(0xFFE11D48) // rose
+        SectionType.Dzikir -> Color(0xFF8B5CF6) to Color(0xFF7C3AED) // violet
+    }
 
 /** A small circular badge with the section number, gradient-filled. */
 @Composable
@@ -51,10 +52,11 @@ private fun SectionNumberBadge(
 ) {
     val (start, end) = type.accentColors()
     Box(
-        modifier = modifier
-            .size(48.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Brush.linearGradient(listOf(start, end))),
+        modifier =
+            modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Brush.linearGradient(listOf(start, end))),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -68,13 +70,17 @@ private fun SectionNumberBadge(
 
 /** The colored pill showing the section type label. */
 @Composable
-private fun TypePill(type: SectionType, modifier: Modifier = Modifier) {
+private fun TypePill(
+    type: SectionType,
+    modifier: Modifier = Modifier,
+) {
     val (start, end) = type.accentColors()
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(50))
-            .background(start.copy(alpha = 0.18f))
-            .padding(horizontal = 10.dp, vertical = 3.dp),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(50))
+                .background(start.copy(alpha = 0.18f))
+                .padding(horizontal = 10.dp, vertical = 3.dp),
     ) {
         Text(
             text = type.label,
@@ -143,25 +149,24 @@ private fun BlockItem(
 ) {
     val allHidden = !toggles.arabic && !toggles.transliteration && !toggles.translation
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-
         // --- Arabic verse ------------------------------------------------
         // Own container: gradient box, auto-height (no fixed sizes — grows
         // with the number of wrapped lines). Horizontal padding keeps the
         // text clear of the card edges.
         if (!block.arabic.isNullOrEmpty() && toggles.arabic) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(
-                        Brush.linearGradient(
-                            listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.06f),
-                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f),
-                            )
-                        )
-                    )
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.06f),
+                                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f),
+                                ),
+                            ),
+                        ).padding(horizontal = 16.dp, vertical = 14.dp),
             ) {
                 ArabicText(
                     text = block.arabic,
@@ -169,9 +174,12 @@ private fun BlockItem(
                     toggles = toggles,
                     isDark = isDark,
                     modifier = Modifier.fillMaxWidth(),
-                    suffix = if (block.repeat != null && block.repeat > 1) {
-                        { RepeatBadge(count = block.repeat) }
-                    } else null,
+                    suffix =
+                        if (block.repeat != null && block.repeat > 1) {
+                            { RepeatBadge(count = block.repeat) }
+                        } else {
+                            null
+                        },
                 )
             }
         }
@@ -180,11 +188,12 @@ private fun BlockItem(
         if (toggles.transliteration) {
             Text(
                 text = block.transliteration,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                    lineHeight = 22.sp,
-                ),
+                style =
+                    MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                        lineHeight = 22.sp,
+                    ),
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.95f),
             )
         }
@@ -201,11 +210,12 @@ private fun BlockItem(
         // --- Hint if all hidden -----------------------------------------
         if (allHidden) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
             ) {
                 Text(
                     text = "Semua tampilan disembunyikan. Aktifkan minimal satu di tombol Tampilan.",
@@ -218,11 +228,12 @@ private fun BlockItem(
         // --- Note --------------------------------------------------------
         if (!block.note.isNullOrEmpty()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        .padding(horizontal = 10.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
@@ -270,26 +281,28 @@ fun SectionCard(
     val borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(cardBg)
-            .border(1.dp, borderColor, RoundedCornerShape(24.dp)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(cardBg)
+                .border(1.dp, borderColor, RoundedCornerShape(24.dp)),
     ) {
         // Top accent gradient strip
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.tertiary,
-                            MaterialTheme.colorScheme.secondary,
-                        )
-                    )
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.secondary,
+                            ),
+                        ),
+                    ),
         )
 
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {

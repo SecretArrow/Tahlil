@@ -9,38 +9,45 @@ import kotlinx.serialization.Serializable
  *  - Naskhi:     Traditional Naskhi (Scheherazade New) — bold and spacious.
  */
 @Serializable
-enum class ArabicStyleMode(val storageKey: String, val label: String, val description: String) {
+enum class ArabicStyleMode(
+    val storageKey: String,
+    val label: String,
+    val description: String,
+) {
     Standard(
         storageKey = "standard",
         label = "Arab Standar",
-        description = "Tampilan sederhana, bersih, dan harakat konvensional. Readability tinggi untuk teks sehari-hari."
+        description = "Tampilan sederhana, bersih, dan harakat konvensional. Readability tinggi untuk teks sehari-hari.",
     ),
     Quran(
         storageKey = "quran",
         label = "Gaya Mushaf Al-Qur'an (Utsmani)",
-        description = "Karakter Naskhi khas mushaf, bentuk sambungan huruf, ligatur, harakat, dan tanda baca Al-Qur'an yang lebih autentik."
+        description = "Karakter Naskhi khas mushaf, bentuk sambungan huruf, ligatur, harakat, dan tanda baca Al-Qur'an yang lebih autentik.",
     ),
     Naskhi(
         storageKey = "naskhi",
         label = "Naskhi Tebal",
-        description = "Font Naskhi tradisional yang tebal & estetik, dengan struktur huruf horizontal lurus, harakat lengkap, dan spasi antarbaris renggang."
-    );
+        description = "Font Naskhi tradisional yang tebal & estetik, dengan struktur huruf horizontal lurus, harakat lengkap, dan spasi antarbaris renggang.",
+    ),
+    ;
 
     companion object {
-        fun fromStorageKey(key: String?): ArabicStyleMode =
-            values().firstOrNull { it.storageKey == key } ?: Quran
+        fun fromStorageKey(key: String?): ArabicStyleMode = values().firstOrNull { it.storageKey == key } ?: Quran
     }
 }
 
 /** Alignment for Arabic text — right-aligned (Mushaf style) or justified. */
 @Serializable
-enum class ArabicAlign(val storageKey: String, val label: String) {
+enum class ArabicAlign(
+    val storageKey: String,
+    val label: String,
+) {
     Right("right", "Kanan"),
-    Justify("justify", "Rata Kanan-Kiri");
+    Justify("justify", "Rata Kanan-Kiri"),
+    ;
 
     companion object {
-        fun fromStorageKey(key: String?): ArabicAlign =
-            values().firstOrNull { it.storageKey == key } ?: Right
+        fun fromStorageKey(key: String?): ArabicAlign = values().firstOrNull { it.storageKey == key } ?: Right
     }
 }
 
@@ -51,10 +58,10 @@ enum class ArabicAlign(val storageKey: String, val label: String) {
 @Serializable
 data class ArabicStyleSettings(
     val mode: ArabicStyleMode = ArabicStyleMode.Quran,
-    val fontSize: Float = 1.75f,        // rem (mapped to sp via scale)
-    val lineHeight: Float = 2.1f,       // unitless multiplier
-    val wordSpacing: Float = 0.05f,     // em
-    val letterSpacing: Float = 0f,      // em
+    val fontSize: Float = 1.75f, // rem (mapped to sp via scale)
+    val lineHeight: Float = 2.1f, // unitless multiplier
+    val wordSpacing: Float = 0.05f, // em
+    val letterSpacing: Float = 0f, // em
     val align: ArabicAlign = ArabicAlign.Right,
 ) {
     companion object {
@@ -67,13 +74,14 @@ data class ArabicStyleSettings(
         val LETTER_SPACING_RANGE = 0f..0.1f
 
         /** Suggested defaults when the user switches to Naskhi mode. */
-        val NaskhiSuggested = ArabicStyleSettings(
-            mode = ArabicStyleMode.Naskhi,
-            fontSize = 2.0f,
-            lineHeight = 2.6f,
-            wordSpacing = 0.18f,
-            letterSpacing = 0.03f,
-            align = ArabicAlign.Right,
-        )
+        val NaskhiSuggested =
+            ArabicStyleSettings(
+                mode = ArabicStyleMode.Naskhi,
+                fontSize = 2.0f,
+                lineHeight = 2.6f,
+                wordSpacing = 0.18f,
+                letterSpacing = 0.03f,
+                align = ArabicAlign.Right,
+            )
     }
 }

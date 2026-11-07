@@ -9,13 +9,7 @@ export type ContentBlock = {
 };
 
 export type SectionType =
-  | "pembukaan"
-  | "sholawat"
-  | "surah"
-  | "tahlil"
-  | "ayat"
-  | "doa"
-  | "dzikir";
+  "pembukaan" | "sholawat" | "surah" | "tahlil" | "ayat" | "doa" | "dzikir";
 
 export type Section = {
   id: string;
@@ -51,7 +45,7 @@ export function getTahlilSections(variant: ContentVariant): Section[] {
  */
 export function getTahlilSectionById(
   variant: ContentVariant,
-  id: string
+  id: string,
 ): Section | undefined {
   return content.variants[variant].sections.find((s) => s.id === id);
 }

@@ -1,7 +1,6 @@
 package com.tahlildoa.app.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -85,20 +84,21 @@ fun Header(
     val secondary = MaterialTheme.colorScheme.secondary
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            // ALWAYS pad by the status-bar height so the header content never
-            // overlaps the notification bar — in BOTH normal and fullscreen
-            // mode. Background is applied FIRST so the colored surface still
-            // extends behind the status bar area instead of leaving a gap.
-            // In fullscreen the system bars are hidden and this inset reads
-            // 0, so the padding collapses to nothing and the header stays
-            // truly edge-to-edge; if the bars are ever shown again (transient
-            // swipe-reveal, or an OEM ROM that ignores the hide call) the
-            // padding immediately re-applies and nothing can collide with the
-            // clock / battery indicator.
-            .windowInsetsPadding(WindowInsets.statusBars)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                // ALWAYS pad by the status-bar height so the header content never
+                // overlaps the notification bar — in BOTH normal and fullscreen
+                // mode. Background is applied FIRST so the colored surface still
+                // extends behind the status bar area instead of leaving a gap.
+                // In fullscreen the system bars are hidden and this inset reads
+                // 0, so the padding collapses to nothing and the header stays
+                // truly edge-to-edge; if the bars are ever shown again (transient
+                // swipe-reveal, or an OEM ROM that ignores the hide call) the
+                // padding immediately re-applies and nothing can collide with the
+                // clock / battery indicator.
+                .windowInsetsPadding(WindowInsets.statusBars),
     ) {
         Column {
             // Single-row app bar: [menu/back] [logo] [title•••weight•••] [actions].
@@ -106,9 +106,10 @@ fun Header(
             // action icons off-screen or collide with them on narrow displays;
             // everything is center-aligned vertically in one row.
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 6.dp, vertical = 4.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (canNavigateBack) {
@@ -130,13 +131,14 @@ fun Header(
                 }
 
                 Box(
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .size(34.dp)
-                        .clip(CircleShape)
-                        .background(
-                            Brush.linearGradient(listOf(primary, secondary))
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(start = 4.dp)
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(
+                                Brush.linearGradient(listOf(primary, secondary)),
+                            ),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -151,9 +153,10 @@ fun Header(
                     text = title,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 10.dp, end = 4.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(start = 10.dp, end = 4.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -162,10 +165,18 @@ fun Header(
                     // Fullscreen toggle — present on every screen.
                     IconButton(onClick = onToggleFullscreen) {
                         Icon(
-                            imageVector = if (isFullscreen) Icons.Filled.FullscreenExit
-                            else Icons.Filled.Fullscreen,
-                            contentDescription = if (isFullscreen) "Keluar dari mode layar penuh"
-                            else "Mode layar penuh",
+                            imageVector =
+                                if (isFullscreen) {
+                                    Icons.Filled.FullscreenExit
+                                } else {
+                                    Icons.Filled.Fullscreen
+                                },
+                            contentDescription =
+                                if (isFullscreen) {
+                                    "Keluar dari mode layar penuh"
+                                } else {
+                                    "Mode layar penuh"
+                                },
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -174,16 +185,25 @@ fun Header(
                         // toggleTheme() cycles System → Light → Dark → System.
                         // In System mode we use the resolved `isDark` flag so
                         // the icon reflects what's actually on screen.
-                        val nextIsDark = when (themeMode) {
-                            ThemeMode.System -> !isDark   // flip the resolved system value
-                            ThemeMode.Light -> true       // next is Dark
-                            ThemeMode.Dark -> false       // next is System/Light
-                        }
+                        val nextIsDark =
+                            when (themeMode) {
+                                ThemeMode.System -> !isDark // flip the resolved system value
+                                ThemeMode.Light -> true // next is Dark
+                                ThemeMode.Dark -> false // next is System/Light
+                            }
                         Icon(
-                            imageVector = if (nextIsDark) Icons.Filled.DarkMode
-                            else Icons.Filled.LightMode,
-                            contentDescription = if (nextIsDark) "Mode gelap"
-                            else "Mode terang",
+                            imageVector =
+                                if (nextIsDark) {
+                                    Icons.Filled.DarkMode
+                                } else {
+                                    Icons.Filled.LightMode
+                                },
+                            contentDescription =
+                                if (nextIsDark) {
+                                    "Mode gelap"
+                                } else {
+                                    "Mode terang"
+                                },
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -199,14 +219,15 @@ fun Header(
 
             // Thin gradient accent bar
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(primary, MaterialTheme.colorScheme.tertiary, secondary)
-                        )
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(primary, MaterialTheme.colorScheme.tertiary, secondary),
+                            ),
+                        ),
             )
         }
     }

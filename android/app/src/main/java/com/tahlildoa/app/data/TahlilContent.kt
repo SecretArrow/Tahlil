@@ -6,18 +6,21 @@ import kotlinx.serialization.json.Json
 
 /** Type of a section — drives the colored badge and accent color. */
 @Serializable
-enum class SectionType(val key: String, val label: String) {
+enum class SectionType(
+    val key: String,
+    val label: String,
+) {
     Pembukaan("pembukaan", "Pembukaan"),
     Sholawat("sholawat", "Shalawat"),
     Surah("surah", "Surat"),
     Tahlil("tahlil", "Tahlil"),
     Ayat("ayat", "Ayat"),
     Doa("doa", "Doa"),
-    Dzikir("dzikir", "Dzikir");
+    Dzikir("dzikir", "Dzikir"),
+    ;
 
     companion object {
-        fun fromKey(key: String): SectionType =
-            values().firstOrNull { it.key == key } ?: Tahlil
+        fun fromKey(key: String): SectionType = values().firstOrNull { it.key == key } ?: Tahlil
     }
 }
 
@@ -76,10 +79,11 @@ data class TahlilContentData(
  * without breaking parsing.
  */
 fun loadFromJson(json: String): TahlilContentData {
-    val decoder = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
+    val decoder =
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
     return decoder.decodeFromString(TahlilContentData.serializer(), json)
 }
 
@@ -114,7 +118,6 @@ object HeroInfo {
  * variant-aware [sectionsFor] / [byId] / [indexOf] APIs.
  */
 object TahlilContent {
-
     private const val ASSET_PATH = "tahlil-content.json"
 
     @Volatile
@@ -132,7 +135,11 @@ object TahlilContent {
         if (data != null) return
         synchronized(this) {
             if (data != null) return
-            val json = context.assets.open(ASSET_PATH).bufferedReader().use { it.readText() }
+            val json =
+                context.assets
+                    .open(ASSET_PATH)
+                    .bufferedReader()
+                    .use { it.readText() }
             data = loadFromJson(json)
         }
     }
@@ -142,10 +149,11 @@ object TahlilContent {
      * inspect both variants at once.
      */
     val contentData: TahlilContentData
-        get() = data ?: error(
-            "TahlilContent has not been initialized — call TahlilContent.init(context) " +
-                "from Application.onCreate() before reading content."
-        )
+        get() =
+            data ?: error(
+                "TahlilContent has not been initialized — call TahlilContent.init(context) " +
+                    "from Application.onCreate() before reading content.",
+            )
 
     /**
      * Sections for the given [variant]. Defaults to [ContentVariant.Singkat]
@@ -166,13 +174,18 @@ object TahlilContent {
      * Yasin section) so the lookup never returns `null` for content that
      * still exists in some variant.
      */
-    fun byId(id: String, variant: ContentVariant = ContentVariant.Singkat): Section? =
+    fun byId(
+        id: String,
+        variant: ContentVariant = ContentVariant.Singkat,
+    ): Section? =
         sectionsFor(variant).firstOrNull { it.id == id }
             ?: sectionsFor(ContentVariant.Singkat).firstOrNull { it.id == id }
 
     /** Index of a section in the [variant]'s list, or -1 if not found. */
-    fun indexOf(id: String, variant: ContentVariant = ContentVariant.Singkat): Int =
-        sectionsFor(variant).indexOfFirst { it.id == id }
+    fun indexOf(
+        id: String,
+        variant: ContentVariant = ContentVariant.Singkat,
+    ): Int = sectionsFor(variant).indexOfFirst { it.id == id }
 
     /**
      * Backward-compatible accessor — the [ContentVariant.Singkat] list.

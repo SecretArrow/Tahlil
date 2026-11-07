@@ -24,8 +24,10 @@ class TahlilCrashHandler(
     private val defaultHandler: Thread.UncaughtExceptionHandler?,
     private val cacheDir: java.io.File,
 ) : Thread.UncaughtExceptionHandler {
-
-    override fun uncaughtException(thread: Thread, throwable: Throwable) {
+    override fun uncaughtException(
+        thread: Thread,
+        throwable: Throwable,
+    ) {
         val stackTrace = Log.getStackTraceString(throwable)
 
         // Log with a distinctive tag
@@ -45,11 +47,13 @@ class TahlilCrashHandler(
                     appendLine("Exception: ${throwable.javaClass.name}: ${throwable.message}")
                     appendLine()
                     appendLine(stackTrace)
-                }
+                },
             )
             // Keep only the last 5 crash logs
-            val crashFiles = cacheDir.listFiles { f -> f.name.startsWith("crash_") }
-                ?.sortedBy { it.lastModified() } ?: emptyList()
+            val crashFiles =
+                cacheDir
+                    .listFiles { f -> f.name.startsWith("crash_") }
+                    ?.sortedBy { it.lastModified() } ?: emptyList()
             if (crashFiles.size > 5) {
                 crashFiles.take(crashFiles.size - 5).forEach { it.delete() }
             }
@@ -68,7 +72,7 @@ class TahlilCrashHandler(
         fun install(cacheDir: java.io.File) {
             val current = Thread.getDefaultUncaughtExceptionHandler()
             Thread.setDefaultUncaughtExceptionHandler(
-                TahlilCrashHandler(current, cacheDir)
+                TahlilCrashHandler(current, cacheDir),
             )
         }
     }

@@ -188,7 +188,7 @@ function colorizeWords(
   text: string,
   colors: readonly [string, string],
   counterRef: { current: number },
-  keyPrefix: string
+  keyPrefix: string,
 ): React.ReactNode[] {
   if (!text) return [text];
   // Split on whitespace but keep the separators so spacing is preserved.
@@ -206,7 +206,7 @@ function colorizeWords(
     out.push(
       <span key={`${keyPrefix}-w${i}`} style={{ color }}>
         {tok}
-      </span>
+      </span>,
     );
   }
   return out;
@@ -219,7 +219,7 @@ function maybeColorize(
   text: string,
   colors: readonly [string, string] | null,
   counterRef: { current: number },
-  keyPrefix: string
+  keyPrefix: string,
 ): React.ReactNode {
   if (!colors) return text;
   return colorizeWords(text, colors, counterRef, keyPrefix);
@@ -244,7 +244,7 @@ function renderArabicWithAyahMarks(
   text: string,
   keyPrefix: string,
   colors: readonly [string, string] | null = null,
-  counterRef: { current: number } = { current: 0 }
+  counterRef: { current: number } = { current: 0 },
 ): React.ReactNode[] {
   const matches = Array.from(text.matchAll(AYAH_MARK_REGEX));
   if (matches.length === 0) {
@@ -269,10 +269,14 @@ function renderArabicWithAyahMarks(
     // The verse text is colorized word-by-word if colors is set; the
     // AyahMark ornament keeps its own CSS-driven styling.
     nodes.push(
-      <span key={`${keyPrefix}-${lineKey++}`} className="ayah-line" style={LINE_STYLE}>
+      <span
+        key={`${keyPrefix}-${lineKey++}`}
+        className="ayah-line"
+        style={LINE_STYLE}
+      >
         {maybeColorize(textBefore, colors, counterRef, `${keyPrefix}-${i}`)}
         <AyahMark digit={digit} />
-      </span>
+      </span>,
     );
 
     cursor = markStart + full.length;
@@ -283,7 +287,9 @@ function renderArabicWithAyahMarks(
   if (cursor < text.length) {
     const trailing = text.substring(cursor);
     // Also split trailing by sentence for dua-style text
-    nodes.push(...splitBySentence(trailing, `${keyPrefix}-trail`, colors, counterRef));
+    nodes.push(
+      ...splitBySentence(trailing, `${keyPrefix}-trail`, colors, counterRef),
+    );
   }
 
   return nodes;
@@ -302,7 +308,7 @@ function splitBySentence(
   text: string,
   keyPrefix: string,
   colors: readonly [string, string] | null = null,
-  counterRef: { current: number } = { current: 0 }
+  counterRef: { current: number } = { current: 0 },
 ): React.ReactNode[] {
   // Trim leading/trailing whitespace
   const trimmed = text.trim();
@@ -321,9 +327,13 @@ function splitBySentence(
     // If this part is a delimiter, finish the current line
     if (part === "،" || part === ".") {
       lines.push(
-        <span key={`${keyPrefix}-${keyIdx++}`} className="ayah-line" style={LINE_STYLE}>
+        <span
+          key={`${keyPrefix}-${keyIdx++}`}
+          className="ayah-line"
+          style={LINE_STYLE}
+        >
           {maybeColorize(current, colors, counterRef, `${keyPrefix}-${keyIdx}`)}
-        </span>
+        </span>,
       );
       current = "";
     }
@@ -331,9 +341,13 @@ function splitBySentence(
   // Trailing text without delimiter
   if (current.trim()) {
     lines.push(
-      <span key={`${keyPrefix}-${keyIdx++}`} className="ayah-line" style={LINE_STYLE}>
+      <span
+        key={`${keyPrefix}-${keyIdx++}`}
+        className="ayah-line"
+        style={LINE_STYLE}
+      >
         {maybeColorize(current, colors, counterRef, `${keyPrefix}-${keyIdx}`)}
-      </span>
+      </span>,
     );
   }
 
@@ -380,14 +394,11 @@ export function ArabicText({
 
   // Apply Arabic comma transformation if the punctuateArabic toggle is ON.
   // The transform is a no-op for Quran verses (texts containing ۝ or ۩).
-  const renderedText = toggles.punctuateArabic
-    ? addArabicCommas(text)
-    : text;
+  const renderedText = toggles.punctuateArabic ? addArabicCommas(text) : text;
 
   // Pick color pair based on resolved theme. Only applied after mount to
   // avoid SSR mismatch (resolvedTheme is undefined on first render).
-  const wantColors =
-    mounted && toggles.colorizeArabic && !forceMode; // skip in compare view
+  const wantColors = mounted && toggles.colorizeArabic && !forceMode; // skip in compare view
   const colors: readonly [string, string] | null = wantColors
     ? resolvedTheme === "dark"
       ? COLORIZE_COLORS.dark

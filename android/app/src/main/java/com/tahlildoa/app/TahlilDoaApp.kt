@@ -41,7 +41,6 @@ import kotlinx.coroutines.launch
  *     reminder is a nice-to-have, not critical functionality.
  */
 class TahlilDoaApp : Application() {
-
     val settingsRepository: SettingsRepository by lazy {
         SettingsRepository(this)
     }
@@ -101,7 +100,6 @@ class TahlilDoaApp : Application() {
         @Volatile
         private var instance: TahlilDoaApp? = null
 
-        fun getInstance(): TahlilDoaApp =
-            instance ?: throw IllegalStateException("TahlilDoaApp not yet initialized")
+        fun getInstance(): TahlilDoaApp = instance ?: throw IllegalStateException("TahlilDoaApp not yet initialized")
     }
 }

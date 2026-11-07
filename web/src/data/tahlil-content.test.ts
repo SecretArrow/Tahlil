@@ -30,7 +30,7 @@ describe("tahlil-content — variants", () => {
       const sections = getTahlilSections(variant);
       const numbers = sections.map((s) => s.number);
       expect(numbers).toEqual(
-        Array.from({ length: sections.length }, (_, i) => i + 1)
+        Array.from({ length: sections.length }, (_, i) => i + 1),
       );
     }
   });
@@ -38,7 +38,9 @@ describe("tahlil-content — variants", () => {
   it("every section has non-empty blocks", () => {
     for (const variant of ["singkat", "lengkap"] as const) {
       for (const section of getTahlilSections(variant)) {
-        expect(section.blocks.length, `section ${section.id}`).toBeGreaterThan(0);
+        expect(section.blocks.length, `section ${section.id}`).toBeGreaterThan(
+          0,
+        );
       }
     }
   });
@@ -50,12 +52,12 @@ describe("tahlil-content — variants", () => {
           expect(
             typeof block.transliteration === "string" &&
               block.transliteration.trim().length > 0,
-            `${variant}/${section.id} block #${i} transliteration`
+            `${variant}/${section.id} block #${i} transliteration`,
           ).toBe(true);
           expect(
             typeof block.translation === "string" &&
               block.translation.trim().length > 0,
-            `${variant}/${section.id} block #${i} translation`
+            `${variant}/${section.id} block #${i} translation`,
           ).toBe(true);
         }
       }
@@ -80,7 +82,10 @@ describe("tahlil-content — variants", () => {
       const sections = getTahlilSections(variant);
       for (const section of sections) {
         const found = getTahlilSectionById(variant, section.id);
-        expect(found, `byId should find ${section.id} in ${variant}`).toBeDefined();
+        expect(
+          found,
+          `byId should find ${section.id} in ${variant}`,
+        ).toBeDefined();
         expect(found?.id).toBe(section.id);
         expect(found?.number).toBe(section.number);
         expect(found?.title).toBe(section.title);
@@ -100,7 +105,7 @@ describe("tahlil-content — no forbidden references", () => {
       for (const section of getTahlilSections(variant)) {
         expect(
           /\bNU\b/.test(section.title),
-          `${variant} title: ${section.title}`
+          `${variant} title: ${section.title}`,
         ).toBe(false);
       }
     }
@@ -110,10 +115,7 @@ describe("tahlil-content — no forbidden references", () => {
     for (const variant of ["singkat", "lengkap"] as const) {
       for (const section of getTahlilSections(variant)) {
         const hay = `${section.title} ${section.subtitle ?? ""}`;
-        expect(
-          /nahdlatul/i.test(hay),
-          `${variant}: ${hay}`
-        ).toBe(false);
+        expect(/nahdlatul/i.test(hay), `${variant}: ${hay}`).toBe(false);
       }
     }
   });
@@ -122,10 +124,7 @@ describe("tahlil-content — no forbidden references", () => {
     for (const variant of ["singkat", "lengkap"] as const) {
       for (const section of getTahlilSections(variant)) {
         const hay = `${section.title} ${section.subtitle ?? ""}`;
-        expect(
-          /salik\s+channel/i.test(hay),
-          `${variant}: ${hay}`
-        ).toBe(false);
+        expect(/salik\s+channel/i.test(hay), `${variant}: ${hay}`).toBe(false);
       }
     }
   });
@@ -140,14 +139,14 @@ describe("tahlil-content — no forbidden references", () => {
 describe("tahlil-content — Lengkap includes Yasin sections", () => {
   it("lengkap has 11 sections whose titles start with 'Surah Yasin'", () => {
     const yasin = getTahlilSections("lengkap").filter((s) =>
-      s.title.startsWith("Surah Yasin")
+      s.title.startsWith("Surah Yasin"),
     );
     expect(yasin).toHaveLength(11);
   });
 
   it("singkat has zero Yasin sections", () => {
     const yasin = getTahlilSections("singkat").filter((s) =>
-      s.title.startsWith("Surah Yasin")
+      s.title.startsWith("Surah Yasin"),
     );
     expect(yasin).toHaveLength(0);
   });

@@ -31,7 +31,7 @@ test.describe("Singkat / Lengkap variant toggle", () => {
     // Switch to Lengkap via the hero radiogroup.
     await variantGroup.getByRole("radio", { name: /Lengkap/ }).click();
     await expect(
-      variantGroup.getByRole("radio", { name: /Lengkap/ })
+      variantGroup.getByRole("radio", { name: /Lengkap/ }),
     ).toHaveAttribute("aria-checked", "true");
 
     // Wait for the Yasin sections to render (Lengkap adds 11 of them).
@@ -41,7 +41,7 @@ test.describe("Singkat / Lengkap variant toggle", () => {
     // Switch back to Singkat — Yasin headings should disappear.
     await variantGroup.getByRole("radio", { name: /Singkat/ }).click();
     await expect(
-      variantGroup.getByRole("radio", { name: /Singkat/ })
+      variantGroup.getByRole("radio", { name: /Singkat/ }),
     ).toHaveAttribute("aria-checked", "true");
     await expect(yasinHeading).toHaveCount(0);
   });
@@ -66,7 +66,7 @@ test.describe("Singkat / Lengkap variant toggle", () => {
 
     await panelGroup.getByRole("radio", { name: /Lengkap/ }).click();
     await expect(
-      panelGroup.getByRole("radio", { name: /Lengkap/ })
+      panelGroup.getByRole("radio", { name: /Lengkap/ }),
     ).toHaveAttribute("aria-checked", "true");
 
     // The hero radiogroup should reflect the same active variant.
@@ -74,7 +74,7 @@ test.describe("Singkat / Lengkap variant toggle", () => {
       name: "Pilih varian tahlil",
     });
     await expect(
-      heroGroup.getByRole("radio", { name: /Lengkap/ })
+      heroGroup.getByRole("radio", { name: /Lengkap/ }),
     ).toHaveAttribute("aria-checked", "true");
   });
 });

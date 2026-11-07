@@ -1,7 +1,7 @@
 package com.tahlildoa.app.ui.screens
 
-import androidx.activity.compose.BackHandler
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -31,9 +31,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -82,12 +82,13 @@ private data class CtaButton(
 // CTA targets point at stable section ids that exist across both content
 // variants (Singkat / Lengkap). "Mulai" jumps to the first section; the
 // other three surface the Tahlil, Dzikir, and Doa portions of the reading.
-private val CtaButtons = listOf(
-    CtaButton("pengantar-al-fatihah-untuk-rasulullah-saw", "Mulai", primary = true),
-    CtaButton("tahlil-inti-laa-ilaaha-illallah-100x", "Tahlil", primary = false),
-    CtaButton("sebaik-baik-dzikir-laa-ilaaha-illallah", "Dzikir", primary = false),
-    CtaButton("doa-tahlil-pembuka", "Doa", primary = false),
-)
+private val CtaButtons =
+    listOf(
+        CtaButton("pengantar-al-fatihah-untuk-rasulullah-saw", "Mulai", primary = true),
+        CtaButton("tahlil-inti-laa-ilaaha-illallah-100x", "Tahlil", primary = false),
+        CtaButton("sebaik-baik-dzikir-laa-ilaaha-illallah", "Dzikir", primary = false),
+        CtaButton("doa-tahlil-pembuka", "Doa", primary = false),
+    )
 
 /**
  * HomeScreen — hero + scroll list of all 11 sections.
@@ -147,8 +148,11 @@ fun HomeScreen(
         snapshotFlow {
             val firstVisible = state.firstVisibleItemIndex
             // The hero takes index 0; sections start at index 1.
-            if (firstVisible <= 0) sections.firstOrNull()?.id
-            else sections.getOrNull(firstVisible - 1)?.id
+            if (firstVisible <= 0) {
+                sections.firstOrNull()?.id
+            } else {
+                sections.getOrNull(firstVisible - 1)?.id
+            }
         }.distinctUntilChanged().collect { id ->
             id?.let { onActiveSectionChange(it) }
         }
@@ -190,8 +194,9 @@ fun HomeScreen(
     val progress by remember {
         derivedStateOf {
             val total = state.layoutInfo.totalItemsCount
-            if (total == 0) 0f
-            else {
+            if (total == 0) {
+                0f
+            } else {
                 val first = state.firstVisibleItemIndex.toFloat()
                 // Cap at 1f — once the user reaches the last item, the bar
                 // is full even if the offset scrolls past it.
@@ -206,8 +211,10 @@ fun HomeScreen(
             // Show when firstVisibleItemIndex >= 2 OR when scrolled far
             // enough on the first item.
             state.firstVisibleItemIndex >= 2 ||
-                (state.firstVisibleItemIndex == 1 &&
-                    state.firstVisibleItemScrollOffset > 400)
+                (
+                    state.firstVisibleItemIndex == 1 &&
+                        state.firstVisibleItemScrollOffset > 400
+                )
         }
     }
 
@@ -229,19 +236,22 @@ fun HomeScreen(
         // reading width instead of stretching edge to edge.
         LazyColumn(
             state = state,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .contentMaxWidth()
-                .fillMaxSize(),
-            contentPadding = PaddingValues(
-                bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp
-            ),
+            modifier =
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .contentMaxWidth()
+                    .fillMaxSize(),
+            contentPadding =
+                PaddingValues(
+                    bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp,
+                ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Continue reading card (only if a last-read section exists).
-            val lastSection = lastReadSectionId?.let { id ->
-                sections.firstOrNull { it.id == id }
-            }
+            val lastSection =
+                lastReadSectionId?.let { id ->
+                    sections.firstOrNull { it.id == id }
+                }
             if (lastSection != null) {
                 item(key = "continue_reading") {
                     ContinueReadingCard(
@@ -276,10 +286,11 @@ fun HomeScreen(
         // Thin reading progress bar pinned to the top of the screen.
         LinearProgressIndicator(
             progress = { progress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(3.dp)
-                .align(Alignment.TopCenter),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .align(Alignment.TopCenter),
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
         )
@@ -289,13 +300,14 @@ fun HomeScreen(
             visible = showBackToTop,
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut(),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                // Keep the FAB clear of the Android navigation bar in EVERY
-                // mode — the inset reads 0 while the bars are hidden in
-                // fullscreen, so it only takes space when the bar is visible.
-                .navigationBarsPadding()
-                .padding(end = 16.dp, bottom = 16.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    // Keep the FAB clear of the Android navigation bar in EVERY
+                    // mode — the inset reads 0 while the bars are hidden in
+                    // fullscreen, so it only takes space when the bar is visible.
+                    .navigationBarsPadding()
+                    .padding(end = 16.dp, bottom = 16.dp),
         ) {
             FloatingActionButton(
                 onClick = {
@@ -332,23 +344,26 @@ private fun ContinueReadingCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+            ),
         onClick = onContinue,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -383,7 +398,10 @@ private fun ContinueReadingCard(
  * Hero — title, subtitle, description, Bismillah, and 4 CTA buttons.
  */
 @Composable
-private fun Hero(onCtaClick: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun Hero(
+    onCtaClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val primary = MaterialTheme.colorScheme.primary
     val secondary = MaterialTheme.colorScheme.secondary
     val tertiary = MaterialTheme.colorScheme.tertiary
@@ -391,36 +409,40 @@ private fun Hero(onCtaClick: (String) -> Unit, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth()) {
         // Decorative background orbs
         Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(180.dp)
-                .blur(80.dp)
-                .background(primary.copy(alpha = 0.25f), CircleShape)
+            modifier =
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .size(180.dp)
+                    .blur(80.dp)
+                    .background(primary.copy(alpha = 0.25f), CircleShape),
         )
         Box(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(top = 60.dp)
-                .size(160.dp)
-                .blur(80.dp)
-                .background(secondary.copy(alpha = 0.2f), CircleShape)
+            modifier =
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(top = 60.dp)
+                    .size(160.dp)
+                    .blur(80.dp)
+                    .background(secondary.copy(alpha = 0.2f), CircleShape),
         )
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 20.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // Decorative top icon
             Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(listOf(primary, tertiary, secondary))
-                    ),
+                modifier =
+                    Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(
+                            Brush.linearGradient(listOf(primary, tertiary, secondary)),
+                        ),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -451,9 +473,10 @@ private fun Hero(onCtaClick: (String) -> Unit, modifier: Modifier = Modifier) {
             // Bismillah
             Text(
                 text = HeroInfo.arabicBismillah,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontFamily = androidx.compose.ui.text.font.FontFamily.Serif,
-                ),
+                style =
+                    MaterialTheme.typography.headlineSmall.copy(
+                        fontFamily = androidx.compose.ui.text.font.FontFamily.Serif,
+                    ),
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
@@ -509,10 +532,11 @@ private fun CtaChip(
             onClick = { onClick(btn.sectionId) },
             modifier = modifier.height(48.dp),
             shape = RoundedCornerShape(50),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
         ) {
             Text(btn.label, fontWeight = FontWeight.SemiBold)
         }
@@ -537,24 +561,26 @@ private fun CtaChip(
 @Composable
 internal fun Footer(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 20.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
-            modifier = Modifier
-                .width(80.dp)
-                .height(2.dp)
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            Color.Transparent,
-                            MaterialTheme.colorScheme.primary,
-                            Color.Transparent,
-                        )
-                    )
-                )
+            modifier =
+                Modifier
+                    .width(80.dp)
+                    .height(2.dp)
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.primary,
+                                Color.Transparent,
+                            ),
+                        ),
+                    ),
         )
         Spacer(Modifier.height(12.dp))
         Text(

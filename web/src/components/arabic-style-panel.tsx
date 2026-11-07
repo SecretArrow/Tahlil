@@ -85,9 +85,20 @@ function ModeCard({
 }) {
   const cfg = arabicStyleModes[mode];
   // For Naskhi mode, use the suggested spacing in the preview so user can see the benefit
-  const previewSettings = mode === "naskhi"
-    ? { fontSize: 1.4, lineHeight: 2.2, wordSpacing: 0.18, align: "right" as const }
-    : { fontSize: 1.4, lineHeight: 1.9, wordSpacing: 0.05, align: "right" as const };
+  const previewSettings =
+    mode === "naskhi"
+      ? {
+          fontSize: 1.4,
+          lineHeight: 2.2,
+          wordSpacing: 0.18,
+          align: "right" as const,
+        }
+      : {
+          fontSize: 1.4,
+          lineHeight: 1.9,
+          wordSpacing: 0.05,
+          align: "right" as const,
+        };
   return (
     <button
       type="button"
@@ -130,8 +141,16 @@ export function ArabicStylePanel({
   open: boolean;
   onClose: () => void;
 }) {
-  const { settings, setMode, setFontSize, setLineHeight, setWordSpacing, setLetterSpacing, setAlign, reset } =
-    useArabicStyle();
+  const {
+    settings,
+    setMode,
+    setFontSize,
+    setLineHeight,
+    setWordSpacing,
+    setLetterSpacing,
+    setAlign,
+    reset,
+  } = useArabicStyle();
   const { toggles, setToggle } = useDisplaySettings();
 
   const [compare, setCompare] = React.useState(false);
@@ -188,9 +207,21 @@ export function ArabicStylePanel({
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <ModeCard mode="quran" active={settings.mode === "quran"} onSelect={() => setMode("quran")} />
-              <ModeCard mode="standard" active={settings.mode === "standard"} onSelect={() => setMode("standard")} />
-              <ModeCard mode="naskhi" active={settings.mode === "naskhi"} onSelect={() => setMode("naskhi")} />
+              <ModeCard
+                mode="quran"
+                active={settings.mode === "quran"}
+                onSelect={() => setMode("quran")}
+              />
+              <ModeCard
+                mode="standard"
+                active={settings.mode === "standard"}
+                onSelect={() => setMode("standard")}
+              />
+              <ModeCard
+                mode="naskhi"
+                active={settings.mode === "naskhi"}
+                onSelect={() => setMode("naskhi")}
+              />
             </div>
 
             {/* Side-by-side comparison */}
@@ -221,7 +252,9 @@ export function ArabicStylePanel({
                           <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                             {arabicStyleModes[m].label}
                             {settings.mode === m && (
-                              <span className="ms-1.5 text-primary">• Aktif</span>
+                              <span className="ms-1.5 text-primary">
+                                • Aktif
+                              </span>
                             )}
                           </p>
                           <ArabicText
@@ -249,8 +282,9 @@ export function ArabicStylePanel({
                       ))}
                     </div>
                     <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-                      Teks identik di ketiga kolom — hanya tipografi yang berbeda.
-                      Tidak ada huruf, harakat, atau urutan yang diubah.
+                      Teks identik di ketiga kolom — hanya tipografi yang
+                      berbeda. Tidak ada huruf, harakat, atau urutan yang
+                      diubah.
                     </p>
                   </div>
                 </motion.div>
@@ -267,7 +301,9 @@ export function ArabicStylePanel({
             {/* Toggle: Koma pada Teks Arab */}
             <button
               type="button"
-              onClick={() => setToggle("punctuateArabic", !toggles.punctuateArabic)}
+              onClick={() =>
+                setToggle("punctuateArabic", !toggles.punctuateArabic)
+              }
               aria-pressed={toggles.punctuateArabic}
               className={`flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all ${
                 toggles.punctuateArabic
@@ -300,19 +336,24 @@ export function ArabicStylePanel({
                   </span>
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Tambahkan koma (،) pada teks Arab mengikuti tanda koma di terjemahan. Ayat Al-Qur'an tidak diubah.
+                  Tambahkan koma (،) pada teks Arab mengikuti tanda koma di
+                  terjemahan. Ayat Al-Qur'an tidak diubah.
                 </p>
               </div>
               <span
                 className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                  toggles.punctuateArabic ? "bg-primary" : "bg-muted-foreground/30"
+                  toggles.punctuateArabic
+                    ? "bg-primary"
+                    : "bg-muted-foreground/30"
                 }`}
               >
                 <motion.span
                   layout
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ${
-                    toggles.punctuateArabic ? "translate-x-5" : "translate-x-0.5"
+                    toggles.punctuateArabic
+                      ? "translate-x-5"
+                      : "translate-x-0.5"
                   }`}
                 />
               </span>
@@ -321,7 +362,9 @@ export function ArabicStylePanel({
             {/* Toggle: Warnai Kata Arab */}
             <button
               type="button"
-              onClick={() => setToggle("colorizeArabic", !toggles.colorizeArabic)}
+              onClick={() =>
+                setToggle("colorizeArabic", !toggles.colorizeArabic)
+              }
               aria-pressed={toggles.colorizeArabic}
               className={`flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all ${
                 toggles.colorizeArabic
@@ -354,12 +397,15 @@ export function ArabicStylePanel({
                   </span>
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Setiap kata Arab diberi warna bergantian agar mudah dibedakan. Tema terang: #000000 & #011b45. Tema gelap: #ffffff & #d9dadb.
+                  Setiap kata Arab diberi warna bergantian agar mudah dibedakan.
+                  Tema terang: #000000 & #011b45. Tema gelap: #ffffff & #d9dadb.
                 </p>
               </div>
               <span
                 className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                  toggles.colorizeArabic ? "bg-primary" : "bg-muted-foreground/30"
+                  toggles.colorizeArabic
+                    ? "bg-primary"
+                    : "bg-muted-foreground/30"
                 }`}
               >
                 <motion.span
@@ -458,10 +504,7 @@ export function ArabicStylePanel({
               Pratinjau Langsung
             </h3>
             <div className="rounded-2xl border border-border bg-gradient-to-br from-emerald-50/80 to-amber-50/60 p-5 dark:from-emerald-950/40 dark:to-amber-950/20">
-              <ArabicText
-                text={SAMPLE_TEXT}
-                className="text-foreground"
-              />
+              <ArabicText text={SAMPLE_TEXT} className="text-foreground" />
               {/* Show list sample if either toggle is ON */}
               {(toggles.punctuateArabic || toggles.colorizeArabic) && (
                 <div className="mt-3 border-t border-border/40 pt-3">
@@ -475,9 +518,15 @@ export function ArabicStylePanel({
                 </div>
               )}
               <p className="mt-3 border-t border-border/40 pt-3 text-[11px] text-muted-foreground">
-                Mode aktif: <span className="font-semibold text-foreground">{arabicStyleModes[settings.mode].label}</span>
+                Mode aktif:{" "}
+                <span className="font-semibold text-foreground">
+                  {arabicStyleModes[settings.mode].label}
+                </span>
                 {" · "}
-                {settings.fontSize.toFixed(2)}rem / LH {settings.lineHeight.toFixed(2)} / WS {settings.wordSpacing.toFixed(2)}em / LS {settings.letterSpacing.toFixed(3)}em /{" "}
+                {settings.fontSize.toFixed(2)}rem / LH{" "}
+                {settings.lineHeight.toFixed(2)} / WS{" "}
+                {settings.wordSpacing.toFixed(2)}em / LS{" "}
+                {settings.letterSpacing.toFixed(3)}em /{" "}
                 {settings.align === "right" ? "rata kanan" : "rata kanan-kiri"}
                 {" · "}
                 Koma: {toggles.punctuateArabic ? "ON" : "OFF"}

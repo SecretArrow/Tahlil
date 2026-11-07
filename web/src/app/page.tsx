@@ -76,7 +76,9 @@ export default function Home() {
             <div className="text-center sm:text-right">
               <p className="text-xs text-muted-foreground">
                 Sumber konten:{" "}
-                <span className="font-medium text-foreground">{tahlilSource}</span>
+                <span className="font-medium text-foreground">
+                  {tahlilSource}
+                </span>
               </p>
               <p className="mt-1 text-[11px] text-muted-foreground/70">
                 Dibuat untuk kepentingan ibadah &amp; pembelajaran.

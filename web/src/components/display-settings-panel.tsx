@@ -64,9 +64,7 @@ function ToggleRow({
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-foreground">
-            {label}
-          </span>
+          <span className="text-sm font-semibold text-foreground">{label}</span>
           <span
             className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
               active
@@ -97,7 +95,8 @@ function ToggleRow({
 }
 
 export function DisplaySettingsPanel({ open, onClose }: Props) {
-  const { toggles, setToggle, reset, variant, setVariant } = useDisplaySettings();
+  const { toggles, setToggle, reset, variant, setVariant } =
+    useDisplaySettings();
 
   const variantOptions: ReadonlyArray<{
     value: ContentVariant;

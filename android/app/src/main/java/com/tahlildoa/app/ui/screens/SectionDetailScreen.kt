@@ -58,9 +58,10 @@ fun SectionDetailScreen(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onActiveSectionChange: (String) -> Unit = {},
 ) {
-    val startIndex = remember(sectionId, sections) {
-        sections.indexOfFirst { it.id == sectionId }.coerceAtLeast(0)
-    }
+    val startIndex =
+        remember(sectionId, sections) {
+            sections.indexOfFirst { it.id == sectionId }.coerceAtLeast(0)
+        }
     val state = rememberLazyListState(initialFirstVisibleItemIndex = startIndex)
 
     // Bottom navigation-bar inset — the app is edge-to-edge, so without this
@@ -72,7 +73,8 @@ fun SectionDetailScreen(
 
     // Follow the reading position for the drawer's active-section highlight.
     LaunchedEffect(state, sections) {
-        androidx.compose.runtime.snapshotFlow { state.firstVisibleItemIndex }
+        androidx.compose.runtime
+            .snapshotFlow { state.firstVisibleItemIndex }
             .distinctUntilChanged()
             .collect { index ->
                 sections.getOrNull(index)?.let { onActiveSectionChange(it.id) }
@@ -91,10 +93,11 @@ fun SectionDetailScreen(
         LazyColumn(
             state = state,
             modifier = Modifier.contentMaxWidth().fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = 8.dp,
-                bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp
-            ),
+            contentPadding =
+                PaddingValues(
+                    top = 8.dp,
+                    bottom = contentPadding.calculateBottomPadding() + navBarBottomDp + 8.dp,
+                ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(items = sections, key = { it.id }) { section ->
@@ -103,9 +106,10 @@ fun SectionDetailScreen(
                     toggles = toggles,
                     style = style,
                     isDark = isDark,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                 )
             }
             item(key = "footer") {

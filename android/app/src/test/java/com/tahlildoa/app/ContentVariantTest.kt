@@ -13,7 +13,6 @@ import org.junit.Test
  * schema downgrade, corrupted DataStore entry).
  */
 class ContentVariantTest {
-
     @Test
     fun fromStorageKey_known() {
         assertEquals(ContentVariant.Singkat, ContentVariant.fromStorageKey("singkat"))

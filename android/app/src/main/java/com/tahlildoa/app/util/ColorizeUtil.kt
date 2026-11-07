@@ -15,19 +15,23 @@ import androidx.compose.ui.graphics.Color
  * render so the running word index persists across lines.
  */
 object ColorizeUtil {
-
     /** Theme-aware color pairs (matches the web app exactly). */
-    data class ColorPair(val first: Color, val second: Color)
-
-    val LightColors = ColorPair(
-        first = Color(0xFF000000),
-        second = Color(0xFF011B45),
+    data class ColorPair(
+        val first: Color,
+        val second: Color,
     )
 
-    val DarkColors = ColorPair(
-        first = Color(0xFFFFFFFF),
-        second = Color(0xFFD9DADB),
-    )
+    val LightColors =
+        ColorPair(
+            first = Color(0xFF000000),
+            second = Color(0xFF011B45),
+        )
+
+    val DarkColors =
+        ColorPair(
+            first = Color(0xFFFFFFFF),
+            second = Color(0xFFD9DADB),
+        )
 
     /**
      * Mutable counter shared across all colorize calls within one ArabicText
@@ -36,7 +40,10 @@ object ColorizeUtil {
      */
     class Counter {
         var value: Int = 0
-        fun reset() { value = 0 }
+
+        fun reset() {
+            value = 0
+        }
     }
 
     /**
@@ -45,8 +52,13 @@ object ColorizeUtil {
      * or a word token (gets colored).
      */
     sealed class Token {
-        data class Whitespace(val text: String) : Token()
-        data class Word(val text: String) : Token()
+        data class Whitespace(
+            val text: String,
+        ) : Token()
+
+        data class Word(
+            val text: String,
+        ) : Token()
     }
 
     /**
@@ -76,7 +88,11 @@ object ColorizeUtil {
         return out
     }
 
-    private fun flush(sb: StringBuilder, wasWhitespace: Boolean, out: MutableList<Token>) {
+    private fun flush(
+        sb: StringBuilder,
+        wasWhitespace: Boolean,
+        out: MutableList<Token>,
+    ) {
         val s = sb.toString()
         if (wasWhitespace) out.add(Token.Whitespace(s)) else out.add(Token.Word(s))
         sb.setLength(0)
@@ -86,7 +102,10 @@ object ColorizeUtil {
      * Pick the next color from [pair] using [counter], incrementing the
      * counter for each word consumed.
      */
-    fun nextColor(pair: ColorPair, counter: Counter): Color {
+    fun nextColor(
+        pair: ColorPair,
+        counter: Counter,
+    ): Color {
         val c = if (counter.value % 2 == 0) pair.first else pair.second
         counter.value++
         return c

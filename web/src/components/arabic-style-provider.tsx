@@ -27,7 +27,12 @@ function parseStored(raw: string | null): ArabicStyleSettings {
   try {
     const parsed = JSON.parse(raw) as Partial<ArabicStyleSettings>;
     return {
-      mode: parsed.mode === "standard" || parsed.mode === "quran" || parsed.mode === "naskhi" ? parsed.mode : "quran",
+      mode:
+        parsed.mode === "standard" ||
+        parsed.mode === "quran" ||
+        parsed.mode === "naskhi"
+          ? parsed.mode
+          : "quran",
       fontSize:
         typeof parsed.fontSize === "number" &&
         parsed.fontSize >= 1.2 &&
@@ -81,7 +86,7 @@ export function ArabicStyleProvider({
   // fall back to defaults. SSR renders with `initialSettings` so the markup
   // matches the very first client render.
   const [settings, setSettings] = React.useState<ArabicStyleSettings>(
-    () => initialSettings ?? SERVER_INITIAL ?? defaultArabicSettings
+    () => initialSettings ?? SERVER_INITIAL ?? defaultArabicSettings,
   );
 
   // Write to cookie every time settings change.
@@ -114,7 +119,7 @@ export function ArabicStyleProvider({
         return next;
       });
     },
-    [persist]
+    [persist],
   );
 
   // Cross-tab sync via the `storage` event (covers localStorage writes from
@@ -149,7 +154,7 @@ export function ArabicStyleProvider({
       setAlign: (align) => update({ align }),
       reset: () => update(defaultArabicSettings),
     }),
-    [settings, update]
+    [settings, update],
   );
 
   return (

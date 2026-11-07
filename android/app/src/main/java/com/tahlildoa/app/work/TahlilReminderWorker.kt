@@ -36,9 +36,8 @@ class TahlilReminderWorker(
     appContext: Context,
     params: WorkerParameters,
 ) : CoroutineWorker(appContext, params) {
-
-    override suspend fun doWork(): Result {
-        return try {
+    override suspend fun doWork(): Result =
+        try {
             showReminderNotification()
             Result.success()
         } catch (e: Exception) {
@@ -46,33 +45,36 @@ class TahlilReminderWorker(
             // the backoff policy configured on the WorkRequest.
             Result.retry()
         }
-    }
 
     private fun showReminderNotification() {
         val context = applicationContext
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
-            as NotificationManager
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE)
+                as NotificationManager
 
         // Create channel (required API 26+). Calling this repeatedly is
         // safe — creating an existing channel is a no-op.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Pengingat Tahlil",
-                NotificationManager.IMPORTANCE_DEFAULT,
-            ).apply {
-                description = "Pengingat harian untuk membaca tahlil"
-            }
+            val channel =
+                NotificationChannel(
+                    CHANNEL_ID,
+                    "Pengingat Tahlil",
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ).apply {
+                    description = "Pengingat harian untuk membaca tahlil"
+                }
             notificationManager.createNotificationChannel(channel)
         }
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Tahlil & Doa")
-            .setContentText("Saatnya membaca tahlil hari ini")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
-            .build()
+        val notification =
+            NotificationCompat
+                .Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Tahlil & Doa")
+                .setContentText("Saatnya membaca tahlil hari ini")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .build()
 
         notificationManager.notify(NOTIFICATION_ID, notification)
     }

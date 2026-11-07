@@ -3,7 +3,6 @@ package com.tahlildoa.app
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -36,7 +35,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class MainActivityTest {
-
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
@@ -65,10 +63,13 @@ class MainActivityTest {
         // untuk Rasulullah SAW") appears in the section card. Assert at least
         // one node displaying it is shown.
         composeRule.waitUntil(timeoutMillis = 10_000L) {
-            composeRule.onAllNodesWithText("Pengantar Al-Fatihah", substring = true)
-                .fetchSemanticsNodes().isNotEmpty()
+            composeRule
+                .onAllNodesWithText("Pengantar Al-Fatihah", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
-        composeRule.onAllNodesWithText("Pengantar Al-Fatihah", substring = true)[0]
+        composeRule
+            .onAllNodesWithText("Pengantar Al-Fatihah", substring = true)[0]
             .assertIsDisplayed()
     }
 }
