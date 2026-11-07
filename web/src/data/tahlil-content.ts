@@ -274,7 +274,7 @@ export const tahlilSections: Section[] = [
       {
         arabic: "سَيِّدُنَا مُحَمَّدٌ رَسُوْلُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ",
         transliteration:
-          "Sayyidunaa Muhammadur-rasuulullaah. Shallallaahu 'alaihi wasallam.",
+          "Sayyidinaa Muhammadur-rasuulullaah. Shallallaahu 'alaihi wasallam.",
         translation:
           "Junjungan Kita Nabi Muhammad adalah utusan Allah. Semoga Allah limpahkan rahmat dan salam kepada beliau.",
       },
@@ -340,7 +340,7 @@ export const tahlilSections: Section[] = [
         arabic:
           "وَإِلَى جَمِيْعِ إِخْوَانِهِ مِنَ الْأَنْبِيَاءِ وَالْمُرْسَلِيْنَ وَالْأَوْلِيَاءِ وَالْشُّهَدَاءِ وَالْصَّالِحِيْنَ وَالْصَّحَابَةِ وَالْتَّابِعِيْنَ وَالْعُلَمَاءِ الْعَامِلِيْنَ وَالْمُصَنِّفِيْنَ الْمُخْلِصِيْنَ وَجَمِيْعِ الْمَلَائِكَةِ الْمُقَرَّبِيْنَ، خُصُوْصًا إِلَى سَيِّدِنَا الشَّيْخِ عَبْدِ الْقَادِرِ الْجِيْلَانِي",
         transliteration:
-          "Wa ilaa jamii'i ikhwaanihi minal-anbiya'i wal-mursaliin wal-auliya'i wasy-syuhadaa'i wash-shaalihiin wash-shahaabati wat-taabi'iin wal-'ulamaa'il-'aamiliin wal-mushannifiinal-mukhlishiin wa jamii'il-malaaikatil-muqarrabiin, khushushon ilaa sayyidinasy-syaikhi 'abdil-qaadir al-jilaani.",
+          "Wa ilaa jamii'i ikhwaanihi minal-anbiya'i wal-mursaliin wal-auliya'i wasy-syuhadaa'i wash-shaalihiin wash-shahaabati wat-taabi'iin wal-'ulamaa'il-'aamiliin wal-mushannifiinal-mukhlishiin wa jamii'il-malaaikatil-muqarrabiin, khushushon ilaa sayyidinasy-syaikh 'abdil-qaadir al-jilaani.",
         translation:
           "Dan kepada seluruh saudara-saudaranya dari kalangan para nabi, para rasul, para wali, para syuhada, orang-orang saleh, para sahabat, para tabi'in, ulama yang mengamalkan ilmunya, para penulis yang ikhlas, dan seluruh malaikat muqarrabin, khususnya kepada syaikh kita, Syekh Abdul Qadir al-Jilani.",
       },
