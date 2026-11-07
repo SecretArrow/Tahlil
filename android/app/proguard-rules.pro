@@ -1,5 +1,5 @@
 # ============================================================
-# ProGuard / R8 rules for Tahlil & Doa — MINIMAL, Singkat-style
+# ProGuard / R8 rules for Tahlil — MINIMAL, Singkat-style
 # ------------------------------------------------------------
 # History: this file once carried aggressive keeps for
 # @Stable/@Immutable/@Composable classes, ViewModels, enums and
@@ -20,29 +20,29 @@
 -keepattributes SourceFile, LineNumberTable
 
 # === kotlinx.serialization (official recommended rules) ===
-# Covers every @Serializable data class under com.tahlildoa.app, including:
+# Covers every @Serializable data class under com.tahlil.app, including:
 #   - data/Section.kt: SectionType, ContentBlock, Section
 #   - data/TahlilContent.kt: VariantData, TahlilContentData (+ top-level loadFromJson)
 #   - data/ContentVariant.kt: ContentVariant enum
 #   - data/DisplaySettings.kt: DisplayToggles
 #   - data/ArabicStyleSettings.kt: ArabicStyleSettings, ArabicStyleMode, ArabicAlign
-# The broad `com.tahlildoa.app.**` rule below is intentionally wider than the
+# The broad `com.tahlil.app.**` rule below is intentionally wider than the
 # data-layer-only keep suggested for the JSON migration: keeping the whole
 # data package (and its serializers) lets kotlinx.serialization round-trip
 # every field without R8 stripping the generated `$$serializer` companions.
 -dontnote kotlinx.serialization.AnnotationsKt
--keep,includedescriptorclasses class com.tahlildoa.app.**$$serializer { *; }
--keepclassmembers class com.tahlildoa.app.** {
+-keep,includedescriptorclasses class com.tahlil.app.**$$serializer { *; }
+-keepclassmembers class com.tahlil.app.** {
     *** Companion;
 }
--keepclasseswithmembers class com.tahlildoa.app.** {
+-keepclasseswithmembers class com.tahlil.app.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
--keep @kotlinx.serialization.Serializable class com.tahlildoa.app.** { *; }
+-keep @kotlinx.serialization.Serializable class com.tahlil.app.** { *; }
 # Explicit data-layer keep — guards the JSON content models even if a future
 # refactor drops the @Serializable annotation on a leaf class by mistake.
--keep class com.tahlildoa.app.data.** { *; }
--keepclassmembers class com.tahlildoa.app.data.** { *; }
+-keep class com.tahlil.app.data.** { *; }
+-keepclassmembers class com.tahlil.app.data.** { *; }
 
 # === WorkManager ===
 # Workers are instantiated via reflection by WorkManager's factory.

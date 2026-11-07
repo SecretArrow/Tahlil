@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.tahlildoa.app"
+    namespace = "com.tahlil.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.tahlildoa.app"
+        applicationId = "com.tahlil.app"
         minSdk = 24
         targetSdk = 34
         versionCode = 9

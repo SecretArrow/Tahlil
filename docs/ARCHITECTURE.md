@@ -2,7 +2,7 @@
 
 ## Overview
 
-Tahlil & Doa is a multi-platform Islamic prayer book app with two implementations:
+Tahlil is a multi-platform Islamic prayer book app with two implementations:
 
 1. **Web** — Next.js 16 web app (`/web`)
 2. **Android** — Native Kotlin + Jetpack Compose app (`/android`)
@@ -34,11 +34,11 @@ Both share the same content data (sections, Arabic text, translations) but use p
 - **DI**: Manual (single Application-level repository)
 
 ### Key Files
-- `app/src/main/java/com/tahlildoa/app/data/TahlilContent.kt` — Same 11 sections
-- `app/src/main/java/com/tahlildoa/app/ui/components/ArabicText.kt` — Composable replicating web ArabicText
-- `app/src/main/java/com/tahlildoa/app/util/ArabicCommaUtil.kt` — Port of addArabicCommas
-- `app/src/main/java/com/tahlildoa/app/util/ColorizeUtil.kt` — Word coloring
-- `app/src/main/java/com/tahlildoa/app/util/AyahMarkUtil.kt` — ۝X parsing & rendering
+- `app/src/main/java/com.tahlil.app/data/TahlilContent.kt` — Same 11 sections
+- `app/src/main/java/com.tahlil.app/ui/components/ArabicText.kt` — Composable replicating web ArabicText
+- `app/src/main/java/com.tahlil.app/util/ArabicCommaUtil.kt` — Port of addArabicCommas
+- `app/src/main/java/com.tahlil.app/util/ColorizeUtil.kt` — Word coloring
+- `app/src/main/java/com.tahlil.app/util/AyahMarkUtil.kt` — ۝X parsing & rendering
 
 ## CI/CD Pipeline
 

@@ -50,7 +50,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Tahlil Singkat — Majelis Tahlil & Doa",
+  title: "Tahlil — Majelis Tahlil",
   description:
     "Web Tahlil Singkat: rangkaian zikir, tahlil, Al-Fatihah, Ayat Kursi, dan doa untuk mendoakan para arwah kaum muslimin. Mendukung mode gelap/terang, responsif PC & Android.",
   keywords: [
@@ -66,11 +66,8 @@ export const metadata: Metadata = {
     "Islam",
   ],
   authors: [{ name: "SecretArrow" }],
-  icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
-  },
   openGraph: {
-    title: "Tahlil Singkat — Majelis Tahlil & Doa",
+    title: "Tahlil — Majelis Tahlil",
     description:
       "Rangkaian zikir, tahlil, dan doa untuk mendoakan para arwah kaum muslimin.",
     type: "website",

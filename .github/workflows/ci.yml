@@ -524,10 +524,10 @@ jobs:
           echo ""
           echo "=== Launching release APK ==="
           adb logcat -c
-          adb shell am start -n com.tahlildoa.app/.MainActivity
+          adb shell am start -n com.tahlil.app/.MainActivity
           sleep 8
 
-          FOREGROUND=$(adb shell dumpsys activity activities | grep -E "mResumedActivity|topResumedActivity" | grep -c "com.tahlildoa.app" || true)
+          FOREGROUND=$(adb shell dumpsys activity activities | grep -E "mResumedActivity|topResumedActivity" | grep -c "com.tahlil.app" || true)
           echo "Foreground check result: $FOREGROUND"
 
           CRASH=$(adb logcat -d -s TahlilCrash:E AndroidRuntime:E | grep -E "Exception:|FATAL EXCEPTION|IncompatibleClassChange|Caused by:" | head -10 || true)

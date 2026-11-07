@@ -1,6 +1,10 @@
 # Tahlil
 
-> Web + Native Android (Kotlin) application for reading Tahlil & Doa — with a Singkat (ringkas) and Lengkap (full) variant toggle.
+<p align="center">
+  <img src="docs/logo.png" alt="Tahlil" width="128" />
+</p>
+
+> Web + Native Android (Kotlin) application for reading Tahlil — with a Singkat (ringkas) and Lengkap (full) variant toggle.
 
 [![CI](https://github.com/SecretArrow/Tahlil/actions/workflows/ci.yml/badge.svg)](https://github.com/SecretArrow/Tahlil/actions/workflows/ci.yml)
 

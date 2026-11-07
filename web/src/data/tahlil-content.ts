@@ -55,8 +55,8 @@ export function getTahlilSectionById(
 export const tahlilSections: Section[] = getTahlilSections("singkat");
 
 export const heroInfo = {
-  title: "Tahlil & Doa",
-  subtitle: "Majelis Tahlil & Doa",
+  title: "Tahlil",
+  subtitle: "Majelis Tahlil",
   description:
     "Rangkaian zikir, tahlil, dan doa untuk mendoakan para arwah kaum muslimin. Disusun dari Al-Qur'an, hadits, dan amaliah ulama.",
   arabicBismillah: "بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيْمِ",

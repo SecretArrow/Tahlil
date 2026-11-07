@@ -1,6 +1,6 @@
-# Tahlil & Doa — Web
+# Tahlil — Web
 
-Aplikasi web Majelis Tahlil & Doa (sumber: "Kompilasi Tahlil dan Doa") — rangkaian zikir, tahlil, Al-Fatihah, Ayat Kursi, Surah Yasin (varian Lengkap), dan doa untuk mendoakan para arwah kaum muslimin.
+Aplikasi web Majelis Tahlil (sumber: "Kompilasi Tahlil dan Doa") — rangkaian zikir, tahlil, Al-Fatihah, Ayat Kursi, Surah Yasin (varian Lengkap), dan doa untuk mendoakan para arwah kaum muslimin.
 
 ## Fitur
 
