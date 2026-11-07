@@ -10,6 +10,7 @@ export const COOKIE_KEYS = {
   theme: "tahlil-theme",
   arabicStyle: "tahlil-arabic-style-v1",
   displayToggles: "tahlil-display-toggles-v1",
+  variant: "tahlil-variant-v1",
 } as const;
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
@@ -41,6 +42,11 @@ export async function getDisplayTogglesCookie(): Promise<string | null> {
 export async function getThemeCookie(): Promise<string | null> {
   const store = await cookies();
   return store.get(COOKIE_KEYS.theme)?.value ?? null;
+}
+
+export async function getVariantCookie(): Promise<string | null> {
+  const store = await cookies();
+  return store.get(COOKIE_KEYS.variant)?.value ?? null;
 }
 
 export { COOKIE_MAX_AGE };

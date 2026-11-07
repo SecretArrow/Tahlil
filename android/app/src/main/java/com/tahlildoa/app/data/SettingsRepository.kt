@@ -50,6 +50,7 @@ class SettingsRepository(private val context: Context) {
     private val KEY_PUNCTUATE = booleanPreferencesKey("display_punctuate_arabic")
     private val KEY_COLORIZE = booleanPreferencesKey("display_colorize_arabic")
     private val KEY_KEEP_SCREEN_ON = booleanPreferencesKey("display_keep_screen_on")
+    private val KEY_DAILY_REMINDER = booleanPreferencesKey("display_daily_reminder")
 
     // --- Arabic style ----------------------------------------------------
     private val KEY_MODE = stringPreferencesKey("arabic_mode")
@@ -62,6 +63,9 @@ class SettingsRepository(private val context: Context) {
     // --- Theme ------------------------------------------------------------
     private val KEY_THEME = stringPreferencesKey("theme_mode")
 
+    // --- Content variant -------------------------------------------------
+    private val KEY_VARIANT = stringPreferencesKey("content_variant")
+
     // --- Continue last reading -------------------------------------------
     private val KEY_LAST_READ_SECTION = stringPreferencesKey("last_read_section_id")
 
@@ -73,6 +77,7 @@ class SettingsRepository(private val context: Context) {
             punctuateArabic = p[KEY_PUNCTUATE] ?: false,
             colorizeArabic = p[KEY_COLORIZE] ?: false,
             keepScreenOn = p[KEY_KEEP_SCREEN_ON] ?: false,
+            dailyReminder = p[KEY_DAILY_REMINDER] ?: false,
         )
     }
 
@@ -92,6 +97,14 @@ class SettingsRepository(private val context: Context) {
     }
 
     /**
+     * The currently selected content variant ([ContentVariant.Singkat] by
+     * default). Drives which sections the home / detail screens render.
+     */
+    val variant: Flow<ContentVariant> = context.tahlilDataStore.data.map { p ->
+        ContentVariant.fromStorageKey(p[KEY_VARIANT])
+    }
+
+    /**
      * Last section id the user opened — used by the Home screen to show a
      * "Continue reading" card and (optionally) auto-navigate to it on launch.
      */
@@ -108,6 +121,17 @@ class SettingsRepository(private val context: Context) {
             p[KEY_PUNCTUATE] = toggles.punctuateArabic
             p[KEY_COLORIZE] = toggles.colorizeArabic
             p[KEY_KEEP_SCREEN_ON] = toggles.keepScreenOn
+            p[KEY_DAILY_REMINDER] = toggles.dailyReminder
+        }
+    }
+
+    /**
+     * Persist the user's chosen content variant. Switching the variant
+     * re-renders the home / detail lists reactively via the [variant] Flow.
+     */
+    suspend fun updateVariant(variant: ContentVariant) {
+        context.tahlilDataStore.edit { p ->
+            p[KEY_VARIANT] = variant.storageKey
         }
     }
 

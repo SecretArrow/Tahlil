@@ -18,9 +18,13 @@ import kotlinx.serialization.Serializable
  * - keepScreenOn:     When true, the device screen stays awake while the app
  *                     is in the foreground (FLAG_KEEP_SCREEN_ON). Default
  *                     OFF so users don't drain their battery accidentally.
+ * - dailyReminder:    When true, schedules a once-a-day WorkManager
+ *                     notification reminding the user to read tahlil
+ *                     (see `BackgroundScheduler.scheduleDailyReminder`).
+ *                     Default OFF — notifications are opt-in.
  *
- * All toggles default to true except [punctuateArabic], [colorizeArabic], and
- * [keepScreenOn], matching the web app's defaults.
+ * All toggles default to true except [punctuateArabic], [colorizeArabic],
+ * [keepScreenOn], and [dailyReminder], matching the web app's defaults.
  */
 @Serializable
 data class DisplayToggles(
@@ -30,6 +34,7 @@ data class DisplayToggles(
     val punctuateArabic: Boolean = false,
     val colorizeArabic: Boolean = false,
     val keepScreenOn: Boolean = false,
+    val dailyReminder: Boolean = false,
 ) {
     companion object {
         val Default = DisplayToggles()

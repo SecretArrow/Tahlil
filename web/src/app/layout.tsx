@@ -8,6 +8,7 @@ import { DisplaySettingsProvider } from "@/components/display-settings-provider"
 import {
   getArabicStyleCookie,
   getDisplayTogglesCookie,
+  getVariantCookie,
 } from "@/lib/cookies/server";
 import {
   ArabicStyleSettings,
@@ -17,6 +18,7 @@ import {
   DisplayToggles,
   defaultDisplayToggles,
 } from "@/data/display-settings";
+import type { ContentVariant } from "@/data/tahlil-content";
 
 const amiri = Amiri({
   variable: "--font-arabic",
@@ -52,15 +54,16 @@ export const metadata: Metadata = {
   keywords: [
     "Tahlil",
     "Tahlil Singkat",
+    "Tahlil Lengkap",
     "Doa Arwah",
     "Majelis Tahlil",
     "Al-Fatihah",
     "Ayat Kursi",
+    "Surah Yasin",
     "Dzikir",
     "Islam",
-    "Salik Channel",
   ],
-  authors: [{ name: "Salik Channel" }],
+  authors: [{ name: "SecretArrow" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
@@ -128,6 +131,7 @@ function parseDisplayToggles(raw: string | null): DisplayToggles {
   try {
     const p = JSON.parse(raw) as Partial<DisplayToggles>;
     return {
+      variant: p.variant === "lengkap" || p.variant === "singkat" ? p.variant : "singkat",
       arabic: typeof p.arabic === "boolean" ? p.arabic : true,
       transliteration:
         typeof p.transliteration === "boolean" ? p.transliteration : true,
@@ -143,6 +147,10 @@ function parseDisplayToggles(raw: string | null): DisplayToggles {
   }
 }
 
+function parseVariant(raw: string | null): ContentVariant {
+  return raw === "lengkap" || raw === "singkat" ? raw : "singkat";
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -150,13 +158,18 @@ export default async function RootLayout({
 }>) {
   // Read user preferences from cookies on the server so SSR matches
   // the first client render — no hydration mismatch, no flash of defaults.
-  const [arabicStyleRaw, displayTogglesRaw] = await Promise.all([
+  const [arabicStyleRaw, displayTogglesRaw, variantRaw] = await Promise.all([
     getArabicStyleCookie(),
     getDisplayTogglesCookie(),
+    getVariantCookie(),
   ]);
 
   const initialArabicStyle = parseArabicStyle(arabicStyleRaw);
   const initialDisplayToggles = parseDisplayToggles(displayTogglesRaw);
+  // Prefer the dedicated variant cookie; parseVariant always returns a
+  // valid ContentVariant (defaulting to "singkat"), so no extra fallback
+  // is needed here.
+  const initialVariant: ContentVariant = parseVariant(variantRaw);
 
   return (
     <html lang="id" suppressHydrationWarning>
@@ -172,7 +185,10 @@ export default async function RootLayout({
           storage="cookie"
         >
           <ArabicStyleProvider initialSettings={initialArabicStyle}>
-            <DisplaySettingsProvider initialToggles={initialDisplayToggles}>
+            <DisplaySettingsProvider
+              initialToggles={initialDisplayToggles}
+              initialVariant={initialVariant}
+            >
               {children}
               <Toaster />
             </DisplaySettingsProvider>

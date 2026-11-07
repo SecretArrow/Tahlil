@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.tahlildoa.app.data.ArabicStyleSettings
 import com.tahlildoa.app.data.DisplayToggles
-import com.tahlildoa.app.data.TahlilContent
+import com.tahlildoa.app.data.Section
 import com.tahlildoa.app.ui.components.SectionCard
 import com.tahlildoa.app.ui.components.contentMaxWidth
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -53,11 +53,11 @@ fun SectionDetailScreen(
     toggles: DisplayToggles,
     style: ArabicStyleSettings,
     isDark: Boolean,
+    sections: List<Section>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onActiveSectionChange: (String) -> Unit = {},
 ) {
-    val sections = remember { TahlilContent.sections }
     val startIndex = remember(sectionId, sections) {
         sections.indexOfFirst { it.id == sectionId }.coerceAtLeast(0)
     }

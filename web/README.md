@@ -1,10 +1,10 @@
 # Tahlil & Doa — Web
 
-Aplikasi web Tahlil Singkat (dari kitab Salik Channel) — rangkaian zikir, tahlil, Al-Fatihah, Ayat Kursi, dan doa untuk mendoakan para arwah kaum muslimin.
+Aplikasi web Majelis Tahlil & Doa (sumber: "Kompilasi Tahlil dan Doa") — rangkaian zikir, tahlil, Al-Fatihah, Ayat Kursi, Surah Yasin (varian Lengkap), dan doa untuk mendoakan para arwah kaum muslimin.
 
 ## Fitur
 
-- 11 section lengkap (Pembukaan → Al-Fatihah Penutup)
+- Dua varian konten: **Singkat** (28 bagian) dan **Lengkap** (39 bagian, tambah 11 bagian Surah Yasin ayat 15-25) — bisa dipilih lewat tombol di hero atau panel Tampilan Bacaan
 - 3 mode font Arab: Standar, Gaya Mushaf Utsmani, Naskhi Tebal
 - Toggle show/hide Arab/Latin/Terjemah
 - Toggle "Koma pada Teks Arab" (auto tambah koma Arab mengikuti terjemahan)
@@ -13,6 +13,15 @@ Aplikasi web Tahlil Singkat (dari kitab Salik Channel) — rangkaian zikir, tahl
 - Mode gelap/terang dengan auto-save via cookie
 - Tanda waqf mushaf ۝X dengan CSS-drawn circle
 - Teks Arab dipecah per kalimat dengan tanda di akhir baris
+
+## Varian Singkat / Lengkap
+
+Varian menentukan rangkaian bacaan yang ditampilkan:
+
+- **Singkat** — 28 bagian, tanpa Surah Yasin. Cocok untuk majelis tahlil harian yang singkat.
+- **Lengkap** — 39 bagian, menambahkan 11 bagian Surah Yasin (ayat 15-25) di antara Ayat Kursi dan Istighfar.
+
+Pilihan tersimpan di cookie `tahlil-variant-v1` (1 tahun) dan dikirim juga ke endpoint `/api/settings`. Server membaca cookie ini saat SSR supaya render pertama langsung sesuai pilihan pengguna (tanpa hydration mismatch).
 
 ## Stack
 
@@ -35,6 +44,21 @@ npm run dev
 npm run build
 ```
 
+## Testing
+
+Unit test (vitest):
+
+```bash
+npm test
+```
+
+End-to-end test (Playwright — menjalankan `npm run build && npm run start`):
+
+```bash
+npx playwright install --with-deps chromium
+npm run test:e2e
+```
+
 ## Sumber
 
-Kitab Tahlil: Salik Channel
+Konten: "Kompilasi Tahlil dan Doa".

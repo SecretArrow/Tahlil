@@ -5,6 +5,7 @@ export const runtime = "nodejs";
 const ALLOWED_KEYS = {
   arabicStyle: "tahlil-arabic-style-v1",
   displayToggles: "tahlil-display-toggles-v1",
+  variant: "tahlil-variant-v1",
 } as const;
 
 type Body = {

@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.tahlildoa.app.data.ArabicStyleSettings
+import com.tahlildoa.app.data.ContentVariant
 import com.tahlildoa.app.data.DisplayToggles
+import com.tahlildoa.app.data.Section
 import com.tahlildoa.app.data.SettingsRepository
+import com.tahlildoa.app.data.TahlilContent
 import com.tahlildoa.app.data.ThemeMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -26,6 +30,9 @@ import kotlinx.coroutines.launch
  * - [isFullscreen]: session-only fullscreen toggle (NOT persisted — resets to
  *   false each launch). When true, MainActivity hides the system bars via
  *   WindowInsetsControllerCompat.
+ * - [variant]: persisted content variant ([ContentVariant.Singkat] /
+ *   [ContentVariant.Lengkap]). Drives which set of sections the home and
+ *   detail screens render.
  */
 data class TahlilUiState(
     val toggles: DisplayToggles = DisplayToggles(),
@@ -34,6 +41,7 @@ data class TahlilUiState(
     val isDark: Boolean = false,
     val isFullscreen: Boolean = false,
     val lastReadSectionId: String? = null,
+    val variant: ContentVariant = ContentVariant.Singkat,
 )
 
 /** Internal helper so we can combine >5 flows via a nested combine(). */
@@ -74,10 +82,15 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
         PersistedSettings(toggles, style, themeMode, lastRead, isDark)
     }
 
+    // Three-way combine (the 3-arg `combine` overload) threads the persisted
+    // 5-flow result, the session-only fullscreen flag, and the content
+    // variant into one [TahlilUiState]. Variant lives outside `persisted`
+    // so the 5-arg combine stays within kotlinx-coroutines' typed arity.
     val uiState: StateFlow<TahlilUiState> = combine(
         persisted,
         _isFullscreen,
-    ) { p, isFullscreen ->
+        repo.variant,
+    ) { p, isFullscreen, variant ->
         TahlilUiState(
             toggles = p.toggles,
             style = p.style,
@@ -85,12 +98,26 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
             isDark = p.isDark,
             isFullscreen = isFullscreen,
             lastReadSectionId = p.lastRead,
+            variant = variant,
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = TahlilUiState(),
     )
+
+    /**
+     * Variant-aware sections list. Recomputes whenever the persisted
+     * variant changes, seeded with the [ContentVariant.Singkat] list so the
+     * first frame is never empty before DataStore emits.
+     */
+    val sections: StateFlow<List<Section>> = repo.variant
+        .map { variant -> TahlilContent.sectionsFor(variant) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = TahlilContent.sectionsFor(ContentVariant.Singkat),
+        )
 
     fun setDark(value: Boolean) { _isDark.value = value }
 
@@ -99,6 +126,11 @@ class TahlilViewModel(private val repo: SettingsRepository) : ViewModel() {
 
     /** Convenience: flip the fullscreen flag. */
     fun toggleFullscreen() { _isFullscreen.value = !_isFullscreen.value }
+
+    /** Persist the selected content variant (Singkat / Lengkap). */
+    fun setVariant(variant: ContentVariant) {
+        viewModelScope.launch { repo.updateVariant(variant) }
+    }
 
     fun updateToggles(transform: (DisplayToggles) -> DisplayToggles) {
         val next = transform(uiState.value.toggles)

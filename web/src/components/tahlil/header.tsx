@@ -4,7 +4,8 @@ import * as React from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, Moon, BookOpen, X, Type, Eye } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { tahlilSections } from "@/data/tahlil-content";
+import { getTahlilSections, tahlilSource } from "@/data/tahlil-content";
+import { useDisplaySettings } from "@/components/display-settings-provider";
 
 
 type HeaderProps = {
@@ -17,6 +18,11 @@ export function Header({ onOpenNav, onOpenArabicStyle, onOpenDisplay }: HeaderPr
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = React.useState(false);
   const [activeId, setActiveId] = React.useState<string>("");
+  const { variant } = useDisplaySettings();
+  const sections = React.useMemo(
+    () => getTahlilSections(variant),
+    [variant]
+  );
 
   useMotionValueEvent(scrollY, "change", (v) => {
     setScrolled(v > 24);
@@ -34,12 +40,12 @@ export function Header({ onOpenNav, onOpenArabicStyle, onOpenDisplay }: HeaderPr
       },
       { rootMargin: "-30% 0px -55% 0px", threshold: 0 }
     );
-    tahlilSections.forEach((s) => {
+    sections.forEach((s) => {
       const el = document.getElementById(s.id);
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, []);
+  }, [sections]);
 
   return (
     <motion.header
@@ -75,7 +81,7 @@ export function Header({ onOpenNav, onOpenArabicStyle, onOpenDisplay }: HeaderPr
 
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-1">
-          {tahlilSections.slice(0, 6).map((s) => (
+          {sections.slice(0, 6).map((s) => (
             <a
               key={s.id}
               href={`#${s.id}`}
@@ -138,6 +144,11 @@ export function MobileNav({
   open: boolean;
   onClose: () => void;
 }) {
+  const { variant } = useDisplaySettings();
+  const sections = React.useMemo(
+    () => getTahlilSections(variant),
+    [variant]
+  );
   return (
     <motion.div
       initial={false}
@@ -151,7 +162,7 @@ export function MobileNav({
           <div>
             <p className="font-semibold">Daftar Isi</p>
             <p className="text-xs text-muted-foreground">
-              {tahlilSections.length} bagian
+              {sections.length} bagian
             </p>
           </div>
           <button
@@ -164,7 +175,7 @@ export function MobileNav({
           </button>
         </div>
         <nav className="flex-1 overflow-y-auto p-3">
-          {tahlilSections.map((s) => (
+          {sections.map((s) => (
             <a
               key={s.id}
               href={`#${s.id}`}
@@ -188,7 +199,7 @@ export function MobileNav({
           ))}
         </nav>
         <div className="border-t border-border p-4 text-center text-xs text-muted-foreground">
-          Sumber: Salik Channel
+          Sumber: {tahlilSource}
         </div>
       </div>
     </motion.div>

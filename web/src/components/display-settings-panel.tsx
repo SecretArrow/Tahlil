@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { useDisplaySettings } from "@/components/display-settings-provider";
 import { ArabicText } from "@/components/arabic-text";
+import type { ContentVariant } from "@/data/tahlil-content";
+import { getTahlilSections } from "@/data/tahlil-content";
 
 type Props = {
   open: boolean;
@@ -95,7 +97,24 @@ function ToggleRow({
 }
 
 export function DisplaySettingsPanel({ open, onClose }: Props) {
-  const { toggles, setToggle, reset } = useDisplaySettings();
+  const { toggles, setToggle, reset, variant, setVariant } = useDisplaySettings();
+
+  const variantOptions: ReadonlyArray<{
+    value: ContentVariant;
+    label: string;
+    description: string;
+  }> = [
+    {
+      value: "singkat",
+      label: "Singkat",
+      description: `${getTahlilSections("singkat").length} bagian tanpa Surah Yasin`,
+    },
+    {
+      value: "lengkap",
+      label: "Lengkap",
+      description: `${getTahlilSections("lengkap").length} bagian, tambah Surah Yasin (ayat 15-25)`,
+    },
+  ];
 
   return (
     <AnimatePresence>
@@ -142,6 +161,62 @@ export function DisplaySettingsPanel({ open, onClose }: Props) {
             </div>
 
             <div className="space-y-3 p-4">
+              {/* Variant selector — Singkat / Lengkap */}
+              <div className="rounded-2xl border border-border bg-card/60 p-3">
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <BookOpen className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-foreground">
+                      Varian Tahlil
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Pilih rangkaian Singkat atau Lengkap (dengan Surah Yasin)
+                    </p>
+                  </div>
+                </div>
+                <div
+                  role="radiogroup"
+                  aria-label="Varian Tahlil"
+                  className="grid grid-cols-2 gap-2"
+                >
+                  {variantOptions.map((opt) => {
+                    const active = variant === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={active}
+                        onClick={() => setVariant(opt.value)}
+                        className={`flex flex-col gap-0.5 rounded-xl border p-3 text-left transition-all ${
+                          active
+                            ? "border-primary/40 bg-primary/5"
+                            : "border-border bg-background hover:bg-accent"
+                        }`}
+                      >
+                        <span
+                          className={`flex items-center gap-1.5 text-sm font-semibold ${
+                            active ? "text-primary" : "text-foreground"
+                          }`}
+                        >
+                          {opt.label}
+                          {active && (
+                            <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-primary">
+                              Aktif
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-[11px] leading-tight text-muted-foreground">
+                          {opt.description}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <ToggleRow
                 label="Teks Arab"
                 description="Tulisan Arab dengan harakat (font dapat diatur di Pengaturan Teks Arab)"

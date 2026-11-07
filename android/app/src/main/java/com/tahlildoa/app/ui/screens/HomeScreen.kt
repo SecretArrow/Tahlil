@@ -66,7 +66,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tahlildoa.app.BuildConfig
 import com.tahlildoa.app.data.HeroInfo
-import com.tahlildoa.app.data.TahlilContent
+import com.tahlildoa.app.data.Section
 import com.tahlildoa.app.ui.components.SectionCard
 import com.tahlildoa.app.ui.components.contentMaxWidth
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -79,11 +79,14 @@ private data class CtaButton(
     val primary: Boolean,
 )
 
+// CTA targets point at stable section ids that exist across both content
+// variants (Singkat / Lengkap). "Mulai" jumps to the first section; the
+// other three surface the Tahlil, Dzikir, and Doa portions of the reading.
 private val CtaButtons = listOf(
-    CtaButton("pembukaan", "Mulai", primary = true),
-    CtaButton("tahlil-ahli-kubur", "Tahlil", primary = false),
-    CtaButton("dzikir", "Dzikir", primary = false),
-    CtaButton("doa-pembuka", "Doa", primary = false),
+    CtaButton("pengantar-al-fatihah-untuk-rasulullah-saw", "Mulai", primary = true),
+    CtaButton("tahlil-inti-laa-ilaaha-illallah-100x", "Tahlil", primary = false),
+    CtaButton("sebaik-baik-dzikir-laa-ilaaha-illallah", "Dzikir", primary = false),
+    CtaButton("doa-tahlil-pembuka", "Doa", primary = false),
 )
 
 /**
@@ -125,6 +128,7 @@ fun HomeScreen(
     toggles: com.tahlildoa.app.data.DisplayToggles,
     style: com.tahlildoa.app.data.ArabicStyleSettings,
     isDark: Boolean,
+    sections: List<Section>,
     onSectionClick: (String) -> Unit,
     onActiveSectionChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -136,7 +140,6 @@ fun HomeScreen(
     onClearLastRead: () -> Unit = {},
 ) {
     val state = rememberLazyListState()
-    val sections = remember { TahlilContent.sections }
     val scope = rememberCoroutineScope()
 
     // Track the first visible section's id (for drawer highlighting).

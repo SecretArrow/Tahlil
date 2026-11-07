@@ -8,6 +8,7 @@ export const COOKIE_KEYS = {
   theme: "tahlil-theme",
   arabicStyle: "tahlil-arabic-style-v1",
   displayToggles: "tahlil-display-toggles-v1",
+  variant: "tahlil-variant-v1",
 } as const;
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year

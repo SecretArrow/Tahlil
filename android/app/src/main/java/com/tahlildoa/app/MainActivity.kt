@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tahlildoa.app.data.ThemeMode
 import com.tahlildoa.app.ui.TahlilViewModel
@@ -109,6 +110,9 @@ class MainActivity : ComponentActivity() {
 
         val viewModel: TahlilViewModel = viewModel(factory = factory)
         val uiState by viewModel.uiState.collectAsState()
+        // Variant-aware sections — recomposes the home / detail lists when
+        // the user switches between Singkat and Lengkap.
+        val sections by viewModel.sections.collectAsStateWithLifecycle()
 
         // Compute the actual dark flag from the user's preference + system.
         val systemDark = isSystemInDarkTheme()
@@ -203,9 +207,12 @@ class MainActivity : ComponentActivity() {
                     isDark = isDark,
                     isFullscreen = uiState.isFullscreen,
                     lastReadSectionId = uiState.lastReadSectionId,
+                    variant = uiState.variant,
+                    sections = sections,
                     onTogglesChange = { newToggles -> viewModel.updateToggles { newToggles } },
                     onStyleChange = { newStyle -> viewModel.updateStyle { newStyle } },
                     onThemeModeChange = { mode -> viewModel.setThemeMode(mode) },
+                    onVariantChange = { variant -> viewModel.setVariant(variant) },
                     onToggleThemeClick = { viewModel.toggleTheme() },
                     onToggleFullscreen = { viewModel.toggleFullscreen() },
                     onSetLastReadSection = { id -> viewModel.setLastReadSectionId(id) },

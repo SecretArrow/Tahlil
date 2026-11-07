@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
  * The most important test is [appLaunchesWithoutCrash] — if the app
  * crashes on launch, this test fails and blocks the release.
  *
- * [tappingMulaiNavigatesToPembukaan] verifies that the home screen
+ * [tappingMulaiNavigatesToFirstSection] verifies that the home screen
  * renders the CTA buttons AND that navigation to a section works
  * end-to-end. This is a stronger test than just checking for text
  * existence (which can be flaky on slow emulators due to LazyColumn
@@ -49,7 +49,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun tappingMulaiNavigatesToPembukaan() {
+    fun tappingMulaiNavigatesToFirstSection() {
         // Wait for the home screen to render (LazyColumn on a slow
         // emulator can take a few seconds to compose the first items).
         // We poll for the CTA button "Mulai" to appear.
@@ -61,13 +61,14 @@ class MainActivityTest {
         composeRule.onAllNodesWithText("Mulai")[0].performClick()
         // Wait for the section detail screen to render.
         composeRule.waitForIdle()
-        // After navigation, "Pembukaan" appears in the section title
-        // (and possibly the drawer). Assert at least one is displayed.
+        // After navigation, the first section's title ("Pengantar Al-Fatihah
+        // untuk Rasulullah SAW") appears in the section card. Assert at least
+        // one node displaying it is shown.
         composeRule.waitUntil(timeoutMillis = 10_000L) {
-            composeRule.onAllNodesWithText("Pembukaan", substring = true)
+            composeRule.onAllNodesWithText("Pengantar Al-Fatihah", substring = true)
                 .fetchSemanticsNodes().isNotEmpty()
         }
-        composeRule.onAllNodesWithText("Pembukaan", substring = true)[0]
+        composeRule.onAllNodesWithText("Pengantar Al-Fatihah", substring = true)[0]
             .assertIsDisplayed()
     }
 }

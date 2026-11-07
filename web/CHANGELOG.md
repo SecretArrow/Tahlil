@@ -4,7 +4,23 @@ Semua pembaharuan dan perbaikan dari awal pengembangan hingga saat ini.
 
 ---
 
-## [Versi Terbaru] — 2026-11-05
+## [Versi Terbaru] — 2026-11-07
+
+### Varian Singkat / Lengkap + Penghapusan Referensi Salik Channel
+
+- **Varian konten baru**: "Singkat" (28 bagian) dan "Lengkap" (39 bagian, tambah 11 bagian Surah Yasin ayat 15-25). Data konten sekarang dimuat dari `src/data/tahlil-content.json` dan diekspos via `getTahlilSections(variant)` di `src/data/tahlil-content.ts`.
+- **Toggle varian**: tombol segmented control di `Hero` (`role="radiogroup"` berlabel "Pilih varian tahlil") dan di panel "Tampilan Bacaan" (radiogroup berlabel "Varian Tahlil"). Status aktif di-highlight.
+- **Persistensi cookie**: varian disimpan di cookie `tahlil-variant-v1` (1 tahun), dikirim ke `/api/settings` lewat key baru `variant`, dan dibaca server-side di `layout.tsx` agar SSR cocok dengan render pertama klien.
+- **DisplayToggles** kini memiliki field `variant: ContentVariant` (default `"singkat"`).
+- **Penghapusan referensi**: semua teks "Salik Channel" dihapus dari `layout.tsx` (metadata `keywords` & `authors`), `app/page.tsx` (footer), `components/tahlil/header.tsx` (drawer daftar isi), `README.md`, dan diganti dengan sumber netral "Kompilasi Tahlil dan Doa". Tidak ada referensi "NU"/"Nahdlatul Ulama" yang tersisa.
+- **Infrastruktur pengujian**:
+  - Vitest dengan `vitest.config.ts` dan unit test `src/data/tahlil-content.test.ts` (verifikasi jumlah section, validasi blok, round-trip `byId`, dan keberadaan section Yasin di varian Lengkap).
+  - Playwright dengan `playwright.config.ts` dan `e2e/variant-toggle.spec.ts` (memverifikasi toggle varian mengubah konten yang dirender).
+  - Script baru di `package.json`: `test`, `test:watch`, `test:e2e`. DevDependencies baru: `vitest`, `@playwright/test`, `jsdom`.
+
+---
+
+## [Versi Sebelumnya] — 2026-11-05
 
 ### Audit & Fix Harakat Mode Naskhi Tebal
 

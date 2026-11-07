@@ -2,6 +2,7 @@ package com.tahlildoa.app
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tahlildoa.app.data.ContentVariant
 import com.tahlildoa.app.data.SettingsRepository
 import com.tahlildoa.app.data.ThemeMode
 import kotlinx.coroutines.flow.first
@@ -41,8 +42,9 @@ class SettingsRepositoryTest {
         // next test starts from defaults.
         runBlocking {
             try {
-                repo.updateDisplayToggles(repo.displayToggles.first().copy(keepScreenOn = false))
+                repo.updateDisplayToggles(repo.displayToggles.first().copy(keepScreenOn = false, dailyReminder = false))
                 repo.setLastReadSectionId(null)
+                repo.updateVariant(ContentVariant.Singkat)
             } catch (_: Throwable) {
                 // Swallow — clean-up is best-effort.
             }
@@ -58,12 +60,26 @@ class SettingsRepositoryTest {
         assertEquals(false, toggles.punctuateArabic)
         assertEquals(false, toggles.colorizeArabic)
         assertEquals(false, toggles.keepScreenOn)
+        assertEquals(false, toggles.dailyReminder)
     }
 
     @Test
     fun defaultThemeIsSystem() = runBlocking {
         val mode = repo.themeMode.first()
         assertEquals(ThemeMode.System, mode)
+    }
+
+    @Test
+    fun defaultVariantIsSingkat() = runBlocking {
+        val variant = repo.variant.first()
+        assertEquals(ContentVariant.Singkat, variant)
+    }
+
+    @Test
+    fun updatingVariantToLengkapPersists() = runBlocking {
+        repo.updateVariant(ContentVariant.Lengkap)
+        val reloaded = repo.variant.first()
+        assertEquals(ContentVariant.Lengkap, reloaded)
     }
 
     @Test
@@ -75,11 +91,23 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun updatingDailyReminderPersists() = runBlocking {
+        val updated = repo.displayToggles.first().copy(dailyReminder = true)
+        repo.updateDisplayToggles(updated)
+        val reloaded = repo.displayToggles.first()
+        assertEquals(true, reloaded.dailyReminder)
+    }
+
+    @Test
     fun lastReadSectionIdPersistsAndClears() = runBlocking {
-        repo.setLastReadSectionId("tahlil-ahli-kubur")
-        assertEquals("tahlil-ahli-kubur", repo.lastReadSectionId.first())
+        repo.setLastReadSectionId("pengantar-al-fatihah-untuk-rasulullah-saw")
+        assertEquals(
+            "pengantar-al-fatihah-untuk-rasulullah-saw",
+            repo.lastReadSectionId.first(),
+        )
 
         repo.setLastReadSectionId(null)
         assertEquals(null, repo.lastReadSectionId.first())
     }
 }
+

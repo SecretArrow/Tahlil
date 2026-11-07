@@ -65,8 +65,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tahlildoa.app.data.ArabicStyleSettings
+import com.tahlildoa.app.data.ContentVariant
 import com.tahlildoa.app.data.DisplayToggles
-import com.tahlildoa.app.data.TahlilContent
+import com.tahlildoa.app.data.Section
 import com.tahlildoa.app.data.ThemeMode
 import com.tahlildoa.app.ui.components.Header
 import com.tahlildoa.app.ui.screens.HomeScreen
@@ -113,9 +114,12 @@ fun TahlilNavigation(
     isDark: Boolean,
     isFullscreen: Boolean,
     lastReadSectionId: String?,
+    variant: ContentVariant,
+    sections: List<Section>,
     onTogglesChange: (DisplayToggles) -> Unit,
     onStyleChange: (ArabicStyleSettings) -> Unit,
     onThemeModeChange: (ThemeMode) -> Unit,
+    onVariantChange: (ContentVariant) -> Unit,
     onToggleThemeClick: () -> Unit,
     onToggleFullscreen: () -> Unit,
     onSetLastReadSection: (String) -> Unit,
@@ -123,7 +127,7 @@ fun TahlilNavigation(
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
-    var activeSectionId by remember { mutableStateOf(TahlilContent.sections.firstOrNull()?.id ?: "") }
+    var activeSectionId by remember(sections) { mutableStateOf(sections.firstOrNull()?.id ?: "") }
     val drawerState = androidx.compose.material3.rememberDrawerState(
         initialValue = androidx.compose.material3.DrawerValue.Closed
     )
@@ -143,9 +147,10 @@ fun TahlilNavigation(
     var hasAutoNavigated by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(lastReadSectionId) {
         if (!hasAutoNavigated && !lastReadSectionId.isNullOrEmpty()) {
-            // Verify the stored id still maps to a real section (in case the
-            // content was updated between sessions).
-            if (TahlilContent.byId(lastReadSectionId) != null) {
+            // Verify the stored id still maps to a real section in the
+            // active variant (or falls back to Singkat if it was a Yasin id
+            // that the user can no longer see).
+            if (sections.firstOrNull { it.id == lastReadSectionId } != null) {
                 hasAutoNavigated = true
                 navController.navigate(Routes.section(lastReadSectionId)) {
                     launchSingleTop = true
@@ -159,6 +164,7 @@ fun TahlilNavigation(
         drawerContent = {
             DrawerContent(
                 activeSectionId = activeSectionId,
+                sections = sections,
                 onSectionClick = { id ->
                     closeDrawer()
                     navController.navigate(Routes.section(id)) {
@@ -219,6 +225,7 @@ fun TahlilNavigation(
                             toggles = toggles,
                             style = style,
                             isDark = isDark,
+                            sections = sections,
                             onSectionClick = { id ->
                                 navController.navigate(Routes.section(id)) { launchSingleTop = true }
                                 onSetLastReadSection(id)
@@ -244,6 +251,7 @@ fun TahlilNavigation(
                             toggles = toggles,
                             style = style,
                             isDark = isDark,
+                            sections = sections,
                             onActiveSectionChange = { activeSectionId = it },
                         )
                         // Persist the last-read pointer whenever a section opens.
@@ -254,9 +262,11 @@ fun TahlilNavigation(
                             toggles = toggles,
                             style = style,
                             themeMode = themeMode,
+                            variant = variant,
                             onTogglesChange = onTogglesChange,
                             onStyleChange = onStyleChange,
                             onThemeModeChange = onThemeModeChange,
+                            onVariantChange = onVariantChange,
                         )
                     }
                 }
@@ -293,8 +303,8 @@ fun TahlilNavigation(
 
 /**
  * Drawer (Table of Contents) — shows the app logo at the top, a "Home" /
- * "Settings" pair of shortcuts, then a vertically-scrollable list of all
- * 11 sections.
+ * "Settings" pair of shortcuts, then a vertically-scrollable list of the
+ * active variant's sections.
  *
  * Tapping a section navigates to [Routes.SECTION] for that id; the
  * active section is highlighted.
@@ -302,6 +312,7 @@ fun TahlilNavigation(
 @Composable
 private fun DrawerContent(
     activeSectionId: String,
+    sections: List<Section>,
     onSectionClick: (String) -> Unit,
     onHomeClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -409,9 +420,8 @@ private fun DrawerContent(
             // Section entries — plain Column + forEach. The whole sheet
             // content already lives in the single vertically-scrollable
             // Column above; a second (nested) scrollable here is exactly the
-            // pattern we avoid. 11 items is well within Column's comfort
-            // zone (no perf concern).
-            val sections = remember { TahlilContent.sections }
+            // pattern we avoid. The active variant's section count stays
+            // well within Column's comfort zone (no perf concern).
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

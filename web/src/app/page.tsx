@@ -8,12 +8,15 @@ import { BackToTop } from "@/components/tahlil/back-to-top";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { ArabicStylePanel } from "@/components/arabic-style-panel";
 import { DisplaySettingsPanel } from "@/components/display-settings-panel";
-import { tahlilSections } from "@/data/tahlil-content";
+import { getTahlilSections, tahlilSource } from "@/data/tahlil-content";
+import { useDisplaySettings } from "@/components/display-settings-provider";
 
 export default function Home() {
   const [navOpen, setNavOpen] = React.useState(false);
   const [arabicStyleOpen, setArabicStyleOpen] = React.useState(false);
   const [displayOpen, setDisplayOpen] = React.useState(false);
+  const { variant } = useDisplaySettings();
+  const sections = React.useMemo(() => getTahlilSections(variant), [variant]);
 
   // Lock scroll when mobile nav is open
   React.useEffect(() => {
@@ -51,7 +54,7 @@ export default function Home() {
         {/* Section list */}
         <div className="mx-auto max-w-3xl px-4 pb-20 sm:px-6 lg:px-8">
           <div className="space-y-8">
-            {tahlilSections.map((section) => (
+            {sections.map((section) => (
               <SectionCard key={section.id} section={section} />
             ))}
           </div>
@@ -72,8 +75,8 @@ export default function Home() {
             </div>
             <div className="text-center sm:text-right">
               <p className="text-xs text-muted-foreground">
-                Sumber konten: {""}
-                <span className="font-medium text-foreground">Salik Channel</span>
+                Sumber konten:{" "}
+                <span className="font-medium text-foreground">{tahlilSource}</span>
               </p>
               <p className="mt-1 text-[11px] text-muted-foreground/70">
                 Dibuat untuk kepentingan ibadah &amp; pembelajaran.
