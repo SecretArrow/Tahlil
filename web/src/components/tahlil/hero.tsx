@@ -35,6 +35,7 @@ function VariantMenu() {
             type="button"
             role="radio"
             aria-checked={active}
+            aria-label={opt.label}
             onClick={() => setVariant(opt.value)}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
