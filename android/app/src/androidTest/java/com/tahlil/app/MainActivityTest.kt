@@ -61,9 +61,14 @@ class MainActivityTest {
         //    reports that it is not Disabled.
         composeRule.waitUntil(timeoutMillis = 30_000L) {
             val nodes = composeRule.onAllNodesWithText("Mulai Membaca").fetchSemanticsNodes()
-            nodes.any { node ->
-                node.config.getOrElse(SemanticsProperties.Disabled) { null } == null
-            }
+            // A Compose Button exposes the Disabled semantics property only
+            // when enabled = false. We poll until at least one matching node
+            // is NOT carrying that property — i.e. the button is enabled
+            // and tapping it will fire onClick. We can't use onFirst()/
+            // assertIsEnabled() here because the drawer TOC may also match
+            // the text query on a slow emulator, so we inspect the raw
+            // semantics config instead.
+            nodes.any { node -> !node.config.contains(SemanticsProperties.Disabled) }
         }
 
         // 2. Tap "Mulai Membaca" — the button is enabled (firstSectionId
