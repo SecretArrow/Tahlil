@@ -1,5 +1,7 @@
 package com.tahlil.app
 
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.performClick
@@ -20,16 +22,17 @@ import org.junit.runner.RunWith
  * crashes on launch, this test fails and blocks the release.
  *
  * [tappingMulaiNavigatesToFirstSection] verifies that the home screen
- * renders the CTA buttons AND that navigation to a section works
- * end-to-end. This is a stronger test than just checking for text
- * existence (which can be flaky on slow emulators due to LazyColumn
- * composing items asynchronously).
+ * renders the "Mulai Membaca" CTA AND that tapping it navigates to the
+ * section detail screen.
  *
- * The two removed tests (`heroTitleIsDisplayed`, `ctaButtonsAreDisplayed`)
- * were too brittle — they polled for text nodes within 10s, but the
- * LazyColumn on a slow CI emulator can take longer than that to lay
- * out its first items. The remaining tests provide the same coverage
- * without the flakiness.
+ * Note on the drawer TOC: the home screen's ModalNavigationDrawer keeps
+ * its TOC (which lists every section title) composed even while the
+ * drawer is closed — it's just positioned off-screen. That means
+ * `onAllNodesWithText("<section title>")` returns at least two nodes
+ * (drawer copy + on-screen copy) the moment sections load, and
+ * `assertIsDisplayed()` on `[0]` may hit the off-screen drawer copy.
+ * The navigation assertion below deliberately uses the home-only
+ * "Mulai Membaca" button instead, which has no drawer counterpart.
  */
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -47,28 +50,59 @@ class MainActivityTest {
 
     @Test
     fun tappingMulaiNavigatesToFirstSection() {
-        // Wait for the home screen to render (LazyColumn on a slow
-        // emulator can take a few seconds to compose the first items).
-        // We poll for the "Mulai Membaca" button to appear — the hero's
-        // variant menu was redesigned and the old "Mulai" CTA chip is
-        // gone, replaced by a full-width "Mulai Membaca" button below
-        // the 2×2 variant card grid.
+        // 1. Wait for the home screen to render. The hero's "Mulai
+        //    Membaca" button is composed unconditionally — but it is
+        //    DISABLED (enabled = firstSectionId != null) until the
+        //    variant's sections have loaded. We must wait for it to be
+        //    ENABLED before tapping, otherwise performClick() is a silent
+        //    no-op on a disabled button and navigation never fires.
         composeRule.waitUntil(timeoutMillis = 30_000L) {
-            composeRule.onAllNodesWithText("Mulai Membaca").fetchSemanticsNodes().isNotEmpty()
+            try {
+                composeRule.onAllNodesWithText("Mulai Membaca").onFirst().assertIsEnabled()
+                true
+            } catch (e: AssertionError) {
+                false
+            }
         }
-        // Tap the "Mulai Membaca" button — the only node with that text.
+
+        // 2. Tap "Mulai Membaca" — the button is enabled (firstSectionId
+        //    is set), so onClick fires onSectionClick(firstSectionId) and
+        //    navigates to the section detail screen.
         composeRule.onAllNodesWithText("Mulai Membaca")[0].performClick()
 
-        // Confirm we actually navigated away from the home screen by
-        // asserting the "Mulai Membaca" button (which only exists on the
-        // home screen) is no longer in the semantics tree. This is the
-        // same navigation assertion the test always made, just expressed
-        // via the new CTA target instead of asserting a section title is
-        // displayed — the section title also lives in the drawer's TOC,
-        // which is composed but off-screen while the drawer is closed,
-        // making an assertIsDisplayed() flaky on slow emulators.
-        composeRule.waitUntil(timeoutMillis = 10_000L) {
-            composeRule.onAllNodesWithText("Mulai Membaca").fetchSemanticsNodes().isEmpty()
+        // 3. Assert navigation succeeded: the home-only "Mulai Membaca"
+        //    button is no longer DISPLAYED. We check "not displayed"
+        //    rather than "not present" because Compose Navigation may
+        //    retain the previous destination's composition in the back
+        //    stack (state-saved) — if so, the button node still exists
+        //    but is off-screen. Either way (gone entirely, or present
+        //    but off-screen), navigation happened. If the button is
+        //    still displayed, navigation did not happen and the test
+        //    fails with a timeout.
+        composeRule.waitUntil(timeoutMillis = 15_000L) {
+            noNodeDisplayed("Mulai Membaca")
+        }
+    }
+
+    /**
+     * Returns true if no node with the given text is currently displayed.
+     * Used to confirm navigation away from a screen: the source screen's
+     * unique UI is either removed from composition entirely, or retained
+     * in the back stack but off-screen.
+     */
+    private fun noNodeDisplayed(text: String): Boolean {
+        val nodes = composeRule.onAllNodesWithText(text).fetchSemanticsNodes()
+        if (nodes.isEmpty()) return true
+        return (0 until nodes.size).none { i ->
+            try {
+                composeRule.onAllNodesWithText(text)[i].assertIsDisplayed()
+                true
+            } catch (e: AssertionError) {
+                false
+            }
         }
     }
 }
+
+
+
