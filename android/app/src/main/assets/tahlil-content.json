@@ -458,7 +458,7 @@
     },
     "lengkap": {
       "name": "Lengkap",
-      "description": "Versi lengkap tahlil. Mencakup seluruh bacaan pada varian Singkat ditambah ayat-ayat pilihan dari Surah Yasin (Yasin 1-5, 13-14, 46-47, 51-53, 55-58, 60-62, 65-66, 69-72, 77-82) yang disisipkan setelah Ayat Kursi.",
+      "description": "Versi lengkap tahlil. Mencakup seluruh bacaan pada varian Singkat (28 bagian) — pengantar Al-Fatihah, Al-Ikhlas, Al-Falaq, An-Nas, Al-Fatihah, ayat-ayat pilihan dari Al-Baqarah, Ayat Kursi, dzikir, shalawat, tasbih, dan doa. Surah Yasin tersedia sebagai varian tersendiri (menu 'Yasin' dan 'Yasin dan Tahlil').",
       "sections": [
         {
           "id": "pengantar-al-fatihah-untuk-rasulullah-saw",
@@ -685,184 +685,8 @@
           ]
         },
         {
-          "id": "surah-yasin-ayat-1-5",
-          "number": 15,
-          "title": "Surah Yasin Ayat 1-5",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "يٰسۤ ۚ وَالْقُرْاٰنِ الْحَكِيْمِۙ اِنَّكَ لَمِنَ الْمُرْسَلِيْنَۙ عَلٰى صِرَاطٍ مُّسْتَقِيْمٍۗ تَنْزِيْلَ الْعَزِيْزِ الرَّحِيْمِۙ",
-              "transliteration": "Yā sīn. Wal-qur'ānil-ḥakīm(i). Innaka laminal-mursalīn(a). ‘Alā ṣirāṭim mustaqīm(in). Tanzīlal-‘azīzir-raḥīm(i).",
-              "translation": "(1) Yā Sīn. (2) Demi Al-Qur’an yang penuh hikmah, (3) sesungguhnya engkau (Nabi Muhammad) benar-benar salah seorang dari rasul-rasul (4) (yang berada) di atas jalan yang lurus, (5) (sebagai wahyu) yang diturunkan oleh (Allah) Yang Maha Perkasa lagi Maha Penyayang,",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-13-14",
-          "number": 16,
-          "title": "Surah Yasin Ayat 13-14",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَاضْرِبْ لَهُمْ مَّثَلًا اَصْحٰبَ الْقَرْيَةِۘ اِذْ جَاۤءَهَا الْمُرْسَلُوْنَۚ اِذْ اَرْسَلْنَآ اِلَيْهِمُ اثْنَيْنِ فَكَذَّبُوْهُمَا فَعَزَّزْنَا بِثَالِثٍ فَقَالُوْٓا اِنَّآ اِلَيْكُمْ مُّرْسَلُوْنَ",
-              "transliteration": "Waḍrib lahum maṡalan aṣḥābal-qaryah(ti), iż jā'ahal-mursalūn(a). Iż arsalnā ilaihimuṡnaini fa każżabūhumā fa ‘azzaznā biṡāliṡin faqālū innā ilaikum mursalūn(a).",
-              "translation": "(13) Buatlah suatu perumpamaan bagi mereka (kaum kafir Makkah), yaitu penduduk suatu negeri, ketika para utusan datang kepada mereka, (14) (yaitu) ketika Kami mengutus kepada mereka dua orang utusan, lalu mereka mendustakan keduanya. Kemudian Kami menguatkan dengan (utusan) yang ketiga. Maka, ketiga (utusan itu) berkata, “Sesungguhnya kami adalah orang-orang yang diutus kepadamu.”",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-46-47",
-          "number": 17,
-          "title": "Surah Yasin Ayat 46-47",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَمَا تَأْتِيْهِمْ مِّنْ اٰيَةٍ مِّنْ اٰيٰتِ رَبِّهِمْ اِلَّا كَانُوْا عَنْهَا مُعْرِضِيْنَ وَاِذَا قِيْلَ لَهُمْ اَنْفِقُوْا مِمَّا رَزَقَكُمُ اللّٰهُ ۙقَالَ الَّذِيْنَ كَفَرُوْا لِلَّذِيْنَ اٰمَنُوْٓا اَنُطْعِمُ مَنْ لَّوْ يَشَاۤءُ اللّٰهُ اَطْعَمَهٗٓ ۖاِنْ اَنْتُمْ اِلَّا فِيْ ضَلٰلٍ مُّبِيْنٍ",
-              "transliteration": "Wa mā ta'tīhim min āyatim min āyāti rabbihim illā kānū ‘anhā mu‘riḍīn(a). Wa iżā qīla lahum anfiqū mimmā razaqakumullāh(u), qālal-lażīna kafarū lil-lażīna āmanū anuṭ‘imu mal lau yasyā'ullāhu aṭ‘amah(ū), in antum illā fī ḍalālim mubīn(in).",
-              "translation": "(46) Tidak satu pun dari tanda-tanda (kebesaran) Tuhan datang kepada mereka, kecuali mereka berpaling darinya. (47) Apabila dikatakan kepada mereka, “Infakkanlah sebagian rezeki yang diberikan Allah kepadamu,” orang-orang yang kufur itu berkata kepada orang-orang yang beriman, “Apakah pantas kami memberi makan kepada orang-orang yang jika Allah menghendaki, Dia akan memberinya makan? Kamu benar-benar dalam kesesatan yang nyata.”",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-51-53",
-          "number": 18,
-          "title": "Surah Yasin Ayat 51-53",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَنُفِخَ فِى الصُّوْرِ فَاِذَا هُمْ مِّنَ الْاَجْدَاثِ اِلٰى رَبِّهِمْ يَنْسِلُوْنَ قَالُوْا يٰوَيْلَنَا مَنْۢ بَعَثَنَا مِنْ مَّرْقَدِنَا ۜهٰذَا مَا وَعَدَ الرَّحْمٰنُ وَصَدَقَ الْمُرْسَلُوْنَ اِنْ كَانَتْ اِلَّا صَيْحَةً وَّاحِدَةً فَاِذَا هُمْ جَمِيْعٌ لَّدَيْنَا مُحْضَرُوْنَ",
-              "transliteration": "Wa nufikha fiṣ-ṣūri fa'iżā hum minal-ajdāṡi ilā rabbihim yansilūn(a). Qālū yā wailanā mam ba‘aṡanā mim marqadinā…hāżā mā wa‘adar-raḥmānu wa ṣadaqal-mursalūn(a). In kānat illā ṣaiḥataw wāḥidatan fa'iżā hum jamī‘ul ladainā muḥḍarūn(a).",
-              "translation": "(51) Sangkakala pun ditiup dan seketika itu mereka bergerak cepat dari kuburnya menuju kepada Tuhannya. (52) Mereka berkata, “Celakalah kami! Siapakah yang membangkitkan kami dari tempat tidur kami (kubur)?” (Lalu, dikatakan kepada mereka,) “Inilah yang dijanjikan (Allah) Yang Maha Pengasih dan benarlah para rasul(-Nya).” (53) Teriakan itu hanya sekali saja, maka seketika itu mereka semua dihadapkan kepada Kami (untuk dihisab).",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-55-58",
-          "number": 19,
-          "title": "Surah Yasin Ayat 55-58",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اِنَّ اَصْحٰبَ الْجَنَّةِ الْيَوْمَ فِيْ شُغُلٍ فٰكِهُوْنَ ۚ هُمْ وَاَزْوَاجُهُمْ فِيْ ظِلٰلٍ عَلَى الْاَرَاۤىِٕكِ مُتَّكِـُٔوْنَ ۚ لَهُمْ فِيْهَا فَاكِهَةٌ وَّلَهُمْ مَّا يَدَّعُوْنَ ۚ سَلٰمٌۗ قَوْلًا مِّنْ رَّبٍّ رَّحِيْمٍ",
-              "transliteration": "Inna aṣḥābal-jannatil-yauma fī syugulin fākihūn(a). Hum wa azwājuhum fī ẓilālin ‘alal-arā'iki muttaki'ūn(a). Lahum fīhā fākihatuw wa lahum mā yadda‘ūn(a). Salāmun qaulam mir rabbir raḥīm(in).",
-              "translation": "(55) Sesungguhnya penghuni surga pada hari itu berada dalam kesibukan (sehingga tidak sempat berpikir tentang penghuni neraka) lagi bersenang-senang. (56) Mereka dan pasangan-pasangannya berada dalam tempat yang teduh sambil berbaring di atas ranjang berkelambu. (57) Di (surga) itu mereka memperoleh buah-buahan dan apa saja yang mereka inginkan. (58) (Kepada mereka dikatakan,) “Salam sejahtera” sebagai ucapan dari Tuhan Yang Maha Penyayang.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-60-62",
-          "number": 20,
-          "title": "Surah Yasin Ayat 60-62",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "۞ اَلَمْ اَعْهَدْ اِلَيْكُمْ يٰبَنِيْٓ اٰدَمَ اَنْ لَّا تَعْبُدُوا الشَّيْطٰنَۚ اِنَّهٗ لَكُمْ عَدُوٌّ مُّبِيْنٌ وَاَنِ اعْبُدُوْنِيْ ۗهٰذَا صِرَاطٌ مُّسْتَقِيْمٌ وَلَقَدْ اَضَلَّ مِنْكُمْ جِبِلًّا كَثِيْرًا ۗاَفَلَمْ تَكُوْنُوْا تَعْقِلُوْنَ",
-              "transliteration": "Alam a‘had ilaikum yā banī ādama allā ta‘budusy-syaiṭān(a), innahū lakum ‘aduwwum mubīn(un). Wa ani‘budūnī, hāżā ṣirāṭum mustaqīm(un). Wa laqad aḍalla minkum jibillan kaṡīrā(n), afalam takūnū ta‘qilūn(a).",
-              "translation": "(60) Bukankah Aku telah berpesan kepadamu dengan sungguh-sungguh, wahai anak cucu Adam, bahwa janganlah kamu menyembah setan? Sesungguhnya setan itu musuh yang nyata bagi kamu. (61) (Begitu juga bahwa) sembahlah Aku. Inilah jalan yang lurus.” (62) Sungguh, ia (setan itu) benar-benar telah menyesatkan sangat banyak orang dari kamu. Maka, apakah kamu tidak mengerti?",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-65-66",
-          "number": 21,
-          "title": "Surah Yasin Ayat 65-66",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اَلْيَوْمَ نَخْتِمُ عَلٰٓى اَفْوَاهِهِمْ وَتُكَلِّمُنَآ اَيْدِيْهِمْ وَتَشْهَدُ اَرْجُلُهُمْ بِمَا كَانُوْا يَكْسِبُوْنَ وَلَوْ نَشَاۤءُ لَطَمَسْنَا عَلٰٓى اَعْيُنِهِمْ فَاسْتَبَقُوا الصِّرَاطَ فَاَنّٰى يُبْصِرُوْنَ",
-              "transliteration": "Al-yauma nakhtimu ‘alā afwāhihim wa tukallimunā aidīhim wa tasyhadu arjuluhum bimā kānū yaksibūn(a). Wa lau nasyā'u laṭamasnā ‘alā a‘yunihim fastabaquṣ-ṣirāṭa fa annā yubṣirūn(a).",
-              "translation": "(65) Pada hari ini Kami membungkam mulut mereka. Tangan merekalah yang berkata kepada Kami dan kaki merekalah yang akan bersaksi terhadap apa yang dahulu mereka kerjakan. (66) Seandainya Kami menghendaki, pastilah Kami akan menghapus penglihatan (membutakan) mereka sehingga mereka berlomba-lomba (mencari) jalan (selamat). Maka, bagaimana mungkin mereka dapat melihat?",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-69-70",
-          "number": 22,
-          "title": "Surah Yasin Ayat 69-70",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَمَا عَلَّمْنٰهُ الشِّعْرَ وَمَا يَنْۢبَغِيْ لَهٗ ۗاِنْ هُوَ اِلَّا ذِكْرٌ وَّقُرْاٰنٌ مُّبِيْنٌ ۙ لِّيُنْذِرَ مَنْ كَانَ حَيًّا وَّيَحِقَّ الْقَوْلُ عَلَى الْكٰفِرِيْنَ",
-              "transliteration": "Wa mā ‘allamnāhusy-syi‘ra wa mā yambagī lah(ū), in huwa illā żikruw wa qur'ānum mubīn(un). Liyunżira man kāna ḥayyaw wa yaḥiqqal-qaulu ‘alal-kāfirīn(a).",
-              "translation": "(69) Kami tidak mengajarkan syair kepadanya (Nabi Muhammad) dan (bersyair) itu tidaklah pantas baginya. (Wahyu yang Kami turunkan kepadanya) itu tidak lain hanyalah pelajaran dan Al-Qur’an yang jelas (70) agar dia (Nabi Muhammad) memberi peringatan kepada orang-orang yang hidup (hatinya) dan agar ketetapan (azab) terhadap orang-orang kafir itu menjadi pasti.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-71-72",
-          "number": 23,
-          "title": "Surah Yasin Ayat 71-72",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اَوَلَمْ يَرَوْا اَنَّا خَلَقْنَا لَهُمْ مِّمَّا عَمِلَتْ اَيْدِيْنَآ اَنْعَامًا فَهُمْ لَهَا مٰلِكُوْنَ وَذَلَّلْنٰهَا لَهُمْ فَمِنْهَا رَكُوْبُهُمْ وَمِنْهَا يَأْكُلُوْنَ",
-              "transliteration": "Awalam yarau annā khalaqnā lahum mimmā ‘amilat aidīnā an‘āman fahum lahā mālikūn(a). Wa żallalnāhā lahum fa minhā rakūbuhum wa minhā ya'kulūn(a).",
-              "translation": "(71) Tidakkah mereka mengetahui bahwa Kami telah menciptakan untuk mereka hewan-hewan ternak dari ciptaan tangan Kami (sendiri), lalu mereka menjadi pemiliknya? (72) Kami menjadikannya (hewan-hewan itu) tunduk kepada mereka. Sebagian di antaranya menjadi tunggangan mereka dan sebagian (lagi) mereka makan.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-77-79",
-          "number": 24,
-          "title": "Surah Yasin Ayat 77-79",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اَوَلَمْ يَرَ الْاِنْسَانُ اَنَّا خَلَقْنٰهُ مِنْ نُّطْفَةٍ فَاِذَا هُوَ خَصِيْمٌ مُّبِيْنٌ وَضَرَبَ لَنَا مَثَلًا وَّنَسِيَ خَلْقَهٗۗ قَالَ مَنْ يُّحْيِ الْعِظَامَ وَهِيَ رَمِيْمٌ قُلْ يُحْيِيْهَا الَّذِيْٓ اَنْشَاَهَآ اَوَّلَ مَرَّةٍ ۗوَهُوَ بِكُلِّ خَلْقٍ عَلِيْمٌ ۙ",
-              "transliteration": "Awalam yaral-insānu annā khalaqnāhu min nuṭfatin fa'iżā huwa khaṣīmum mubīn(un). Wa ḍaraba lanā maṡalaw wa nasiya khalqah(ū), qāla may yuḥyil-‘iẓāma wa hiya ramīm(un). Qul yuḥyīhal-lażī ansya'ahā awwala marrah(tin), wa huwa bikulli khalqin ‘alīm(un).",
-              "translation": "(77) Tidakkah manusia mengetahui bahwa Kami menciptakannya dari setetes mani? Kemudian tiba-tiba saja dia menjadi musuh yang nyata. (78) Dia membuat perumpamaan bagi Kami dan melupakan asal penciptaannya. Dia berkata, “Siapakah yang bisa menghidupkan tulang-belulang yang telah hancur luluh?” (79) Katakanlah (Nabi Muhammad), “Yang akan menghidupkannya adalah Zat yang menciptakannya pertama kali. Dia Maha Mengetahui setiap makhluk.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "surah-yasin-ayat-80-82",
-          "number": 25,
-          "title": "Surah Yasin Ayat 80-82",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "ۨالَّذِيْ جَعَلَ لَكُمْ مِّنَ الشَّجَرِ الْاَخْضَرِ نَارًاۙ فَاِذَآ اَنْتُمْ مِّنْهُ تُوْقِدُوْنَ اَوَلَيْسَ الَّذِيْ خَلَقَ السَّمٰوٰتِ وَالْاَرْضَ بِقٰدِرٍ عَلٰٓى اَنْ يَّخْلُقَ مِثْلَهُمْ ۗبَلٰى وَهُوَ الْخَلّٰقُ الْعَلِيْمُ اِنَّمَآ اَمْرُهٗٓ اِذَآ اَرَادَ شَيْـًٔاۖ اَنْ يَّقُوْلَ لَهٗ كُنْ فَيَكُوْنُ",
-              "transliteration": "Allażī ja‘ala lakum minasy-syajaril-akhḍari nārā(n), fa'iżā antum minhu tūqidūn(a). Awa laisal-lażī khalaqas-samāwāti wal-arḍa biqādirin ‘alā ay yakhluqa miṡlahum, balā wa huwal-khallāqul-‘alīm(u). Innamā amruhū iżā arāda syai'an ay yaqūla lahū kun fa yakūn(u).",
-              "translation": "(80) (Dialah) yang menjadikan api untukmu dari kayu yang hijau. Kemudian, seketika itu kamu menyalakan (api) darinya.” (81) Bukankah Zat yang menciptakan langit dan bumi mampu menciptakan manusia yang serupa mereka itu (di akhirat kelak)? Benar. Dialah yang Maha Banyak Mencipta lagi Maha Mengetahui. (82) Sesungguhnya ketetapan-Nya, jika Dia menghendaki sesuatu, Dia hanya berkata kepadanya, “Jadilah!” Maka, jadilah (sesuatu) itu.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
           "id": "istighfar-3x",
-          "number": 26,
+          "number": 15,
           "title": "Istighfar (3x)",
           "subtitle": null,
           "type": "dzikir",
@@ -878,7 +702,7 @@
         },
         {
           "id": "sebaik-baik-dzikir-laa-ilaaha-illallah",
-          "number": 27,
+          "number": 16,
           "title": "Sebaik-baik Dzikir: Laa Ilaaha Illallah",
           "subtitle": null,
           "type": "dzikir",
@@ -894,7 +718,7 @@
         },
         {
           "id": "laa-ilaaha-illallah-hayyun-ma-buud",
-          "number": 28,
+          "number": 17,
           "title": "Laa Ilaaha Illallah, Hayyun Ma'buud",
           "subtitle": null,
           "type": "tahlil",
@@ -910,7 +734,7 @@
         },
         {
           "id": "laa-ilaaha-illallah-hayyun-baaq",
-          "number": 29,
+          "number": 18,
           "title": "Laa Ilaaha Illallah, Hayyun Baaq",
           "subtitle": null,
           "type": "tahlil",
@@ -926,7 +750,7 @@
         },
         {
           "id": "tahlil-inti-laa-ilaaha-illallah-100x",
-          "number": 30,
+          "number": 19,
           "title": "Tahlil Inti: Laa Ilaaha Illallah (100x)",
           "subtitle": "Kalimat Tauhid",
           "type": "tahlil",
@@ -942,7 +766,7 @@
         },
         {
           "id": "shalawat-nabi-2x",
-          "number": 31,
+          "number": 20,
           "title": "Shalawat Nabi (2x)",
           "subtitle": null,
           "type": "sholawat",
@@ -958,7 +782,7 @@
         },
         {
           "id": "tasbih-jumlah-makhluk-7x",
-          "number": 32,
+          "number": 21,
           "title": "Tasbih Jumlah Makhluk (7x)",
           "subtitle": null,
           "type": "dzikir",
@@ -974,7 +798,7 @@
         },
         {
           "id": "tasbih-dan-tahmid-33x",
-          "number": 33,
+          "number": 22,
           "title": "Tasbih dan Tahmid (33x)",
           "subtitle": null,
           "type": "dzikir",
@@ -990,7 +814,7 @@
         },
         {
           "id": "shalawat-kepada-nabi-keluarga-dan-sahabat-2x",
-          "number": 34,
+          "number": 23,
           "title": "Shalawat Kepada Nabi, Keluarga, dan Sahabat (2x)",
           "subtitle": null,
           "type": "sholawat",
@@ -1006,7 +830,7 @@
         },
         {
           "id": "shalawat-penutup",
-          "number": 35,
+          "number": 24,
           "title": "Shalawat Penutup",
           "subtitle": null,
           "type": "sholawat",
@@ -1022,7 +846,7 @@
         },
         {
           "id": "doa-tahlil-pembuka",
-          "number": 36,
+          "number": 25,
           "title": "Doa Tahlil (Pembuka)",
           "subtitle": null,
           "type": "doa",
@@ -1038,7 +862,7 @@
         },
         {
           "id": "doa-penyampaian-pahala-bacaan",
-          "number": 37,
+          "number": 26,
           "title": "Doa Penyampaian Pahala Bacaan",
           "subtitle": null,
           "type": "doa",
@@ -1054,7 +878,7 @@
         },
         {
           "id": "doa-untuk-ahli-kubur",
-          "number": 38,
+          "number": 27,
           "title": "Doa untuk Ahli Kubur",
           "subtitle": null,
           "type": "doa",
@@ -1070,7 +894,7 @@
         },
         {
           "id": "doa-penutup",
-          "number": 39,
+          "number": 28,
           "title": "Doa Penutup",
           "subtitle": null,
           "type": "doa",
@@ -2422,7 +2246,7 @@
     },
     "yasin_tahlil": {
       "name": "Yasin dan Tahlil",
-      "description": "Surah Yasin lengkap (83 ayat) dilanjutkan dengan rangkaian Tahlil Lengkap (39 bagian) — zikir, tahlil, dan doa untuk mendoakan para arwah kaum muslimin.",
+      "description": "Surah Yasin lengkap (83 ayat) dilanjutkan dengan rangkaian Tahlil Lengkap (28 bagian) — zikir, tahlil, dan doa untuk mendoakan para arwah kaum muslimin.",
       "sections": [
         {
           "id": "yt-yasin-ayat-1",
@@ -3977,184 +3801,8 @@
           ]
         },
         {
-          "id": "yt-surah-yasin-ayat-1-5",
-          "number": 98,
-          "title": "Surah Yasin Ayat 1-5",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "يٰسۤ ۚ وَالْقُرْاٰنِ الْحَكِيْمِۙ اِنَّكَ لَمِنَ الْمُرْسَلِيْنَۙ عَلٰى صِرَاطٍ مُّسْتَقِيْمٍۗ تَنْزِيْلَ الْعَزِيْزِ الرَّحِيْمِۙ",
-              "transliteration": "Yā sīn. Wal-qur'ānil-ḥakīm(i). Innaka laminal-mursalīn(a). ‘Alā ṣirāṭim mustaqīm(in). Tanzīlal-‘azīzir-raḥīm(i).",
-              "translation": "(1) Yā Sīn. (2) Demi Al-Qur’an yang penuh hikmah, (3) sesungguhnya engkau (Nabi Muhammad) benar-benar salah seorang dari rasul-rasul (4) (yang berada) di atas jalan yang lurus, (5) (sebagai wahyu) yang diturunkan oleh (Allah) Yang Maha Perkasa lagi Maha Penyayang,",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-13-14",
-          "number": 99,
-          "title": "Surah Yasin Ayat 13-14",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَاضْرِبْ لَهُمْ مَّثَلًا اَصْحٰبَ الْقَرْيَةِۘ اِذْ جَاۤءَهَا الْمُرْسَلُوْنَۚ اِذْ اَرْسَلْنَآ اِلَيْهِمُ اثْنَيْنِ فَكَذَّبُوْهُمَا فَعَزَّزْنَا بِثَالِثٍ فَقَالُوْٓا اِنَّآ اِلَيْكُمْ مُّرْسَلُوْنَ",
-              "transliteration": "Waḍrib lahum maṡalan aṣḥābal-qaryah(ti), iż jā'ahal-mursalūn(a). Iż arsalnā ilaihimuṡnaini fa każżabūhumā fa ‘azzaznā biṡāliṡin faqālū innā ilaikum mursalūn(a).",
-              "translation": "(13) Buatlah suatu perumpamaan bagi mereka (kaum kafir Makkah), yaitu penduduk suatu negeri, ketika para utusan datang kepada mereka, (14) (yaitu) ketika Kami mengutus kepada mereka dua orang utusan, lalu mereka mendustakan keduanya. Kemudian Kami menguatkan dengan (utusan) yang ketiga. Maka, ketiga (utusan itu) berkata, “Sesungguhnya kami adalah orang-orang yang diutus kepadamu.”",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-46-47",
-          "number": 100,
-          "title": "Surah Yasin Ayat 46-47",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَمَا تَأْتِيْهِمْ مِّنْ اٰيَةٍ مِّنْ اٰيٰتِ رَبِّهِمْ اِلَّا كَانُوْا عَنْهَا مُعْرِضِيْنَ وَاِذَا قِيْلَ لَهُمْ اَنْفِقُوْا مِمَّا رَزَقَكُمُ اللّٰهُ ۙقَالَ الَّذِيْنَ كَفَرُوْا لِلَّذِيْنَ اٰمَنُوْٓا اَنُطْعِمُ مَنْ لَّوْ يَشَاۤءُ اللّٰهُ اَطْعَمَهٗٓ ۖاِنْ اَنْتُمْ اِلَّا فِيْ ضَلٰلٍ مُّبِيْنٍ",
-              "transliteration": "Wa mā ta'tīhim min āyatim min āyāti rabbihim illā kānū ‘anhā mu‘riḍīn(a). Wa iżā qīla lahum anfiqū mimmā razaqakumullāh(u), qālal-lażīna kafarū lil-lażīna āmanū anuṭ‘imu mal lau yasyā'ullāhu aṭ‘amah(ū), in antum illā fī ḍalālim mubīn(in).",
-              "translation": "(46) Tidak satu pun dari tanda-tanda (kebesaran) Tuhan datang kepada mereka, kecuali mereka berpaling darinya. (47) Apabila dikatakan kepada mereka, “Infakkanlah sebagian rezeki yang diberikan Allah kepadamu,” orang-orang yang kufur itu berkata kepada orang-orang yang beriman, “Apakah pantas kami memberi makan kepada orang-orang yang jika Allah menghendaki, Dia akan memberinya makan? Kamu benar-benar dalam kesesatan yang nyata.”",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-51-53",
-          "number": 101,
-          "title": "Surah Yasin Ayat 51-53",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَنُفِخَ فِى الصُّوْرِ فَاِذَا هُمْ مِّنَ الْاَجْدَاثِ اِلٰى رَبِّهِمْ يَنْسِلُوْنَ قَالُوْا يٰوَيْلَنَا مَنْۢ بَعَثَنَا مِنْ مَّرْقَدِنَا ۜهٰذَا مَا وَعَدَ الرَّحْمٰنُ وَصَدَقَ الْمُرْسَلُوْنَ اِنْ كَانَتْ اِلَّا صَيْحَةً وَّاحِدَةً فَاِذَا هُمْ جَمِيْعٌ لَّدَيْنَا مُحْضَرُوْنَ",
-              "transliteration": "Wa nufikha fiṣ-ṣūri fa'iżā hum minal-ajdāṡi ilā rabbihim yansilūn(a). Qālū yā wailanā mam ba‘aṡanā mim marqadinā…hāżā mā wa‘adar-raḥmānu wa ṣadaqal-mursalūn(a). In kānat illā ṣaiḥataw wāḥidatan fa'iżā hum jamī‘ul ladainā muḥḍarūn(a).",
-              "translation": "(51) Sangkakala pun ditiup dan seketika itu mereka bergerak cepat dari kuburnya menuju kepada Tuhannya. (52) Mereka berkata, “Celakalah kami! Siapakah yang membangkitkan kami dari tempat tidur kami (kubur)?” (Lalu, dikatakan kepada mereka,) “Inilah yang dijanjikan (Allah) Yang Maha Pengasih dan benarlah para rasul(-Nya).” (53) Teriakan itu hanya sekali saja, maka seketika itu mereka semua dihadapkan kepada Kami (untuk dihisab).",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-55-58",
-          "number": 102,
-          "title": "Surah Yasin Ayat 55-58",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اِنَّ اَصْحٰبَ الْجَنَّةِ الْيَوْمَ فِيْ شُغُلٍ فٰكِهُوْنَ ۚ هُمْ وَاَزْوَاجُهُمْ فِيْ ظِلٰلٍ عَلَى الْاَرَاۤىِٕكِ مُتَّكِـُٔوْنَ ۚ لَهُمْ فِيْهَا فَاكِهَةٌ وَّلَهُمْ مَّا يَدَّعُوْنَ ۚ سَلٰمٌۗ قَوْلًا مِّنْ رَّبٍّ رَّحِيْمٍ",
-              "transliteration": "Inna aṣḥābal-jannatil-yauma fī syugulin fākihūn(a). Hum wa azwājuhum fī ẓilālin ‘alal-arā'iki muttaki'ūn(a). Lahum fīhā fākihatuw wa lahum mā yadda‘ūn(a). Salāmun qaulam mir rabbir raḥīm(in).",
-              "translation": "(55) Sesungguhnya penghuni surga pada hari itu berada dalam kesibukan (sehingga tidak sempat berpikir tentang penghuni neraka) lagi bersenang-senang. (56) Mereka dan pasangan-pasangannya berada dalam tempat yang teduh sambil berbaring di atas ranjang berkelambu. (57) Di (surga) itu mereka memperoleh buah-buahan dan apa saja yang mereka inginkan. (58) (Kepada mereka dikatakan,) “Salam sejahtera” sebagai ucapan dari Tuhan Yang Maha Penyayang.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-60-62",
-          "number": 103,
-          "title": "Surah Yasin Ayat 60-62",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "۞ اَلَمْ اَعْهَدْ اِلَيْكُمْ يٰبَنِيْٓ اٰدَمَ اَنْ لَّا تَعْبُدُوا الشَّيْطٰنَۚ اِنَّهٗ لَكُمْ عَدُوٌّ مُّبِيْنٌ وَاَنِ اعْبُدُوْنِيْ ۗهٰذَا صِرَاطٌ مُّسْتَقِيْمٌ وَلَقَدْ اَضَلَّ مِنْكُمْ جِبِلًّا كَثِيْرًا ۗاَفَلَمْ تَكُوْنُوْا تَعْقِلُوْنَ",
-              "transliteration": "Alam a‘had ilaikum yā banī ādama allā ta‘budusy-syaiṭān(a), innahū lakum ‘aduwwum mubīn(un). Wa ani‘budūnī, hāżā ṣirāṭum mustaqīm(un). Wa laqad aḍalla minkum jibillan kaṡīrā(n), afalam takūnū ta‘qilūn(a).",
-              "translation": "(60) Bukankah Aku telah berpesan kepadamu dengan sungguh-sungguh, wahai anak cucu Adam, bahwa janganlah kamu menyembah setan? Sesungguhnya setan itu musuh yang nyata bagi kamu. (61) (Begitu juga bahwa) sembahlah Aku. Inilah jalan yang lurus.” (62) Sungguh, ia (setan itu) benar-benar telah menyesatkan sangat banyak orang dari kamu. Maka, apakah kamu tidak mengerti?",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-65-66",
-          "number": 104,
-          "title": "Surah Yasin Ayat 65-66",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اَلْيَوْمَ نَخْتِمُ عَلٰٓى اَفْوَاهِهِمْ وَتُكَلِّمُنَآ اَيْدِيْهِمْ وَتَشْهَدُ اَرْجُلُهُمْ بِمَا كَانُوْا يَكْسِبُوْنَ وَلَوْ نَشَاۤءُ لَطَمَسْنَا عَلٰٓى اَعْيُنِهِمْ فَاسْتَبَقُوا الصِّرَاطَ فَاَنّٰى يُبْصِرُوْنَ",
-              "transliteration": "Al-yauma nakhtimu ‘alā afwāhihim wa tukallimunā aidīhim wa tasyhadu arjuluhum bimā kānū yaksibūn(a). Wa lau nasyā'u laṭamasnā ‘alā a‘yunihim fastabaquṣ-ṣirāṭa fa annā yubṣirūn(a).",
-              "translation": "(65) Pada hari ini Kami membungkam mulut mereka. Tangan merekalah yang berkata kepada Kami dan kaki merekalah yang akan bersaksi terhadap apa yang dahulu mereka kerjakan. (66) Seandainya Kami menghendaki, pastilah Kami akan menghapus penglihatan (membutakan) mereka sehingga mereka berlomba-lomba (mencari) jalan (selamat). Maka, bagaimana mungkin mereka dapat melihat?",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-69-70",
-          "number": 105,
-          "title": "Surah Yasin Ayat 69-70",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "وَمَا عَلَّمْنٰهُ الشِّعْرَ وَمَا يَنْۢبَغِيْ لَهٗ ۗاِنْ هُوَ اِلَّا ذِكْرٌ وَّقُرْاٰنٌ مُّبِيْنٌ ۙ لِّيُنْذِرَ مَنْ كَانَ حَيًّا وَّيَحِقَّ الْقَوْلُ عَلَى الْكٰفِرِيْنَ",
-              "transliteration": "Wa mā ‘allamnāhusy-syi‘ra wa mā yambagī lah(ū), in huwa illā żikruw wa qur'ānum mubīn(un). Liyunżira man kāna ḥayyaw wa yaḥiqqal-qaulu ‘alal-kāfirīn(a).",
-              "translation": "(69) Kami tidak mengajarkan syair kepadanya (Nabi Muhammad) dan (bersyair) itu tidaklah pantas baginya. (Wahyu yang Kami turunkan kepadanya) itu tidak lain hanyalah pelajaran dan Al-Qur’an yang jelas (70) agar dia (Nabi Muhammad) memberi peringatan kepada orang-orang yang hidup (hatinya) dan agar ketetapan (azab) terhadap orang-orang kafir itu menjadi pasti.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-71-72",
-          "number": 106,
-          "title": "Surah Yasin Ayat 71-72",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اَوَلَمْ يَرَوْا اَنَّا خَلَقْنَا لَهُمْ مِّمَّا عَمِلَتْ اَيْدِيْنَآ اَنْعَامًا فَهُمْ لَهَا مٰلِكُوْنَ وَذَلَّلْنٰهَا لَهُمْ فَمِنْهَا رَكُوْبُهُمْ وَمِنْهَا يَأْكُلُوْنَ",
-              "transliteration": "Awalam yarau annā khalaqnā lahum mimmā ‘amilat aidīnā an‘āman fahum lahā mālikūn(a). Wa żallalnāhā lahum fa minhā rakūbuhum wa minhā ya'kulūn(a).",
-              "translation": "(71) Tidakkah mereka mengetahui bahwa Kami telah menciptakan untuk mereka hewan-hewan ternak dari ciptaan tangan Kami (sendiri), lalu mereka menjadi pemiliknya? (72) Kami menjadikannya (hewan-hewan itu) tunduk kepada mereka. Sebagian di antaranya menjadi tunggangan mereka dan sebagian (lagi) mereka makan.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-77-79",
-          "number": 107,
-          "title": "Surah Yasin Ayat 77-79",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "اَوَلَمْ يَرَ الْاِنْسَانُ اَنَّا خَلَقْنٰهُ مِنْ نُّطْفَةٍ فَاِذَا هُوَ خَصِيْمٌ مُّبِيْنٌ وَضَرَبَ لَنَا مَثَلًا وَّنَسِيَ خَلْقَهٗۗ قَالَ مَنْ يُّحْيِ الْعِظَامَ وَهِيَ رَمِيْمٌ قُلْ يُحْيِيْهَا الَّذِيْٓ اَنْشَاَهَآ اَوَّلَ مَرَّةٍ ۗوَهُوَ بِكُلِّ خَلْقٍ عَلِيْمٌ ۙ",
-              "transliteration": "Awalam yaral-insānu annā khalaqnāhu min nuṭfatin fa'iżā huwa khaṣīmum mubīn(un). Wa ḍaraba lanā maṡalaw wa nasiya khalqah(ū), qāla may yuḥyil-‘iẓāma wa hiya ramīm(un). Qul yuḥyīhal-lażī ansya'ahā awwala marrah(tin), wa huwa bikulli khalqin ‘alīm(un).",
-              "translation": "(77) Tidakkah manusia mengetahui bahwa Kami menciptakannya dari setetes mani? Kemudian tiba-tiba saja dia menjadi musuh yang nyata. (78) Dia membuat perumpamaan bagi Kami dan melupakan asal penciptaannya. Dia berkata, “Siapakah yang bisa menghidupkan tulang-belulang yang telah hancur luluh?” (79) Katakanlah (Nabi Muhammad), “Yang akan menghidupkannya adalah Zat yang menciptakannya pertama kali. Dia Maha Mengetahui setiap makhluk.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
-          "id": "yt-surah-yasin-ayat-80-82",
-          "number": 108,
-          "title": "Surah Yasin Ayat 80-82",
-          "subtitle": null,
-          "type": "surah",
-          "blocks": [
-            {
-              "arabic": "ۨالَّذِيْ جَعَلَ لَكُمْ مِّنَ الشَّجَرِ الْاَخْضَرِ نَارًاۙ فَاِذَآ اَنْتُمْ مِّنْهُ تُوْقِدُوْنَ اَوَلَيْسَ الَّذِيْ خَلَقَ السَّمٰوٰتِ وَالْاَرْضَ بِقٰدِرٍ عَلٰٓى اَنْ يَّخْلُقَ مِثْلَهُمْ ۗبَلٰى وَهُوَ الْخَلّٰقُ الْعَلِيْمُ اِنَّمَآ اَمْرُهٗٓ اِذَآ اَرَادَ شَيْـًٔاۖ اَنْ يَّقُوْلَ لَهٗ كُنْ فَيَكُوْنُ",
-              "transliteration": "Allażī ja‘ala lakum minasy-syajaril-akhḍari nārā(n), fa'iżā antum minhu tūqidūn(a). Awa laisal-lażī khalaqas-samāwāti wal-arḍa biqādirin ‘alā ay yakhluqa miṡlahum, balā wa huwal-khallāqul-‘alīm(u). Innamā amruhū iżā arāda syai'an ay yaqūla lahū kun fa yakūn(u).",
-              "translation": "(80) (Dialah) yang menjadikan api untukmu dari kayu yang hijau. Kemudian, seketika itu kamu menyalakan (api) darinya.” (81) Bukankah Zat yang menciptakan langit dan bumi mampu menciptakan manusia yang serupa mereka itu (di akhirat kelak)? Benar. Dialah yang Maha Banyak Mencipta lagi Maha Mengetahui. (82) Sesungguhnya ketetapan-Nya, jika Dia menghendaki sesuatu, Dia hanya berkata kepadanya, “Jadilah!” Maka, jadilah (sesuatu) itu.",
-              "note": null,
-              "repeat": null
-            }
-          ]
-        },
-        {
           "id": "yt-istighfar-3x",
-          "number": 109,
+          "number": 98,
           "title": "Istighfar (3x)",
           "subtitle": null,
           "type": "dzikir",
@@ -4170,7 +3818,7 @@
         },
         {
           "id": "yt-sebaik-baik-dzikir-laa-ilaaha-illallah",
-          "number": 110,
+          "number": 99,
           "title": "Sebaik-baik Dzikir: Laa Ilaaha Illallah",
           "subtitle": null,
           "type": "dzikir",
@@ -4186,7 +3834,7 @@
         },
         {
           "id": "yt-laa-ilaaha-illallah-hayyun-ma-buud",
-          "number": 111,
+          "number": 100,
           "title": "Laa Ilaaha Illallah, Hayyun Ma'buud",
           "subtitle": null,
           "type": "tahlil",
@@ -4202,7 +3850,7 @@
         },
         {
           "id": "yt-laa-ilaaha-illallah-hayyun-baaq",
-          "number": 112,
+          "number": 101,
           "title": "Laa Ilaaha Illallah, Hayyun Baaq",
           "subtitle": null,
           "type": "tahlil",
@@ -4218,7 +3866,7 @@
         },
         {
           "id": "yt-tahlil-inti-laa-ilaaha-illallah-100x",
-          "number": 113,
+          "number": 102,
           "title": "Tahlil Inti: Laa Ilaaha Illallah (100x)",
           "subtitle": "Kalimat Tauhid",
           "type": "tahlil",
@@ -4234,7 +3882,7 @@
         },
         {
           "id": "yt-shalawat-nabi-2x",
-          "number": 114,
+          "number": 103,
           "title": "Shalawat Nabi (2x)",
           "subtitle": null,
           "type": "sholawat",
@@ -4250,7 +3898,7 @@
         },
         {
           "id": "yt-tasbih-jumlah-makhluk-7x",
-          "number": 115,
+          "number": 104,
           "title": "Tasbih Jumlah Makhluk (7x)",
           "subtitle": null,
           "type": "dzikir",
@@ -4266,7 +3914,7 @@
         },
         {
           "id": "yt-tasbih-dan-tahmid-33x",
-          "number": 116,
+          "number": 105,
           "title": "Tasbih dan Tahmid (33x)",
           "subtitle": null,
           "type": "dzikir",
@@ -4282,7 +3930,7 @@
         },
         {
           "id": "yt-shalawat-kepada-nabi-keluarga-dan-sahabat-2x",
-          "number": 117,
+          "number": 106,
           "title": "Shalawat Kepada Nabi, Keluarga, dan Sahabat (2x)",
           "subtitle": null,
           "type": "sholawat",
@@ -4298,7 +3946,7 @@
         },
         {
           "id": "yt-shalawat-penutup",
-          "number": 118,
+          "number": 107,
           "title": "Shalawat Penutup",
           "subtitle": null,
           "type": "sholawat",
@@ -4314,7 +3962,7 @@
         },
         {
           "id": "yt-doa-tahlil-pembuka",
-          "number": 119,
+          "number": 108,
           "title": "Doa Tahlil (Pembuka)",
           "subtitle": null,
           "type": "doa",
@@ -4330,7 +3978,7 @@
         },
         {
           "id": "yt-doa-penyampaian-pahala-bacaan",
-          "number": 120,
+          "number": 109,
           "title": "Doa Penyampaian Pahala Bacaan",
           "subtitle": null,
           "type": "doa",
@@ -4346,7 +3994,7 @@
         },
         {
           "id": "yt-doa-untuk-ahli-kubur",
-          "number": 121,
+          "number": 110,
           "title": "Doa untuk Ahli Kubur",
           "subtitle": null,
           "type": "doa",
@@ -4362,7 +4010,7 @@
         },
         {
           "id": "yt-doa-penutup",
-          "number": 122,
+          "number": 111,
           "title": "Doa Penutup",
           "subtitle": null,
           "type": "doa",

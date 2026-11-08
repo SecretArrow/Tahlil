@@ -134,11 +134,14 @@ object HeroInfo {
  *
  * Four variants ship:
  *  - [ContentVariant.Singkat] — 28 sections (the default).
- *  - [ContentVariant.Lengkap] — 39 sections (adds 11 Surah Yasin sections
- *    15–25 on top of the [ContentVariant.Singkat] content).
+ *  - [ContentVariant.Lengkap] — 28 sections (same tahlil sequence as
+ *    [ContentVariant.Singkat]; Surah Yasin is NOT part of the tahlil
+ *    sequence — per the NU source quran.nu.or.id/tahlil it is a separate
+ *    menu item — so it is available via the dedicated [ContentVariant.Yasin]
+ *    and [ContentVariant.YasinTahlil] variants).
  *  - [ContentVariant.Yasin] — 83 sections, the standalone Surah Yasin
  *    reading (ids `yasin-ayat-1` … `yasin-ayat-83`).
- *  - [ContentVariant.YasinTahlil] — 122 sections, the [ContentVariant.Yasin]
+ *  - [ContentVariant.YasinTahlil] — 111 sections, the [ContentVariant.Yasin]
  *    reading followed by the full [ContentVariant.Lengkap] tahlil
  *    compilation (Yasin ids prefixed `yt-yasin-`, tahlil ids prefixed
  *    `yt-` and not `yt-yasin-`).

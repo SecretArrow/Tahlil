@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tahlil.app.data.ContentVariant
 import com.tahlil.app.data.TahlilContent
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -33,10 +34,10 @@ class TahlilContentTest {
     }
 
     @Test
-    fun lengkap_has_39_sections() {
+    fun lengkap_has_28_sections() {
         assertEquals(
-            "Lengkap variant should have 39 sections",
-            39,
+            "Lengkap variant should have 28 sections",
+            28,
             TahlilContent.sectionsFor(ContentVariant.Lengkap).size,
         )
     }
@@ -51,10 +52,10 @@ class TahlilContentTest {
     }
 
     @Test
-    fun yasin_tahlil_has_122_sections() {
+    fun yasin_tahlil_has_111_sections() {
         assertEquals(
-            "YasinTahlil variant should have 122 sections (Yasin + Lengkap)",
-            122,
+            "YasinTahlil variant should have 111 sections (Yasin + Lengkap)",
+            111,
             TahlilContent.sectionsFor(ContentVariant.YasinTahlil).size,
         )
     }
@@ -117,9 +118,13 @@ class TahlilContentTest {
     }
 
     @Test
-    fun lengkap_includes_yasin_sections() {
-        assertTrue(
-            "Lengkap variant should include Surah Yasin sections",
+    fun lengkap_does_not_include_yasin_sections() {
+        // Per the NU source (quran.nu.or.id/tahlil), Surah Yasin is a
+        // separate menu item and does NOT belong inside the Tahlil sequence.
+        // Both Lengkap and Singkat render the same 28 tahlil sections; Yasin
+        // is available via the dedicated Yasin / YasinTahlil variants.
+        assertFalse(
+            "Lengkap variant should NOT include Surah Yasin sections",
             TahlilContent
                 .sectionsFor(ContentVariant.Lengkap)
                 .any { it.title.contains("Yasin") },

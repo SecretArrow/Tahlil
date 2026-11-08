@@ -64,7 +64,7 @@ export const VARIANT_OPTIONS: ReadonlyArray<{
   {
     value: "lengkap",
     label: "Tahlil Lengkap",
-    description: "39 bagian, dengan Surah Yasin pilihan",
+    description: "28 bagian, tanpa Surah Yasin",
   },
   {
     value: "singkat",
@@ -79,7 +79,7 @@ export const VARIANT_OPTIONS: ReadonlyArray<{
   {
     value: "yasin_tahlil",
     label: "Yasin dan Tahlil",
-    description: "Yasin + Tahlil Lengkap (122 bagian)",
+    description: "Yasin + Tahlil Lengkap (111 bagian)",
   },
 ];
 

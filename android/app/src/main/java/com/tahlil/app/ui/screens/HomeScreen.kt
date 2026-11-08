@@ -81,7 +81,7 @@ import kotlinx.coroutines.launch
  * @param variant The [ContentVariant] this card selects.
  * @param icon Material icon shown at the top of the card.
  * @param description Short human-readable summary of the variant (e.g.
- *        "39 bagian, dengan Surah Yasin") shown under the label.
+ *        "28 bagian, tanpa Surah Yasin") shown under the label.
  */
 private data class VariantMenuEntry(
     val variant: ContentVariant,
@@ -98,7 +98,7 @@ private val VariantMenu =
         VariantMenuEntry(
             variant = ContentVariant.Lengkap,
             icon = Icons.Filled.MenuBook,
-            description = "39 bagian, dengan Surah Yasin",
+            description = "28 bagian, tanpa Surah Yasin",
         ),
         VariantMenuEntry(
             variant = ContentVariant.Singkat,

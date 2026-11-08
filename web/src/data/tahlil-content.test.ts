@@ -34,16 +34,16 @@ describe("tahlil-content — variants", () => {
     expect(getTahlilSections("singkat")).toHaveLength(28);
   });
 
-  it("lengkap has exactly 39 sections", () => {
-    expect(getTahlilSections("lengkap")).toHaveLength(39);
+  it("lengkap has exactly 28 sections", () => {
+    expect(getTahlilSections("lengkap")).toHaveLength(28);
   });
 
   it("yasin has exactly 83 sections", () => {
     expect(getTahlilSections("yasin")).toHaveLength(83);
   });
 
-  it("yasin_tahlil has exactly 122 sections", () => {
-    expect(getTahlilSections("yasin_tahlil")).toHaveLength(122);
+  it("yasin_tahlil has exactly 111 sections", () => {
+    expect(getTahlilSections("yasin_tahlil")).toHaveLength(111);
   });
 
   it("section numbers are sequential 1..N within each variant", () => {
@@ -183,12 +183,12 @@ describe("tahlil-content — no forbidden references", () => {
   });
 });
 
-describe("tahlil-content — Lengkap includes Yasin sections", () => {
-  it("lengkap has 11 sections whose titles start with 'Surah Yasin'", () => {
+describe("tahlil-content — Lengkap excludes Yasin sections", () => {
+  it("lengkap has zero sections whose titles start with 'Surah Yasin'", () => {
     const yasin = getTahlilSections("lengkap").filter((s) =>
       s.title.startsWith("Surah Yasin"),
     );
-    expect(yasin).toHaveLength(11);
+    expect(yasin).toHaveLength(0);
   });
 
   it("singkat has zero Yasin sections", () => {
@@ -198,14 +198,23 @@ describe("tahlil-content — Lengkap includes Yasin sections", () => {
     expect(yasin).toHaveLength(0);
   });
 
-  it("the Yasin sections sit between Ayat Kursi and Istighfar in Lengkap", () => {
+  it("lengkap and singkat share the same section titles in the same order", () => {
+    // Per the NU source (quran.nu.or.id/tahlil), Surah Yasin is a separate
+    // menu item and does not belong inside the Tahlil sequence. Lengkap and
+    // Singkat therefore render the same 28 tahlil sections — Lengkap is kept
+    // as a distinct variant so users can opt for the "complete" label.
+    const lengkapTitles = getTahlilSections("lengkap").map((s) => s.title);
+    const singkatTitles = getTahlilSections("singkat").map((s) => s.title);
+    expect(lengkapTitles).toEqual(singkatTitles);
+  });
+
+  it("Ayat Kursi is immediately followed by Istighfar in Lengkap (no Yasin gap)", () => {
     const titles = getTahlilSections("lengkap").map((s) => s.title);
     const ayatKursiIdx = titles.findIndex((t) => t.startsWith("Ayat Kursi"));
-    const firstYasinIdx = titles.findIndex((t) => t.startsWith("Surah Yasin"));
     const istighfarIdx = titles.findIndex((t) => t.startsWith("Istighfar"));
     expect(ayatKursiIdx).toBeGreaterThanOrEqual(0);
-    expect(firstYasinIdx).toBeGreaterThan(ayatKursiIdx);
-    expect(istighfarIdx).toBeGreaterThan(firstYasinIdx);
+    expect(istighfarIdx).toBeGreaterThanOrEqual(0);
+    expect(istighfarIdx).toBe(ayatKursiIdx + 1);
   });
 });
 
@@ -228,12 +237,15 @@ describe("tahlil-content — Yasin variants", () => {
     }
   });
 
-  it("yasin_tahlil has 83 single-ayat Yasin sections plus 11 multi-ayat Yasin sections = 94", () => {
+  it("yasin_tahlil has exactly 83 Yasin sections (the full Surah Yasin, no duplicates)", () => {
     const sections = getTahlilSections("yasin_tahlil");
     const yasinTitled = sections.filter((s) =>
       s.title.startsWith("Surah Yasin"),
     );
-    expect(yasinTitled).toHaveLength(94);
+    // After removing the 11 multi-ayat range blocks that duplicated the
+    // single-ayat Yasin, the combined variant has exactly the 83 single-ayat
+    // Yasin headings (the full Surah Yasin) followed by the 28 tahlil sections.
+    expect(yasinTitled).toHaveLength(83);
   });
 });
 

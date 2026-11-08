@@ -37,8 +37,8 @@ class TahlilContentTest {
     }
 
     @Test
-    fun lengkap_has_39_sections() {
-        assertEquals(39, loadContent().variants["lengkap"]!!.sections.size)
+    fun lengkap_has_28_sections() {
+        assertEquals(28, loadContent().variants["lengkap"]!!.sections.size)
     }
 
     @Test
@@ -48,9 +48,9 @@ class TahlilContentTest {
     }
 
     @Test
-    fun yasin_tahlil_has_122_sections() {
-        // Yasin (83) + Tahlil Lengkap (39) = 122 combined sections.
-        assertEquals(122, loadContent().variants["yasin_tahlil"]!!.sections.size)
+    fun yasin_tahlil_has_111_sections() {
+        // Yasin (83) + Tahlil Lengkap (28) = 111 combined sections.
+        assertEquals(111, loadContent().variants["yasin_tahlil"]!!.sections.size)
     }
 
     @Test
@@ -76,10 +76,10 @@ class TahlilContentTest {
         // Lengkap portion: ids prefixed "yt-" and NOT "yt-yasin-".
         val lengkapSections =
             sections.filter { it.id.startsWith("yt-") && !it.id.startsWith("yt-yasin-") }
-        assertEquals(39, lengkapSections.size)
+        assertEquals(28, lengkapSections.size)
         // Together they account for every section in the combined variant.
-        assertEquals(122, yasinSections.size + lengkapSections.size)
-        assertEquals(122, sections.size)
+        assertEquals(111, yasinSections.size + lengkapSections.size)
+        assertEquals(111, sections.size)
     }
 
     @Test
@@ -109,16 +109,19 @@ class TahlilContentTest {
     }
 
     @Test
-    fun lengkap_includes_yasin_sections() {
-        assertTrue(
-            "Lengkap variant should include Surah Yasin sections",
+    fun lengkap_does_not_include_yasin_sections() {
+        // Per the NU source (quran.nu.or.id/tahlil), Surah Yasin is a
+        // separate menu item and does NOT belong inside the Tahlil sequence.
+        // Both Lengkap and Singkat render the same 28 tahlil sections; Yasin
+        // is available via the dedicated `yasin` and `yasin_tahlil` variants.
+        assertFalse(
+            "Lengkap variant should NOT include Surah Yasin sections",
             loadContent().variants["lengkap"]!!.sections.any { it.title.contains("Yasin") },
         )
     }
 
     @Test
     fun singkat_does_not_include_yasin_sections() {
-        // Singkat omits the 11 Yasin sections — those are Lengkap-only.
         assertFalse(
             "Singkat variant should NOT include Surah Yasin sections",
             loadContent().variants["singkat"]!!.sections.any { it.title.contains("Yasin") },
