@@ -112,11 +112,12 @@ fun loadFromJson(json: String): TahlilContentData {
 
 /** Hero copy shown at the top of the home screen. */
 object HeroInfo {
-    const val title = "Tahlil Singkat"
+    const val title = "Tahlil"
     const val subtitle = "Majelis Tahlil"
     const val description =
         "Rangkaian zikir, tahlil, dan doa untuk mendoakan para arwah kaum muslimin. " +
-            "Disusun dari Al-Qur'an, hadits, dan amaliah ulama."
+            "Pilih varian di bawah: Tahlil Singkat, Tahlil Lengkap, Surah Yasin, atau " +
+            "Yasin dan Tahlil."
     const val arabicBismillah = "بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيْمِ"
     const val source = "Kompilasi Tahlil dan Doa"
 }
@@ -131,10 +132,16 @@ object HeroInfo {
  * — typically `TahlilApp.onCreate()`. After [init], the parsed
  * [TahlilContentData] is cached for the lifetime of the process.
  *
- * Two variants ship:
+ * Four variants ship:
  *  - [ContentVariant.Singkat] — 28 sections (the default).
  *  - [ContentVariant.Lengkap] — 39 sections (adds 11 Surah Yasin sections
  *    15–25 on top of the [ContentVariant.Singkat] content).
+ *  - [ContentVariant.Yasin] — 83 sections, the standalone Surah Yasin
+ *    reading (ids `yasin-ayat-1` … `yasin-ayat-83`).
+ *  - [ContentVariant.YasinTahlil] — 122 sections, the [ContentVariant.Yasin]
+ *    reading followed by the full [ContentVariant.Lengkap] tahlil
+ *    compilation (Yasin ids prefixed `yt-yasin-`, tahlil ids prefixed
+ *    `yt-` and not `yt-yasin-`).
  *
  * The legacy [sections] property returns the [ContentVariant.Singkat] list
  * for backward compatibility with code that hasn't been migrated to the

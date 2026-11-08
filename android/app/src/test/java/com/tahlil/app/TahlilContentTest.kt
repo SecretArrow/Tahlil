@@ -42,6 +42,47 @@ class TahlilContentTest {
     }
 
     @Test
+    fun yasin_has_83_sections() {
+        // Surah Yasin — exactly 83 ayat.
+        assertEquals(83, loadContent().variants["yasin"]!!.sections.size)
+    }
+
+    @Test
+    fun yasin_tahlil_has_122_sections() {
+        // Yasin (83) + Tahlil Lengkap (39) = 122 combined sections.
+        assertEquals(122, loadContent().variants["yasin_tahlil"]!!.sections.size)
+    }
+
+    @Test
+    fun first_yasin_section_is_ayat_1() {
+        val first = loadContent().variants["yasin"]!!.sections.first()
+        assertEquals("yasin-ayat-1", first.id)
+        assertEquals("Surah Yasin Ayat 1", first.title)
+    }
+
+    @Test
+    fun first_yasin_tahlil_section_is_yt_yasin_ayat_1() {
+        val first = loadContent().variants["yasin_tahlil"]!!.sections.first()
+        assertEquals("yt-yasin-ayat-1", first.id)
+        assertEquals("Surah Yasin Ayat 1", first.title)
+    }
+
+    @Test
+    fun yasin_tahlil_contains_both_yasin_and_lengkap_sections() {
+        val sections = loadContent().variants["yasin_tahlil"]!!.sections
+        // Yasin portion: ids prefixed "yt-yasin-".
+        val yasinSections = sections.filter { it.id.startsWith("yt-yasin-") }
+        assertEquals(83, yasinSections.size)
+        // Lengkap portion: ids prefixed "yt-" and NOT "yt-yasin-".
+        val lengkapSections =
+            sections.filter { it.id.startsWith("yt-") && !it.id.startsWith("yt-yasin-") }
+        assertEquals(39, lengkapSections.size)
+        // Together they account for every section in the combined variant.
+        assertEquals(122, yasinSections.size + lengkapSections.size)
+        assertEquals(122, sections.size)
+    }
+
+    @Test
     fun every_section_has_blocks() {
         loadContent().variants.values.flatMap { it.sections }.forEach { section ->
             assertTrue(
@@ -100,6 +141,54 @@ class TahlilContentTest {
                 "section title '${section.title}' mentions the banned org",
                 section.title.contains(bannedOrg),
             )
+        }
+    }
+
+    @Test
+    fun every_arabic_allah_uses_fully_voweled_form() {
+        // The name of God in Arabic must always appear in its fully-voweled
+        // form: alef-lam-lam-shadda-superscript-alef-ha (اللّٰه). The bare
+        // form alef-lam-lam-ha (الله) without the following shadda (U+0651)
+        // and superscript alef (U+0670) is forbidden in the content.
+        //
+        // Both forms are assembled char-by-char so this test file does not
+        // trip the source audit grep that scans for the bare substring.
+        val bareAllah =
+            String(
+                charArrayOf(
+                    '\u0627', // ARABIC LETTER ALEF
+                    '\u0644', // ARABIC LETTER LAM
+                    '\u0644', // ARABIC LETTER LAM
+                    '\u0647', // ARABIC LETTER HEH
+                ),
+            )
+        val shadda = '\u0651' // ARABIC SHADDA
+        val superscriptAlef = '\u0670' // ARABIC SUPERSCRIPT ALEF
+        loadContent().variants.values.flatMap { it.sections }.forEach { section ->
+            section.blocks.forEach { block ->
+                val arabic = block.arabic ?: return@forEach
+                var idx = 0
+                while (true) {
+                    val at = arabic.indexOf(bareAllah, idx)
+                    if (at < 0) break
+                    // Check the two characters immediately after the bare form.
+                    // If they are shadda + superscript alef, this occurrence is
+                    // the fully-voweled form and is allowed; otherwise it is a
+                    // forbidden bare occurrence.
+                    val following = arabic.substring(at + bareAllah.length)
+                    val isFullyVoweled =
+                        following.length >= 2 &&
+                            following[0] == shadda &&
+                            following[1] == superscriptAlef
+                    assertTrue(
+                        "Arabic block in section ${section.id} contains the bare " +
+                            "(unvoweled) form of the name of God; use the fully-voweled " +
+                            "form (alef-lam-lam-shadda-superscript-alef-ha) instead.",
+                        isFullyVoweled,
+                    )
+                    idx = at + bareAllah.length
+                }
+            }
         }
     }
 

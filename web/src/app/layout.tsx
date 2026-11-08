@@ -131,7 +131,10 @@ function parseDisplayToggles(raw: string | null): DisplayToggles {
     const p = JSON.parse(raw) as Partial<DisplayToggles>;
     return {
       variant:
-        p.variant === "lengkap" || p.variant === "singkat"
+        p.variant === "lengkap" ||
+        p.variant === "singkat" ||
+        p.variant === "yasin" ||
+        p.variant === "yasin_tahlil"
           ? p.variant
           : "singkat",
       arabic: typeof p.arabic === "boolean" ? p.arabic : true,
@@ -150,7 +153,14 @@ function parseDisplayToggles(raw: string | null): DisplayToggles {
 }
 
 function parseVariant(raw: string | null): ContentVariant {
-  return raw === "lengkap" || raw === "singkat" ? raw : "singkat";
+  if (
+    raw === "lengkap" ||
+    raw === "singkat" ||
+    raw === "yasin" ||
+    raw === "yasin_tahlil"
+  )
+    return raw;
+  return "singkat";
 }
 
 export default async function RootLayout({

@@ -5,10 +5,16 @@ import kotlinx.serialization.Serializable
 /**
  * Content variant selection.
  *
- * The prayer book ships in two flavours:
+ * The prayer book ships in four flavours:
  *  - [Singkat]: a concise 28-section compilation of the core tahlil reading.
  *  - [Lengkap]: the full 39-section compilation that adds 11 Surah Yasin
  *    sections (numbers 15–25) on top of the [Singkat] content.
+ *  - [Yasin]: the 83 ayat of Surah Yasin as a standalone reading (sections
+ *    numbered 1–83, ids `yasin-ayat-1` … `yasin-ayat-83`).
+ *  - [YasinTahlil]: the [Yasin] reading (83 ayat) followed by the full
+ *    [Lengkap] tahlil compilation, for a combined 122-section reading. The
+ *    Yasin portion uses ids prefixed `yt-yasin-` and the tahlil portion uses
+ *    ids prefixed `yt-` (and not `yt-yasin-`).
  *
  * The variant is persisted via DataStore Preferences using [storageKey], so
  * the user's choice survives across launches. [fromStorageKey] tolerates
@@ -20,8 +26,10 @@ enum class ContentVariant(
     val storageKey: String,
     val label: String,
 ) {
-    Singkat("singkat", "Singkat"),
-    Lengkap("lengkap", "Lengkap"),
+    Singkat("singkat", "Tahlil Singkat"),
+    Lengkap("lengkap", "Tahlil Lengkap"),
+    Yasin("yasin", "Yasin"),
+    YasinTahlil("yasin_tahlil", "Yasin dan Tahlil"),
     ;
 
     companion object {

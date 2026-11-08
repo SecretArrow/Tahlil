@@ -14,12 +14,24 @@ type Ctx = {
   setVariant: (next: ContentVariant) => void;
 };
 
-const VALID_VARIANTS: readonly ContentVariant[] = ["singkat", "lengkap"];
+const VALID_VARIANTS: readonly ContentVariant[] = [
+  "singkat",
+  "lengkap",
+  "yasin",
+  "yasin_tahlil",
+];
 
 const DisplaySettingsContext = React.createContext<Ctx | null>(null);
 
 function parseVariant(raw: unknown): ContentVariant {
-  return raw === "lengkap" || raw === "singkat" ? raw : "singkat";
+  if (
+    raw === "lengkap" ||
+    raw === "singkat" ||
+    raw === "yasin" ||
+    raw === "yasin_tahlil"
+  )
+    return raw;
+  return "singkat";
 }
 
 function parseStored(raw: string | null): DisplayToggles {

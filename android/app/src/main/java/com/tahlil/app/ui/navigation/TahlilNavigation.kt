@@ -226,6 +226,8 @@ fun TahlilNavigation(
                             toggles = toggles,
                             style = style,
                             isDark = isDark,
+                            variant = variant,
+                            onVariantChange = onVariantChange,
                             sections = sections,
                             onSectionClick = { id ->
                                 navController.navigate(Routes.section(id)) { launchSingleTop = true }
@@ -263,11 +265,9 @@ fun TahlilNavigation(
                             toggles = toggles,
                             style = style,
                             themeMode = themeMode,
-                            variant = variant,
                             onTogglesChange = onTogglesChange,
                             onStyleChange = onStyleChange,
                             onThemeModeChange = onThemeModeChange,
-                            onVariantChange = onVariantChange,
                         )
                     }
                 }

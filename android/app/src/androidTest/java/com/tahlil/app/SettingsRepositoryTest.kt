@@ -86,6 +86,22 @@ class SettingsRepositoryTest {
         }
 
     @Test
+    fun updatingVariantToYasinPersists() =
+        runBlocking {
+            repo.updateVariant(ContentVariant.Yasin)
+            val reloaded = repo.variant.first()
+            assertEquals(ContentVariant.Yasin, reloaded)
+        }
+
+    @Test
+    fun updatingVariantToYasinTahlilPersists() =
+        runBlocking {
+            repo.updateVariant(ContentVariant.YasinTahlil)
+            val reloaded = repo.variant.first()
+            assertEquals(ContentVariant.YasinTahlil, reloaded)
+        }
+
+    @Test
     fun updatingDisplayTogglesPersists() =
         runBlocking {
             val updated = repo.displayToggles.first().copy(keepScreenOn = true)

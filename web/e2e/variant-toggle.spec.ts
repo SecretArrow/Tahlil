@@ -1,15 +1,21 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Variant toggle — Singkat / Lengkap.
+ * Variant menu — Tahlil Lengkap / Tahlil Singkat / Yasin / Yasin dan Tahlil.
  *
- * The home page renders a radiogroup labelled "Pilih varian tahlil"
- * (in the hero) plus a second one labelled "Varian Tahlil" inside the
- * display-settings panel. Either one switches the content between the
- * 28-section Singkat list and the 39-section Lengkap list (which adds
- * 11 Surah Yasin sections).
+ * The home page renders a single radiogroup labelled "Pilih varian tahlil"
+ * inside the hero, with four radio cards (one per variant). Switching
+ * selection updates the section list rendered below.
+ *
+ * Variant → section counts:
+ *   - singkat      → 28 sections (no Yasin headings)
+ *   - lengkap      → 39 sections (11 Yasin section headings)
+ *   - yasin        → 83 sections, all "Surah Yasin Ayat N"
+ *   - yasin_tahlil → 122 sections: 83 single-ayat Yasin headings + 11
+ *                    multi-ayat Yasin headings (the Lengkap-style picks)
+ *                    = 94 "Surah Yasin" headings in total.
  */
-test.describe("Singkat / Lengkap variant toggle", () => {
+test.describe("Variant menu — four options", () => {
   test("switching to Lengkap reveals Surah Yasin sections, Singkat hides them", async ({
     page,
   }) => {
@@ -21,6 +27,9 @@ test.describe("Singkat / Lengkap variant toggle", () => {
     });
     await expect(variantGroup).toBeVisible();
 
+    // The radiogroup exposes four radio cards.
+    await expect(variantGroup.getByRole("radio")).toHaveCount(4);
+
     // Default variant is Singkat → no Yasin headings on the page.
     const yasinHeading = page.getByRole("heading", {
       level: 2,
@@ -29,9 +38,9 @@ test.describe("Singkat / Lengkap variant toggle", () => {
     await expect(yasinHeading).toHaveCount(0);
 
     // Switch to Lengkap via the hero radiogroup.
-    await variantGroup.getByRole("radio", { name: /Lengkap/ }).click();
+    await variantGroup.getByRole("radio", { name: /Tahlil Lengkap/ }).click();
     await expect(
-      variantGroup.getByRole("radio", { name: /Lengkap/ }),
+      variantGroup.getByRole("radio", { name: /Tahlil Lengkap/ }),
     ).toHaveAttribute("aria-checked", "true");
 
     // Wait for the Yasin sections to render (Lengkap adds 11 of them).
@@ -39,42 +48,75 @@ test.describe("Singkat / Lengkap variant toggle", () => {
     await expect(yasinHeading).toHaveCount(11);
 
     // Switch back to Singkat — Yasin headings should disappear.
-    await variantGroup.getByRole("radio", { name: /Singkat/ }).click();
+    await variantGroup.getByRole("radio", { name: /Tahlil Singkat/ }).click();
     await expect(
-      variantGroup.getByRole("radio", { name: /Singkat/ }),
+      variantGroup.getByRole("radio", { name: /Tahlil Singkat/ }),
     ).toHaveAttribute("aria-checked", "true");
     await expect(yasinHeading).toHaveCount(0);
   });
 
-  test("the settings panel exposes the same variant control", async ({
+  test("tapping the Yasin radio reveals all 83 Surah Yasin sections", async ({
     page,
   }) => {
     await page.goto("/");
 
-    // Open the display-settings panel via the header button.
-    await page
-      .getByRole("button", { name: "Pengaturan tampilan bacaan" })
-      .click();
-
-    const panel = page.getByRole("dialog", {
-      name: "Pengaturan tampilan bacaan",
-    });
-    await expect(panel).toBeVisible();
-
-    const panelGroup = panel.getByRole("radiogroup", { name: "Varian Tahlil" });
-    await expect(panelGroup).toBeVisible();
-
-    await panelGroup.getByRole("radio", { name: /Lengkap/ }).click();
-    await expect(
-      panelGroup.getByRole("radio", { name: /Lengkap/ }),
-    ).toHaveAttribute("aria-checked", "true");
-
-    // The hero radiogroup should reflect the same active variant.
-    const heroGroup = page.getByRole("radiogroup", {
+    const variantGroup = page.getByRole("radiogroup", {
       name: "Pilih varian tahlil",
     });
+    await expect(variantGroup).toBeVisible();
+
+    const yasinHeading = page.getByRole("heading", {
+      level: 2,
+      name: /^Surah Yasin Ayat/,
+    });
+
+    // Before switching, default (Singkat) shows no Yasin headings.
+    await expect(yasinHeading).toHaveCount(0);
+
+    // Switch to Yasin.
+    await variantGroup.getByRole("radio", { name: /^Yasin$/ }).click();
     await expect(
-      heroGroup.getByRole("radio", { name: /Lengkap/ }),
+      variantGroup.getByRole("radio", { name: /^Yasin$/ }),
     ).toHaveAttribute("aria-checked", "true");
+
+    // The Yasin variant has all 83 ayat as standalone sections titled
+    // "Surah Yasin Ayat N".
+    await expect(yasinHeading.first()).toBeVisible();
+    await expect(yasinHeading).toHaveCount(83);
+  });
+
+  test("tapping the Yasin dan Tahlil radio reveals 94 Surah Yasin headings", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const variantGroup = page.getByRole("radiogroup", {
+      name: "Pilih varian tahlil",
+    });
+    await expect(variantGroup).toBeVisible();
+
+    const yasinHeading = page.getByRole("heading", {
+      level: 2,
+      name: /^Surah Yasin/,
+    });
+
+    // Before switching, default (Singkat) shows no Yasin headings.
+    await expect(yasinHeading).toHaveCount(0);
+
+    // Switch to Yasin dan Tahlil.
+    await variantGroup
+      .getByRole("radio", { name: /Yasin dan Tahlil/ })
+      .click();
+    await expect(
+      variantGroup.getByRole("radio", { name: /Yasin dan Tahlil/ }),
+    ).toHaveAttribute("aria-checked", "true");
+
+    // The combined variant includes:
+    //   - 83 single-ayat Yasin sections ("Surah Yasin Ayat N")
+    //   - 11 multi-ayat Yasin sections ("Surah Yasin Ayat N-M") inherited
+    //     from the Lengkap list
+    // for a total of 94 "Surah Yasin" headings.
+    await expect(yasinHeading.first()).toBeVisible();
+    await expect(yasinHeading).toHaveCount(94);
   });
 });

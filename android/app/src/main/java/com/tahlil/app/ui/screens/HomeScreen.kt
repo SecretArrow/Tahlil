@@ -30,7 +30,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.LibraryBooks
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -40,7 +43,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -65,6 +67,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tahlil.app.BuildConfig
+import com.tahlil.app.data.ContentVariant
 import com.tahlil.app.data.HeroInfo
 import com.tahlil.app.data.Section
 import com.tahlil.app.ui.components.SectionCard
@@ -72,26 +75,50 @@ import com.tahlil.app.ui.components.contentMaxWidth
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-/** CTA button definition for the hero. */
-private data class CtaButton(
-    val sectionId: String,
-    val label: String,
-    val primary: Boolean,
+/**
+ * One entry in the variant menu shown on the home screen.
+ *
+ * @param variant The [ContentVariant] this card selects.
+ * @param icon Material icon shown at the top of the card.
+ * @param description Short human-readable summary of the variant (e.g.
+ *        "39 bagian, dengan Surah Yasin") shown under the label.
+ */
+private data class VariantMenuEntry(
+    val variant: ContentVariant,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val description: String,
 )
 
-// CTA targets point at stable section ids that exist across both content
-// variants (Singkat / Lengkap). "Mulai" jumps to the first section; the
-// other three surface the Tahlil, Dzikir, and Doa portions of the reading.
-private val CtaButtons =
+// The four variant menu cards, in display order. Each entry pairs the enum
+// with the Material icon and a one-line description used on the card. The
+// card's label comes from [ContentVariant.label] so this list stays in
+// sync with the enum.
+private val VariantMenu =
     listOf(
-        CtaButton("pengantar-al-fatihah-untuk-rasulullah-saw", "Mulai", primary = true),
-        CtaButton("tahlil-inti-laa-ilaaha-illallah-100x", "Tahlil", primary = false),
-        CtaButton("sebaik-baik-dzikir-laa-ilaaha-illallah", "Dzikir", primary = false),
-        CtaButton("doa-tahlil-pembuka", "Doa", primary = false),
+        VariantMenuEntry(
+            variant = ContentVariant.Lengkap,
+            icon = Icons.Filled.MenuBook,
+            description = "39 bagian, dengan Surah Yasin",
+        ),
+        VariantMenuEntry(
+            variant = ContentVariant.Singkat,
+            icon = Icons.Filled.MenuBook,
+            description = "28 bagian",
+        ),
+        VariantMenuEntry(
+            variant = ContentVariant.Yasin,
+            icon = Icons.Filled.AutoStories,
+            description = "Surah Yasin 83 ayat",
+        ),
+        VariantMenuEntry(
+            variant = ContentVariant.YasinTahlil,
+            icon = Icons.Filled.LibraryBooks,
+            description = "Yasin + Tahlil Lengkap",
+        ),
     )
 
 /**
- * HomeScreen — hero + scroll list of all 11 sections.
+ * HomeScreen — hero + variant menu + scroll list of all sections.
  *
  * Each section is wrapped in a `key`-anchored item so that active-section
  * tracking via [LazyListState] works (we read the first visible item index).
@@ -100,6 +127,12 @@ private val CtaButtons =
  * list, matching the web app's behavior).
  *
  * Features:
+ *  - **Variant menu**: a 2×2 grid of large cards (one per [ContentVariant])
+ *    lets the user pick which compilation to read. The selected card is
+ *    highlighted with the primary color; the section list below updates
+ *    to reflect the new variant.
+ *  - **Mulai Membaca button**: below the menu grid, a button that jumps
+ *    to the first section of the active variant (via [onSectionClick]).
  *  - **BackHandler**: pressing the back button on the home screen shows a
  *    confirmation dialog ("Keluar dari aplikasi?") with Batal / Keluar
  *    buttons. If the app is currently in fullscreen mode, the first back
@@ -114,7 +147,12 @@ private val CtaButtons =
  *    the last section the user opened. A "Mulai dari awal" affordance
  *    clears the pointer.
  *
- * @param onSectionClick Called when a CTA button or "more" link is tapped.
+ * @param variant The currently-selected content variant (drives the menu
+ *        highlight and the "Mulai Membaca" target).
+ * @param onVariantChange Called when the user taps one of the variant
+ *        cards. The section list below re-derives from the new variant.
+ * @param onSectionClick Called when the "Mulai Membaca" button or a "more"
+ *        link is tapped.
  * @param onActiveSectionChange Called when the first visible section changes
  *        (used by the drawer to highlight the active entry).
  * @param isFullscreen The current immersive-mode flag — when true, the back
@@ -129,6 +167,8 @@ fun HomeScreen(
     toggles: com.tahlil.app.data.DisplayToggles,
     style: com.tahlil.app.data.ArabicStyleSettings,
     isDark: Boolean,
+    variant: ContentVariant,
+    onVariantChange: (ContentVariant) -> Unit,
     sections: List<Section>,
     onSectionClick: (String) -> Unit,
     onActiveSectionChange: (String) -> Unit,
@@ -266,7 +306,10 @@ fun HomeScreen(
 
             item(key = "hero") {
                 Hero(
-                    onCtaClick = onSectionClick,
+                    variant = variant,
+                    onVariantChange = onVariantChange,
+                    onSectionClick = onSectionClick,
+                    firstSectionId = sections.firstOrNull()?.id,
                 )
             }
             items(items = sections, key = { it.id }) { section ->
@@ -395,11 +438,27 @@ private fun ContinueReadingCard(
 }
 
 /**
- * Hero — title, subtitle, description, Bismillah, and 4 CTA buttons.
+ * Hero — title, subtitle, description, Bismillah, the 2×2 variant menu
+ * grid, and a "Mulai Membaca" button that jumps to the first section of
+ * the active variant.
+ *
+ * The variant grid highlights the currently-selected card (primary
+ * background + onPrimary content); non-selected cards use the surface
+ * color. Tapping a card calls [onVariantChange] — it does NOT navigate
+ * to a section directly, so the section list below stays in sync with
+ * the new selection.
+ *
+ * The "Mulai Membaca" button calls [onSectionClick] with the active
+ * variant's first section id (passed in as [firstSectionId]); it is
+ * disabled when the variant has no sections (defensive — should not
+ * happen in practice).
  */
 @Composable
 private fun Hero(
-    onCtaClick: (String) -> Unit,
+    variant: ContentVariant,
+    onVariantChange: (ContentVariant) -> Unit,
+    onSectionClick: (String) -> Unit,
+    firstSectionId: String?,
     modifier: Modifier = Modifier,
 ) {
     val primary = MaterialTheme.colorScheme.primary
@@ -492,23 +551,59 @@ private fun Hero(
 
             Spacer(Modifier.height(20.dp))
 
-            // CTA buttons (2x2 grid on small screens)
+            // Variant menu — 2×2 grid of large cards. The selected variant
+            // uses primary background + onPrimary content; the rest use the
+            // surface color. Tapping a card calls onVariantChange (NO direct
+            // section navigation — the list below re-derives from the new
+            // variant).
+            //
+            // Layout: two Rows of two cards each, each card taking equal
+            // weight(1f). Matches the previous 2×2 CTA chip layout so the
+            // hero width stays the same on every screen size.
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
             ) {
-                CtaButtons.take(2).forEach { btn ->
-                    CtaChip(btn, onCtaClick, Modifier.weight(1f))
+                VariantMenu.take(2).forEach { entry ->
+                    VariantCard(
+                        entry = entry,
+                        selected = entry.variant == variant,
+                        onClick = { onVariantChange(entry.variant) },
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
             Row(
                 modifier = Modifier.padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
             ) {
-                CtaButtons.drop(2).forEach { btn ->
-                    CtaChip(btn, onCtaClick, Modifier.weight(1f))
+                VariantMenu.drop(2).forEach { entry ->
+                    VariantCard(
+                        entry = entry,
+                        selected = entry.variant == variant,
+                        onClick = { onVariantChange(entry.variant) },
+                        modifier = Modifier.weight(1f),
+                    )
                 }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // "Mulai Membaca" — jumps to the first section of the active
+            // variant. Disabled (no-op) when the variant has no sections.
+            Button(
+                onClick = { firstSectionId?.let(onSectionClick) },
+                enabled = firstSectionId != null,
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(50),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+            ) {
+                Text("Mulai Membaca", fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(Modifier.height(8.dp))
@@ -521,32 +616,73 @@ private fun Hero(
     }
 }
 
+/**
+ * One card in the 2×2 variant menu grid. Shows the variant's icon, label,
+ * and short description. The selected card uses primary + onPrimary; the
+ * non-selected card uses surface + onSurface.
+ */
 @Composable
-private fun CtaChip(
-    btn: CtaButton,
-    onClick: (String) -> Unit,
+private fun VariantCard(
+    entry: VariantMenuEntry,
+    selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (btn.primary) {
-        Button(
-            onClick = { onClick(btn.sectionId) },
-            modifier = modifier.height(48.dp),
-            shape = RoundedCornerShape(50),
-            colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-        ) {
-            Text(btn.label, fontWeight = FontWeight.SemiBold)
+    val containerColor =
+        if (selected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.surface
         }
-    } else {
-        OutlinedButton(
-            onClick = { onClick(btn.sectionId) },
-            modifier = modifier.height(48.dp),
-            shape = RoundedCornerShape(50),
+    val contentColor =
+        if (selected) {
+            MaterialTheme.colorScheme.onPrimary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
+    val subtleColor =
+        if (selected) {
+            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
+
+    Card(
+        modifier = modifier.height(132.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = containerColor,
+                contentColor = contentColor,
+            ),
+        onClick = onClick,
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Text(btn.label, fontWeight = FontWeight.SemiBold)
+            Icon(
+                imageVector = entry.icon,
+                contentDescription = null,
+                tint = contentColor,
+                modifier = Modifier.size(28.dp),
+            )
+            Text(
+                text = entry.variant.label,
+                style =
+                    MaterialTheme.typography.titleSmall.copy(
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                color = contentColor,
+            )
+            Text(
+                text = entry.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = subtleColor,
+            )
         }
     }
 }

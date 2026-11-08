@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import com.tahlil.app.data.ArabicAlign
 import com.tahlil.app.data.ArabicStyleMode
 import com.tahlil.app.data.ArabicStyleSettings
-import com.tahlil.app.data.ContentVariant
 import com.tahlil.app.data.DisplayToggles
 import com.tahlil.app.data.ThemeMode
 import com.tahlil.app.ui.components.SliderRow
@@ -44,21 +43,21 @@ import com.tahlil.app.ui.components.contentMaxWidth
  *  1. Tampilan (display toggles: show/hide arabic/translit/translation,
  *     plus the comma, colorize, keep-screen-on, and daily-reminder toggles)
  *  2. Tema (light/dark/system)
- *  3. Konten (Singkat / Lengkap variant selector)
- *  4. Mode Font Arab (Standard / Quran / Naskhi)
- *  5. Tipografi Arab (sliders for size, line height, word spacing, letter
+ *  3. Mode Font Arab (Standard / Quran / Naskhi)
+ *  4. Tipografi Arab (sliders for size, line height, word spacing, letter
  *     spacing, alignment)
+ *
+ * Note: the content variant (Singkat / Lengkap / Yasin / YasinTahlil) is
+ * now chosen from the 2×2 menu on the HomeScreen, not here.
  */
 @Composable
 fun SettingsScreen(
     toggles: DisplayToggles,
     style: ArabicStyleSettings,
     themeMode: ThemeMode,
-    variant: ContentVariant,
     onTogglesChange: (DisplayToggles) -> Unit,
     onStyleChange: (ArabicStyleSettings) -> Unit,
     onThemeModeChange: (ThemeMode) -> Unit,
-    onVariantChange: (ContentVariant) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Bottom navigation-bar inset — the app is edge-to-edge, so without
@@ -86,9 +85,6 @@ fun SettingsScreen(
 
             item { SectionTitle("Tema") }
             themeSection(themeMode, onThemeModeChange)
-
-            item { SectionTitle("Konten") }
-            variantSection(variant, onVariantChange)
 
             item { SectionTitle("Mode Font Arab") }
             fontModeSection(style, onStyleChange)
@@ -195,24 +191,6 @@ private fun LazyListScope.themeSection(
                 ThemeChip("Sistem", themeMode == ThemeMode.System) { onChange(ThemeMode.System) }
                 ThemeChip("Terang", themeMode == ThemeMode.Light) { onChange(ThemeMode.Light) }
                 ThemeChip("Gelap", themeMode == ThemeMode.Dark) { onChange(ThemeMode.Dark) }
-            }
-        }
-    }
-}
-
-private fun LazyListScope.variantSection(
-    variant: ContentVariant,
-    onChange: (ContentVariant) -> Unit,
-) {
-    item {
-        SettingsCard {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                ContentVariant.values().forEach { v ->
-                    ThemeChip(v.label, variant == v) { onChange(v) }
-                }
             }
         }
     }

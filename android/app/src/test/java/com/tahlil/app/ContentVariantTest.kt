@@ -17,6 +17,8 @@ class ContentVariantTest {
     fun fromStorageKey_known() {
         assertEquals(ContentVariant.Singkat, ContentVariant.fromStorageKey("singkat"))
         assertEquals(ContentVariant.Lengkap, ContentVariant.fromStorageKey("lengkap"))
+        assertEquals(ContentVariant.Yasin, ContentVariant.fromStorageKey("yasin"))
+        assertEquals(ContentVariant.YasinTahlil, ContentVariant.fromStorageKey("yasin_tahlil"))
     }
 
     @Test
@@ -37,7 +39,31 @@ class ContentVariantTest {
     }
 
     @Test
-    fun has_two_variants() {
-        assertEquals(2, ContentVariant.values().size)
+    fun has_four_variants_in_order() {
+        val variants = ContentVariant.values().toList()
+        assertEquals(4, variants.size)
+        // The home-screen menu relies on this exact order so the 2×2 grid
+        // layout (Lengkap, Singkat / Yasin, YasinTahlil) stays stable.
+        assertEquals(ContentVariant.Singkat, variants[0])
+        assertEquals(ContentVariant.Lengkap, variants[1])
+        assertEquals(ContentVariant.Yasin, variants[2])
+        assertEquals(ContentVariant.YasinTahlil, variants[3])
+    }
+
+    @Test
+    fun storageKey_values_are_correct() {
+        assertEquals("singkat", ContentVariant.Singkat.storageKey)
+        assertEquals("lengkap", ContentVariant.Lengkap.storageKey)
+        assertEquals("yasin", ContentVariant.Yasin.storageKey)
+        assertEquals("yasin_tahlil", ContentVariant.YasinTahlil.storageKey)
+    }
+
+    @Test
+    fun label_values_are_correct() {
+        assertEquals("Tahlil Singkat", ContentVariant.Singkat.label)
+        assertEquals("Tahlil Lengkap", ContentVariant.Lengkap.label)
+        assertEquals("Yasin", ContentVariant.Yasin.label)
+        assertEquals("Yasin dan Tahlil", ContentVariant.YasinTahlil.label)
     }
 }
+

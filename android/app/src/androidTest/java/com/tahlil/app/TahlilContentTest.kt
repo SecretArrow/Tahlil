@@ -42,6 +42,31 @@ class TahlilContentTest {
     }
 
     @Test
+    fun yasin_has_83_sections() {
+        assertEquals(
+            "Yasin variant should have 83 sections (Surah Yasin)",
+            83,
+            TahlilContent.sectionsFor(ContentVariant.Yasin).size,
+        )
+    }
+
+    @Test
+    fun yasin_tahlil_has_122_sections() {
+        assertEquals(
+            "YasinTahlil variant should have 122 sections (Yasin + Lengkap)",
+            122,
+            TahlilContent.sectionsFor(ContentVariant.YasinTahlil).size,
+        )
+    }
+
+    @Test
+    fun firstYasinSectionIsAyat1() {
+        val first = TahlilContent.sectionsFor(ContentVariant.Yasin).first()
+        assertEquals("yasin-ayat-1", first.id)
+        assertEquals("Surah Yasin Ayat 1", first.title)
+    }
+
+    @Test
     fun firstSingkatSectionIsPengantarAlFatihah() {
         val first = TahlilContent.sectionsFor(ContentVariant.Singkat).first()
         assertEquals("pengantar-al-fatihah-untuk-rasulullah-saw", first.id)

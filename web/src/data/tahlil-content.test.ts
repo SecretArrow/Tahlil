@@ -4,17 +4,30 @@ import {
   getTahlilSectionById,
   tahlilSource,
   tahlilVariants,
+  VARIANT_OPTIONS,
 } from "./tahlil-content";
+import type { ContentVariant } from "./tahlil-content";
+
+const ALL_VARIANTS: readonly ContentVariant[] = [
+  "singkat",
+  "lengkap",
+  "yasin",
+  "yasin_tahlil",
+];
 
 describe("tahlil-content — variants", () => {
   it("exposes a neutral source string", () => {
     expect(tahlilSource).toBe("Kompilasi Tahlil dan Doa");
   });
 
-  it("exposes both variants by name", () => {
-    expect(Object.keys(tahlilVariants).sort()).toEqual(["lengkap", "singkat"]);
+  it("exposes all four variants by name", () => {
+    expect(Object.keys(tahlilVariants).sort()).toEqual(
+      ["lengkap", "singkat", "yasin", "yasin_tahlil"].sort(),
+    );
     expect(tahlilVariants.singkat.name).toBe("Singkat");
     expect(tahlilVariants.lengkap.name).toBe("Lengkap");
+    expect(tahlilVariants.yasin.name).toBe("Yasin");
+    expect(tahlilVariants.yasin_tahlil.name).toBe("Yasin dan Tahlil");
   });
 
   it("singkat has exactly 28 sections", () => {
@@ -25,8 +38,16 @@ describe("tahlil-content — variants", () => {
     expect(getTahlilSections("lengkap")).toHaveLength(39);
   });
 
+  it("yasin has exactly 83 sections", () => {
+    expect(getTahlilSections("yasin")).toHaveLength(83);
+  });
+
+  it("yasin_tahlil has exactly 122 sections", () => {
+    expect(getTahlilSections("yasin_tahlil")).toHaveLength(122);
+  });
+
   it("section numbers are sequential 1..N within each variant", () => {
-    for (const variant of ["singkat", "lengkap"] as const) {
+    for (const variant of ALL_VARIANTS) {
       const sections = getTahlilSections(variant);
       const numbers = sections.map((s) => s.number);
       expect(numbers).toEqual(
@@ -36,7 +57,7 @@ describe("tahlil-content — variants", () => {
   });
 
   it("every section has non-empty blocks", () => {
-    for (const variant of ["singkat", "lengkap"] as const) {
+    for (const variant of ALL_VARIANTS) {
       for (const section of getTahlilSections(variant)) {
         expect(section.blocks.length, `section ${section.id}`).toBeGreaterThan(
           0,
@@ -46,7 +67,7 @@ describe("tahlil-content — variants", () => {
   });
 
   it("every block has non-empty transliteration and translation", () => {
-    for (const variant of ["singkat", "lengkap"] as const) {
+    for (const variant of ALL_VARIANTS) {
       for (const section of getTahlilSections(variant)) {
         for (const [i, block] of section.blocks.entries()) {
           expect(
@@ -65,7 +86,7 @@ describe("tahlil-content — variants", () => {
   });
 
   it("block.repeat is null or a positive integer when present", () => {
-    for (const variant of ["singkat", "lengkap"] as const) {
+    for (const variant of ALL_VARIANTS) {
       for (const section of getTahlilSections(variant)) {
         for (const block of section.blocks) {
           if (block.repeat != null) {
@@ -77,8 +98,8 @@ describe("tahlil-content — variants", () => {
     }
   });
 
-  it("getTahlilSectionById round-trips for every section id in both variants", () => {
-    for (const variant of ["singkat", "lengkap"] as const) {
+  it("getTahlilSectionById round-trips for every section id in every variant", () => {
+    for (const variant of ALL_VARIANTS) {
       const sections = getTahlilSections(variant);
       for (const section of sections) {
         const found = getTahlilSectionById(variant, section.id);
@@ -96,6 +117,26 @@ describe("tahlil-content — variants", () => {
   it("getTahlilSectionById returns undefined for unknown ids", () => {
     expect(getTahlilSectionById("singkat", "does-not-exist")).toBeUndefined();
     expect(getTahlilSectionById("lengkap", "")).toBeUndefined();
+    expect(getTahlilSectionById("yasin", "nope")).toBeUndefined();
+    expect(getTahlilSectionById("yasin_tahlil", "nope")).toBeUndefined();
+  });
+});
+
+describe("tahlil-content — VARIANT_OPTIONS menu", () => {
+  it("exposes exactly four menu entries in presentation order", () => {
+    expect(VARIANT_OPTIONS.map((o) => o.value)).toEqual([
+      "lengkap",
+      "singkat",
+      "yasin",
+      "yasin_tahlil",
+    ]);
+  });
+
+  it("every menu entry has a non-empty label and description", () => {
+    for (const opt of VARIANT_OPTIONS) {
+      expect(opt.label.trim().length).toBeGreaterThan(0);
+      expect(opt.description.trim().length).toBeGreaterThan(0);
+    }
   });
 });
 
@@ -112,7 +153,7 @@ describe("tahlil-content — no forbidden references", () => {
   const BANNED = BANNED_CODES.map((codes) => String.fromCharCode(...codes));
 
   it("no section title or subtitle contains any forbidden token", () => {
-    for (const variant of ["singkat", "lengkap"] as const) {
+    for (const variant of ALL_VARIANTS) {
       for (const section of getTahlilSections(variant)) {
         const hay = `${section.title} ${section.subtitle ?? ""}`;
         for (const token of BANNED) {
@@ -165,5 +206,67 @@ describe("tahlil-content — Lengkap includes Yasin sections", () => {
     expect(ayatKursiIdx).toBeGreaterThanOrEqual(0);
     expect(firstYasinIdx).toBeGreaterThan(ayatKursiIdx);
     expect(istighfarIdx).toBeGreaterThan(firstYasinIdx);
+  });
+});
+
+describe("tahlil-content — Yasin variants", () => {
+  it("the first yasin section has id 'yasin-ayat-1'", () => {
+    const first = getTahlilSections("yasin")[0];
+    expect(first.id).toBe("yasin-ayat-1");
+  });
+
+  it("the first yasin_tahlil section has id 'yt-yasin-ayat-1'", () => {
+    const first = getTahlilSections("yasin_tahlil")[0];
+    expect(first.id).toBe("yt-yasin-ayat-1");
+  });
+
+  it("every yasin section is titled 'Surah Yasin Ayat N'", () => {
+    const sections = getTahlilSections("yasin");
+    expect(sections).toHaveLength(83);
+    for (const [i, s] of sections.entries()) {
+      expect(s.title).toBe(`Surah Yasin Ayat ${i + 1}`);
+    }
+  });
+
+  it("yasin_tahlil has 83 single-ayat Yasin sections plus 11 multi-ayat Yasin sections = 94", () => {
+    const sections = getTahlilSections("yasin_tahlil");
+    const yasinTitled = sections.filter((s) =>
+      s.title.startsWith("Surah Yasin"),
+    );
+    expect(yasinTitled).toHaveLength(94);
+  });
+});
+
+describe("tahlil-content — Arabic Allah form is fully voweled", () => {
+  // The plain and fully-voweled forms of the word "Allah" are assembled
+  // char-by-char from code points so the literal strings never appear in
+  // the test source itself (mirrors the banned-token approach above and
+  // keeps the source-audit grep clean).
+  //
+  // plain:    alef (U+0627) + lam (U+0644) + lam (U+0644) + ha (U+0647)
+  // voweled:  alef (U+0627) + lam (U+0644) + shadda (U+0651) +
+  //           superscript alef (U+0670) + ha (U+0647)
+  const PLAIN = String.fromCharCode(0x0627, 0x0644, 0x0644, 0x0647);
+  const VOWELED = String.fromCharCode(
+    0x0627,
+    0x0644,
+    0x0651,
+    0x0670,
+    0x0647,
+  );
+
+  it("every Arabic block containing the plain Allah substring uses the voweled form", () => {
+    for (const variant of ALL_VARIANTS) {
+      for (const section of getTahlilSections(variant)) {
+        for (const [i, block] of section.blocks.entries()) {
+          if (!block.arabic) continue;
+          if (!block.arabic.includes(PLAIN)) continue;
+          expect(
+            block.arabic.includes(VOWELED),
+            `${variant}/${section.id} block #${i}: contains Allah but not the voweled form`,
+          ).toBe(true);
+        }
+      }
+    }
   });
 });

@@ -3,8 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { useDisplaySettings } from "@/components/display-settings-provider";
-import type { ContentVariant } from "@/data/tahlil-content";
-import { getTahlilSections } from "@/data/tahlil-content";
+import { getTahlilSections, VARIANT_OPTIONS } from "@/data/tahlil-content";
 
 type CtaButton = {
   href: string;
@@ -19,50 +18,47 @@ const ctaButtons: CtaButton[] = [
   { href: "#doa-pembuka", label: "Doa", variant: "secondary" },
 ];
 
-const VARIANT_OPTIONS: ReadonlyArray<{
-  value: ContentVariant;
-  label: string;
-  short: string;
-}> = [
-  { value: "singkat", label: "Singkat", short: "S" },
-  { value: "lengkap", label: "Lengkap", short: "L" },
-];
-
-function VariantToggle() {
+function VariantMenu() {
   const { variant, setVariant } = useDisplaySettings();
   return (
     <div
       role="radiogroup"
       aria-label="Pilih varian tahlil"
-      className="inline-flex items-center rounded-full border border-border bg-card/60 p-1 backdrop-blur"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-2xl mx-auto"
     >
-      {VARIANT_OPTIONS.map((opt) => {
+      {VARIANT_OPTIONS.map((opt, i) => {
         const active = variant === opt.value;
         const count = getTahlilSections(opt.value).length;
         return (
-          <button
+          <motion.button
             key={opt.value}
             type="button"
             role="radio"
             aria-checked={active}
             onClick={() => setVariant(opt.value)}
-            className={`relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
+            className={`group flex flex-col gap-1 rounded-2xl border p-4 text-left transition-all ${
               active
-                ? "bg-primary text-primary-foreground shadow"
-                : "text-muted-foreground hover:text-foreground"
+                ? "border-primary bg-primary/5"
+                : "border-border bg-card hover:bg-accent"
             }`}
           >
-            {opt.label}
-            <span
-              className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                active
-                  ? "bg-primary-foreground/20 text-primary-foreground"
-                  : "bg-muted text-muted-foreground"
-              }`}
-            >
-              {count}
-            </span>
-          </button>
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-semibold text-foreground">{opt.label}</span>
+              <span
+                className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
+                  active
+                    ? "bg-primary/15 text-primary"
+                    : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {count} bagian
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">{opt.description}</p>
+          </motion.button>
         );
       })}
     </div>
@@ -92,14 +88,13 @@ export function Hero() {
       </div>
 
       <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-        {/* Variant toggle — Singkat / Lengkap */}
+        {/* Variant selector — 4-item menu */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex justify-center"
         >
-          <VariantToggle />
+          <VariantMenu />
         </motion.div>
 
         {/* CTA buttons */}

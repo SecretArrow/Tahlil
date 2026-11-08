@@ -50,13 +50,15 @@ class MainActivityTest {
     fun tappingMulaiNavigatesToFirstSection() {
         // Wait for the home screen to render (LazyColumn on a slow
         // emulator can take a few seconds to compose the first items).
-        // We poll for the CTA button "Mulai" to appear.
+        // We poll for the "Mulai Membaca" button to appear — the hero's
+        // variant menu was redesigned and the old "Mulai" CTA chip is
+        // gone, replaced by a full-width "Mulai Membaca" button below
+        // the 2×2 variant card grid.
         composeRule.waitUntil(timeoutMillis = 30_000L) {
-            composeRule.onAllNodesWithText("Mulai").fetchSemanticsNodes().isNotEmpty()
+            composeRule.onAllNodesWithText("Mulai Membaca").fetchSemanticsNodes().isNotEmpty()
         }
-        // Tap the first "Mulai" (the hero CTA — the drawer is closed
-        // so there's no other "Mulai" node visible).
-        composeRule.onAllNodesWithText("Mulai")[0].performClick()
+        // Tap the "Mulai Membaca" button — the only node with that text.
+        composeRule.onAllNodesWithText("Mulai Membaca")[0].performClick()
         // Wait for the section detail screen to render.
         composeRule.waitForIdle()
         // After navigation, the first section's title ("Pengantar Al-Fatihah

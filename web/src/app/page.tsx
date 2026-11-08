@@ -67,7 +67,7 @@ export default function Home() {
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="text-center sm:text-left">
               <p className="text-sm font-semibold">
-                Tahlil Singkat — Majelis Doa
+                Tahlil — Majelis Doa
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Disusun dari Al-Qur&apos;an, hadits, dan amaliah ulama.

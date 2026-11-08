@@ -2,9 +2,11 @@ import type { ContentVariant } from "./tahlil-content";
 
 export type DisplayToggles = {
   /**
-   * Which content variant to render: "singkat" (28 sections, no Yasin)
-   * or "lengkap" (39 sections, adds Yasin ayat 15-25). Stored alongside
-   * the boolean toggles so a single cookie round-trip covers everything.
+   * Which content variant to render. One of "singkat" (28 sections),
+   * "lengkap" (39 sections, adds Surah Yasin 15-25), "yasin" (Surah Yasin
+   * lengkap, 83 ayat), or "yasin_tahlil" (Yasin + Tahlil Lengkap combined,
+   * 122 sections). Stored alongside the boolean toggles so a single cookie
+   * round-trip covers everything. Default is "singkat".
    */
   variant: ContentVariant;
   arabic: boolean;

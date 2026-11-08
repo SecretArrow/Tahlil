@@ -20,7 +20,7 @@ export type Section = {
   blocks: ContentBlock[];
 };
 
-export type ContentVariant = "singkat" | "lengkap";
+export type ContentVariant = "singkat" | "lengkap" | "yasin" | "yasin_tahlil";
 
 type ContentData = {
   source: string;
@@ -49,6 +49,39 @@ export function getTahlilSectionById(
 ): Section | undefined {
   return content.variants[variant].sections.find((s) => s.id === id);
 }
+
+/**
+ * The four menu options surfaced on the home page. Each `value` is a valid
+ * `ContentVariant`; the `label` and `description` are the user-facing strings
+ * shown on the variant cards in the hero. Order is presentation order
+ * (Lengkap first matches the prior default emphasis), not source order.
+ */
+export const VARIANT_OPTIONS: ReadonlyArray<{
+  value: ContentVariant;
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "lengkap",
+    label: "Tahlil Lengkap",
+    description: "39 bagian, dengan Surah Yasin pilihan",
+  },
+  {
+    value: "singkat",
+    label: "Tahlil Singkat",
+    description: "28 bagian tanpa Surah Yasin",
+  },
+  {
+    value: "yasin",
+    label: "Yasin",
+    description: "Surah Yasin lengkap 83 ayat",
+  },
+  {
+    value: "yasin_tahlil",
+    label: "Yasin dan Tahlil",
+    description: "Yasin + Tahlil Lengkap (122 bagian)",
+  },
+];
 
 // Backward-compat: default export keeps the singkat list (used by any code that
 // hasn't been migrated to the variant selector).
