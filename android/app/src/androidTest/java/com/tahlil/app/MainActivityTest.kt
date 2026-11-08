@@ -1,7 +1,7 @@
 package com.tahlil.app
 
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.performClick
@@ -56,12 +56,13 @@ class MainActivityTest {
         //    variant's sections have loaded. We must wait for it to be
         //    ENABLED before tapping, otherwise performClick() is a silent
         //    no-op on a disabled button and navigation never fires.
+        //    A disabled Compose Button is still in the tree and exposes
+        //    its text — we poll the semantics until the matching node
+        //    reports that it is not Disabled.
         composeRule.waitUntil(timeoutMillis = 30_000L) {
-            try {
-                composeRule.onAllNodesWithText("Mulai Membaca").onFirst().assertIsEnabled()
-                true
-            } catch (e: AssertionError) {
-                false
+            val nodes = composeRule.onAllNodesWithText("Mulai Membaca").fetchSemanticsNodes()
+            nodes.any { node ->
+                node.config.getOrElse(SemanticsProperties.Disabled) { null } == null
             }
         }
 
