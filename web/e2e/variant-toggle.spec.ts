@@ -104,9 +104,7 @@ test.describe("Variant menu — four options", () => {
     await expect(yasinHeading).toHaveCount(0);
 
     // Switch to Yasin dan Tahlil.
-    await variantGroup
-      .getByRole("radio", { name: /Yasin dan Tahlil/ })
-      .click();
+    await variantGroup.getByRole("radio", { name: /Yasin dan Tahlil/ }).click();
     await expect(
       variantGroup.getByRole("radio", { name: /Yasin dan Tahlil/ }),
     ).toHaveAttribute("aria-checked", "true");

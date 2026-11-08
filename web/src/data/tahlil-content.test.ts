@@ -247,13 +247,7 @@ describe("tahlil-content — Arabic Allah form is fully voweled", () => {
   // voweled:  alef (U+0627) + lam (U+0644) + shadda (U+0651) +
   //           superscript alef (U+0670) + ha (U+0647)
   const PLAIN = String.fromCharCode(0x0627, 0x0644, 0x0644, 0x0647);
-  const VOWELED = String.fromCharCode(
-    0x0627,
-    0x0644,
-    0x0651,
-    0x0670,
-    0x0647,
-  );
+  const VOWELED = String.fromCharCode(0x0627, 0x0644, 0x0651, 0x0670, 0x0647);
 
   it("every Arabic block containing the plain Allah substring uses the voweled form", () => {
     for (const variant of ALL_VARIANTS) {

@@ -66,4 +66,3 @@ class ContentVariantTest {
         assertEquals("Yasin dan Tahlil", ContentVariant.YasinTahlil.label)
     }
 }
-
